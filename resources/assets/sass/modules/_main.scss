@@ -1,4 +1,27 @@
 #primary-content {
   flex: 1 1 auto;
-  margin-left: 20px;
+  padding: 15px;
+  margin-left: 15px;
+
+  header {
+    border-bottom: 2px solid #eeeeee;
+    margin-bottom: 30px;
+
+    h2 {
+      color: #aeaeae;
+      text-transform: uppercase;
+      font-size: 0.857rem;
+      line-height: 0.857rem;
+      font-weight: 400;
+      letter-spacing: 1px;
+      margin: 15px 0 10px 0;
+    }
+
+    h1 {
+      font-size: 2.143rem;
+      line-height: 2.143rem;
+      font-weight: 300;
+      margin: 0 0 15px 0;
+    }
+  }
 }

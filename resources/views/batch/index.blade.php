@@ -1,17 +1,24 @@
-<table>
-    <tr>
-        <th>Navn</th>
-        <th>Spiritus Navn</th>
-        <th>Oprettelsesdato</th>
-    </tr>
-
-    @foreach($batches as $batch)
+@extends('layouts.main')
+@section('title', 'Produktion - Oversigt')
+@section('header', 'Oversigt')
+@section('subheader', 'Produktion')
+@section('content')
+    <table>
         <tr>
-            <td>
-                <a href="{{ route('batch.show', $batch->id) }}">{{ $batch->name }}</a>
-            </td>
-            <td>{{ $batch->spirit->name }}</td>
-            <td>{{ $batch->created_at->toDateString() }}</td>
+            <th class="span">Navn</th>
+            <th class="shrink">Tilstand</th>
+            <th class="shrink">Mængde</th>
+            <th class="strink">Dato</th>
         </tr>
-    @endforeach
-</table>
+        @foreach($batches as $batch)
+            <tr>
+                <td>
+                    <a href="{{ route('batch.show', $batch->id) }}">{{ $batch->name }}</a>
+                </td>
+                <td>Mæskning</td>
+                <td>20 kg</td>
+                <td>{{ $batch->created_at->toDateString() }}</td>
+            </tr>
+        @endforeach
+    </table>
+@endsection

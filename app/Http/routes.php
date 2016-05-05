@@ -14,5 +14,5 @@
 Route::resource('batch', 'BatchController');
 
 Route::get('/', function () {
-    return view('index');
+    return redirect()->route('batch.index');
 });

@@ -1,0 +1,33 @@
+form {
+  display: flex;
+  flex-flow: column nowrap;
+
+}
+
+label {
+  margin-bottom: 30px;
+  span {
+    display: block;
+    padding-bottom: 5px;
+  }
+}
+
+input {
+  display: block;
+  width: 100%;
+  height: 35px;
+  padding: 6px 12px;
+  border: 1px solid #d5d5d5;
+  background-color: #ffffff;
+  border-radius: 4px;
+  outline: none;
+  font-weight: 300;
+  transition: border-color 100ms;
+  &:focus {
+    border-color: #1997c6;
+  }
+}
+
+select {
+  @extend input;
+}

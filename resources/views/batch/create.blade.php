@@ -1,32 +1,43 @@
-@if(Session::has('alert-success'))
-    <div class="alert success">
-        {{ Session::get('alert-success') }}
-    </div>
-@endif
+@extends('layouts.main')
+@section('title', 'Produktion - Opret batch')
+@section('header', 'Opret batch')
+@section('subheader', 'Batches')
+@section('content')
+    <section id="batch-create">
+        @if (count($errors) > 0)
+            <div class="errors">
+                <ul>
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+        <div class="left">
+            <form action="{{ route('batch.store') }}" method="POST">
+                {{ csrf_field() }}
 
-@if (count($errors) > 0)
-    <ul class="errors">
-        @foreach($errors->all() as $error)
-            <li>{{ $error }}</li>
-        @endforeach
-    </ul>
-@endif
+                <label for="spirit_id">
+                    <span>Spiritustype</span>
+                    <select id="spirit_id" name="spirit_id">
+                        @foreach($spirits as $spirit)
+                            <option value="{{ $spirit->id }}">{{ $spirit->name }}</option>
+                        @endforeach
+                    </select>
+                </label>
 
-<form action="{{ route('batch.store') }}" method="POST">
-    {{ csrf_field() }}
+                <label>
+                    <span>Oprettelsesdato</span>
+                    <input name="created_at" value="{{ \Carbon\Carbon::now()->toDateString() }}" type="date">
+                </label>
 
-    <label for="spirit_id">Spiritustype</label>
-    <select id="spirit_id" name="spirit_id">
-        @foreach($spirits as $spirit)
-            <option value="{{ $spirit->id }}">{{ $spirit->name }}</option>
-        @endforeach
-    </select>
+                <label>
+                    <span>Batchnavn</span>
+                    <input name="name" type="text">
+                </label>
 
-    <label for="created_at">Oprettelsesdato</label>
-    <input id="created_at" name="created_at" value="{{ \Carbon\Carbon::now()->toDateString() }}" type="date">
-
-    <label for="name">Batchnavn</label>
-    <input id="name" name="name" type="text">
-
-    <button type="submit">Opret</button>
-</form>
+                <button type="submit">Opret</button>
+            </form>
+        </div>
+    </section>
+@endsection
