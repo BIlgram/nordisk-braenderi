@@ -3,12 +3,17 @@
 @section('header', $batch->name)
 @section('subheader', 'Batches')
 @section('content')
-    <h1>Batch</h1>
-    <div>{{ $batch->name }}</div>
 
-    <h2>Spirit Type</h2>
-    <div>Name: {{ $batch->spirit->name }}</div>
-    <div>Alcohol percentage: {{ $batch->spirit->abv }}</div>
+    <section id="batch-show">
+            <div>
+                <span>Oprettelsesdato</span>
+                <div>{{ $batch->created_at->toDateString() }}</div>
+            </div>
 
-    <a href="{{ route('batch.edit', $batch->id) }}">Edit</a>
+            <div>
+                <span>Spiritustype</span>
+                <div>{{ $batch->spirit->name }}</div>
+            </div>
+        </div>
+    </section>
 @endsection

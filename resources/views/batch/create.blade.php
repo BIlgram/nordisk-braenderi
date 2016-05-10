@@ -4,6 +4,12 @@
 @section('subheader', 'Batches')
 @section('content')
     <section id="batch-create">
+        @if(Session::has('alert-success'))
+            <div class="alert success">
+                {{ Session::get('alert-success') }}
+            </div>
+        @endif
+
         @if (count($errors) > 0)
             <div class="errors">
                 <ul>
@@ -13,6 +19,7 @@
                 </ul>
             </div>
         @endif
+
         <div class="left">
             <form action="{{ route('batch.store') }}" method="POST">
                 {{ csrf_field() }}
