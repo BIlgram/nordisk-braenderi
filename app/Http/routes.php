@@ -11,8 +11,14 @@
 |
 */
 
-Route::resource('batch', 'BatchController');
-
 Route::get('/', function () {
     return redirect()->route('batch.index');
 });
+
+Route::resource('/batch', 'BatchController');
+
+Route::get('/batch/{batch}/created', 'StateController@created');
+
+/*
+ * Colors
+ * */

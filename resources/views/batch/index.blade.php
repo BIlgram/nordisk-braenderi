@@ -2,6 +2,9 @@
 @section('title', 'Produktion - Oversigt')
 @section('header', 'Oversigt')
 @section('subheader', 'Produktion')
+@section('header-buttons')
+    <a href="{{ route('batch.create') }}" role="button">Opret</a>
+@endsection
 @section('content')
     <table>
         <tr>

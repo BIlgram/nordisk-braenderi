@@ -14,7 +14,7 @@ class CreateBatchesTable extends Migration
     {
         Schema::create('batches', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+            $table->string('name')->unique();
             $table->integer('spirit_id');
 //            $table->string('recipe');
 //            $table->integer('batch_state_id');

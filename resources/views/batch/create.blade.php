@@ -40,7 +40,8 @@
 
                 <label>
                     <span>Batchnavn</span>
-                    <input name="name" type="text">
+                    <!-- TODO set old på alle input felter -->
+                    <input name="name" type="text" value="{{ old('name') }}">
                 </label>
 
                 <button type="submit">Opret</button>

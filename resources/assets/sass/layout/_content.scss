@@ -4,8 +4,22 @@
   margin-left: 15px;
 
   header {
-    border-bottom: 2px solid #eeeeee;
+    border-bottom: 2px solid color('gray', 'light');
     margin-bottom: 30px;
+    padding-bottom: 15px;
+    display: flex;
+
+    .headings {
+
+      flex: 1 0 auto;
+
+    }
+
+    .buttons {
+      display: flex;
+      flex: 0 1 auto;
+      align-items: flex-end;
+    }
 
     h2 {
       color: #aeaeae;
@@ -21,7 +35,7 @@
       font-size: 2.143rem;
       line-height: 2.143rem;
       font-weight: 300;
-      margin: 0 0 15px 0;
+      margin: 0;
     }
   }
 }

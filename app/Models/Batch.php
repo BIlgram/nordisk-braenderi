@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Batch extends Model
 {
     public static $rules = [
-        'name' => 'required',
+        'name' => 'required|unique:batches',
         'spirit_id' => 'required|integer',
         'created_at' => 'required|date'
     ];

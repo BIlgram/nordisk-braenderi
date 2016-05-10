@@ -1,0 +1,25 @@
+// COLORS
+$colors: (
+  'blue': (
+    'light': rgb(230, 245, 250),
+    'base': rgb(30, 170, 220),
+    'dark': rgb(19, 116, 153),
+  ),
+  'green': (
+    'base': rgb(30, 200, 140),
+  ),
+  'red': (
+    'base': rgb(230, 70, 90),
+  ),
+  'yellow': (
+    'base': rgb(230, 215, 55),
+  ),
+  'gray': (
+    'light': rgb(240, 240, 240),
+    'base': rgb(150, 150, 150),
+    'dark': rgb(85, 85, 85)
+  ),
+  'white': (
+    'base': rgb(255, 255, 255)
+  )
+);

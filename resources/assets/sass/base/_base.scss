@@ -1,0 +1,14 @@
+html {
+  box-sizing: border-box;
+
+  body {
+    background-color: color('white');
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+

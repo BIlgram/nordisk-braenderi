@@ -48,8 +48,7 @@ class BatchController extends Controller
 
         $batch->save();
 
-        $request->session()
-            ->flash('alert-success', 'Batch was successfully created!');
+        flash('Batch was successfully created!', 'success');
 
         return redirect()->route('batch.show', $batch->id);
     }
@@ -57,44 +56,44 @@ class BatchController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int $id
+     * @param Batch $batch
      * @return \Illuminate\Http\Response
+     * @internal param int $id
      */
-    public function show($id)
+    public function show(Batch $batch)
     {
-        return view('batch.show', ["batch" => Batch::find($id)]);
+        return view('batch.show', ["batch" => $batch]);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int $id
+     * @param Batch $batch
      * @return \Illuminate\Http\Response
+     * @internal param int $id
      */
-    public function edit($id)
+    public function edit(Batch $batch)
     {
-        return view('batch.edit', ["batch" => Batch::find($id), "spirits" => Spirit::all()]);
+        return view('batch.edit', ["batch" => $batch, "spirits" => Spirit::all()]);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  int $id
+     * @param Batch $batch
      * @return \Illuminate\Http\Response
+     * @internal param int $id
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Batch $batch)
     {
         $this->validate($request, Batch::$rules);
 
-        $batch = Batch::find($id);
         $batch->name = $request->name;
         $batch->spirit_id = $request->spirit_id;
-        //$batch->created_at = Carbon::parse($request->created_at);
         $batch->save();
 
-        $request->session()
-            ->flash('alert-success', 'Batch was successfully updated!');
+        flash('Batch was successfully updated!', 'success');
 
         return redirect()->route('batch.index');
     }
@@ -102,17 +101,14 @@ class BatchController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int $id
+     * @param Batch $batch
      * @return \Illuminate\Http\Response
+     * @internal param int $id
      */
-    public function destroy($id)
+    public function destroy(Batch $batch)
     {
-        $batch = Batch::find($id);
         $batch->delete();
-
-        $request->session()
-            ->flash('alert-success', 'Batch was successfully removed!');
-
+        flash('Batch was successfully removed!', 'success');
         return redirect()->route('batch.index');
     }
 }
