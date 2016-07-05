@@ -202,6 +202,7 @@ samp {
  */
 button,
 input,
+textarea,
 select,
 optgroup,
 select,
@@ -238,10 +239,13 @@ select {
  */
 button,
 html input[type="button"],
+html textarea[type="button"],
 html select[type="button"],
 input[type="reset"],
+textarea[type="reset"],
 select[type="reset"],
 input[type="submit"],
+textarea[type="submit"],
 select[type="submit"] {
   -webkit-appearance: button;
   /* 2 */
@@ -253,6 +257,7 @@ select[type="submit"] {
  */
 button[disabled],
 html input[disabled],
+html textarea[disabled],
 html select[disabled] {
   cursor: default; }
 
@@ -261,6 +266,7 @@ html select[disabled] {
  */
 button::-moz-focus-inner,
 input::-moz-focus-inner,
+textarea::-moz-focus-inner,
 select::-moz-focus-inner {
   border: 0;
   padding: 0; }
@@ -269,7 +275,7 @@ select::-moz-focus-inner {
  * Address Firefox 4+ setting `line-height` on `input` using `!important` in
  * the UA stylesheet.
  */
-input, select {
+input, textarea, select {
   line-height: normal; }
 
 /**
@@ -279,8 +285,9 @@ input, select {
  * 1. Address box sizing set to `content-box` in IE 8/9/10.
  * 2. Remove excess padding in IE 8/9/10.
  */
-input[type="checkbox"], select[type="checkbox"],
+input[type="checkbox"], textarea[type="checkbox"], select[type="checkbox"],
 input[type="radio"],
+textarea[type="radio"],
 select[type="radio"] {
   box-sizing: border-box;
   /* 1 */
@@ -292,8 +299,9 @@ select[type="radio"] {
  * `font-size` values of the `input`, it causes the cursor style of the
  * decrement button to change from `default` to `text`.
  */
-input[type="number"]::-webkit-inner-spin-button, select[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-inner-spin-button, textarea[type="number"]::-webkit-inner-spin-button, select[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button,
+textarea[type="number"]::-webkit-outer-spin-button,
 select[type="number"]::-webkit-outer-spin-button {
   height: auto; }
 
@@ -302,7 +310,7 @@ select[type="number"]::-webkit-outer-spin-button {
  * 2. Address `box-sizing` set to `border-box` in Safari and Chrome
  *    (include `-moz` to future-proof).
  */
-input[type="search"], select[type="search"] {
+input[type="search"], textarea[type="search"], select[type="search"] {
   -webkit-appearance: textfield;
   /* 1 */
   /* 2 */
@@ -313,8 +321,9 @@ input[type="search"], select[type="search"] {
  * Safari (but not Chrome) clips the cancel button when the search input has
  * padding (and `textfield` appearance).
  */
-input[type="search"]::-webkit-search-cancel-button, select[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-cancel-button, textarea[type="search"]::-webkit-search-cancel-button, select[type="search"]::-webkit-search-cancel-button,
 input[type="search"]::-webkit-search-decoration,
+textarea[type="search"]::-webkit-search-decoration,
 select[type="search"]::-webkit-search-decoration {
   -webkit-appearance: none; }
 
@@ -386,49 +395,21 @@ a {
   a:hover {
     color: #126582; }
 
-#primary-container {
-  width: 960px;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  padding: 50px 15px;
-  margin: 0 auto; }
+@-webkit-keyframes fadeOutUp {
+  from {
+    opacity: 1; }
+  to {
+    opacity: 0;
+    -webkit-transform: translate3d(0, -100%, 0);
+    transform: translate3d(0, -100%, 0); } }
 
-#primary-navigation {
-  -webkit-flex: 0 0 260px;
-  -ms-flex: 0 0 260px;
-  flex: 0 0 260px;
-  padding: 15px;
-  margin-right: 15px; }
-  #primary-navigation h1 {
-    font-weight: 300;
-    font-size: 1.714rem;
-    line-height: 1.714rem;
-    padding: 0 15px;
-    margin: 15px 0; }
-  #primary-navigation ul {
-    padding: 0; }
-    #primary-navigation ul li {
-      display: block;
-      margin-top: 2px; }
-      #primary-navigation ul li a {
-        display: block;
-        width: 100%;
-        padding: 8px 15px;
-        border-radius: 4px;
-        font-weight: 300; }
-        #primary-navigation ul li a:hover {
-          background-color: #e6f5fa;
-          color: #137499; }
-      #primary-navigation ul li.category {
-        padding: 0 15px;
-        margin: 20px 0 5px;
-        font-size: .857rem;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        color: #969696; }
-      #primary-navigation ul li.logoff {
-        margin: 20px 0 0; }
+@keyframes fadeOutUp {
+  from {
+    opacity: 1; }
+  to {
+    opacity: 0;
+    -webkit-transform: translate3d(0, -100%, 0);
+    transform: translate3d(0, -100%, 0); } }
 
 #primary-content {
   -webkit-flex: 1 1 auto;
@@ -470,6 +451,100 @@ a {
       line-height: 2.143rem;
       font-weight: 300;
       margin: 0; }
+
+#primary-navigation {
+  -webkit-flex: 0 0 260px;
+  -ms-flex: 0 0 260px;
+  flex: 0 0 260px;
+  padding: 15px;
+  margin-right: 15px; }
+  #primary-navigation h1 {
+    font-weight: 300;
+    font-size: 1.714rem;
+    line-height: 1.714rem;
+    padding: 0;
+    margin: 15px 0; }
+  #primary-navigation ul {
+    padding: 0; }
+    #primary-navigation ul li {
+      display: block;
+      margin-top: 2px; }
+      #primary-navigation ul li a {
+        display: block;
+        width: 100%;
+        padding: 8px 0;
+        border-radius: 4px;
+        font-weight: 300; }
+        #primary-navigation ul li a:hover {
+          background-color: #e6f5fa;
+          color: #137499; }
+      #primary-navigation ul li.category {
+        margin: 20px 0 5px;
+        font-size: .857rem;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: #969696; }
+      #primary-navigation ul li.logoff {
+        margin: 20px 0 0; }
+
+#primary-container {
+  width: 960px;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  position: relative;
+  padding: 81px 15px;
+  margin: 0 auto; }
+
+.modal {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.8);
+  text-align: center; }
+  .modal > div {
+    margin-top: -200px; }
+  .modal button {
+    min-width: 100px;
+    margin-top: 15px; }
+    .modal button:first-of-type {
+      margin-right: 7.5px; }
+    .modal button:last-of-type {
+      margin-left: 7.5px; }
+
+.alert {
+  width: 100%;
+  padding: 30px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  -webkit-animation: fadeOutUp 400ms 5s forwards;
+  animation: fadeOutUp 400ms 5s forwards; }
+  .alert div {
+    width: 100%;
+    padding: 6px 12px;
+    border: 1px solid #d5d5d5;
+    background-color: #ffffff;
+    border-radius: 4px; }
+  .alert.info div {
+    border-color: #1997c6;
+    color: #1997c6; }
+  .alert.success div {
+    border-color: #1bc98e;
+    color: #1bc98e; }
+  .alert.error div {
+    border-color: #e64759;
+    color: #e64759; }
 
 button, [role=button] {
   padding: 6px 12px;
@@ -535,12 +610,13 @@ form {
   flex-flow: column nowrap; }
 
 label {
-  margin-bottom: 30px; }
+  margin-bottom: 30px;
+  font-weight: 500; }
   label span {
     display: block;
     padding-bottom: 5px; }
 
-input, select {
+input, textarea, select {
   display: block;
   width: 100%;
   height: 35px;
@@ -551,8 +627,19 @@ input, select {
   outline: none;
   font-weight: 300;
   transition: border-color 100ms; }
-  input:focus, select:focus {
+  input:focus, textarea:focus, select:focus {
     border-color: #1997c6; }
+
+textarea {
+  width: 100% !important;
+  height: auto; }
+
+.output {
+  margin-bottom: 30px; }
+  .output span {
+    display: block;
+    padding-bottom: 5px;
+    font-weight: 500; }
 
 #batch-show .button-group {
   width: 100%; }

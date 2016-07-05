@@ -15,16 +15,15 @@ class SpiritsTableSeeder extends Seeder
         Spirit::truncate();
 
         Spirit::create([
-           "name" => "Nordisk Gin",
-            "active" => true,
-            "abv" => 40
+            "name" => "Nordisk Gin",
+            "abv" => 40,
+            "recipe" => "Blade og hør"
         ]);
-
-
+        
         Spirit::create([
             "name" => "Rom white",
-            "active" => true,
-            "abv" => 44.8
+            "abv" => 44.8,
+            "recipe" => "Ost og edike"
         ]);
     }
 }

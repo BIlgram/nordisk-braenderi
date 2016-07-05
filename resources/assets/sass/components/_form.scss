@@ -6,6 +6,8 @@ form {
 
 label {
   margin-bottom: 30px;
+  font-weight: 500;
+
   span {
     display: block;
     padding-bottom: 5px;
@@ -26,6 +28,12 @@ input {
   &:focus {
     border-color: #1997c6;
   }
+}
+
+textarea {
+  @extend input;
+  width: 100% !important;
+  height: auto;
 }
 
 select {

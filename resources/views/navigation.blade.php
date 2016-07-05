@@ -10,8 +10,8 @@
     <li><a href="#">Månedsopgørelse</a></li>
 
     <li class="category">Administration</li>
-    <li><a href="#">Brugere</a></li>
-    <li><a href="#">Spiritus</a></li>
+    <li><a href="{{ route('user.index') }}">Brugere</a></li>
+    <li><a href="{{ route('spirit.index') }}">Spiritus</a></li>
 
     <li class="logoff"><a href="#">Log af</a></li>
 </ul>

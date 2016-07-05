@@ -5,14 +5,21 @@
     <title>Nordisk Brænderi | @yield('title')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <link href="//fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet" type="text/css">
     <link href="/css/main.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 <div id="primary-container">
+    @if(Session::has('alert'))
+        <div class="alert {{ Session::get('alert_level') }}">
+            <div>{{ Session::get('alert') }}</div>
+        </div>
+    @endif
+
     <nav id="primary-navigation">
         @include('navigation')
     </nav>
+
     <main id="primary-content">
         <header>
             <div class="headings">
@@ -26,5 +33,7 @@
         @yield('content')
     </main>
 </div>
+
+<script src="/js/main.js"></script>
 </body>
 </html>

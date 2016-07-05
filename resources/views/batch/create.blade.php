@@ -1,15 +1,10 @@
 @extends('layouts.main')
 @section('title', 'Produktion - Opret batch')
 @section('header', 'Opret batch')
-@section('subheader', 'Batches')
+@section('subheader', 'Produktion')
 @section('content')
-    <section id="batch-create">
-        @if(Session::has('alert-success'))
-            <div class="alert success">
-                {{ Session::get('alert-success') }}
-            </div>
-        @endif
 
+    <section id="batch-create">
         @if (count($errors) > 0)
             <div class="errors">
                 <ul>
@@ -20,32 +15,30 @@
             </div>
         @endif
 
-        <div class="left">
-            <form action="{{ route('batch.store') }}" method="POST">
-                {{ csrf_field() }}
+        <form action="{{ route('batch.store') }}" method="POST">
+            {{ csrf_field() }}
 
-                <label for="spirit_id">
-                    <span>Spiritustype</span>
-                    <select id="spirit_id" name="spirit_id">
-                        @foreach($spirits as $spirit)
-                            <option value="{{ $spirit->id }}">{{ $spirit->name }}</option>
-                        @endforeach
-                    </select>
-                </label>
+            <label for="spirit_id">
+                <span>Spiritustype</span>
+                <select id="spirit_id" name="spirit_id">
+                    @foreach($spirits as $spirit)
+                        <option value="{{ $spirit->id }}">{{ $spirit->name }}</option>
+                    @endforeach
+                </select>
+            </label>
 
-                <label>
-                    <span>Oprettelsesdato</span>
-                    <input name="created_at" value="{{ \Carbon\Carbon::now()->toDateString() }}" type="date">
-                </label>
+            <label>
+                <span>Oprettelsesdato</span>
+                <input name="created_at" value="{{ \Carbon\Carbon::now()->toDateString() }}" type="date">
+            </label>
 
-                <label>
-                    <span>Batchnavn</span>
-                    <!-- TODO set old på alle input felter -->
-                    <input name="name" type="text" value="{{ old('name') }}">
-                </label>
+            <label>
+                <span>Batchnavn</span>
+                <input name="name" type="text" value="{{ old('name') }}">
+            </label>
 
-                <button type="submit">Opret</button>
-            </form>
-        </div>
+            <button type="submit">Opret</button>
+        </form>
     </section>
+
 @endsection

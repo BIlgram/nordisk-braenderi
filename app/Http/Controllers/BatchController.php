@@ -39,7 +39,7 @@ class BatchController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, Batch::$rules);
+        $this->validate($request, Batch::rules());
         $batch = new Batch();
 
         $batch->name = $request->name;
@@ -87,7 +87,7 @@ class BatchController extends Controller
      */
     public function update(Request $request, Batch $batch)
     {
-        $this->validate($request, Batch::$rules);
+        $this->validate($request, Batch::rules($batch->id));
 
         $batch->name = $request->name;
         $batch->spirit_id = $request->spirit_id;
@@ -95,7 +95,7 @@ class BatchController extends Controller
 
         flash('Batch was successfully updated!', 'success');
 
-        return redirect()->route('batch.index');
+        return redirect()->route('batch.show', $batch->id);
     }
 
     /**

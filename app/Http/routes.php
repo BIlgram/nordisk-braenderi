@@ -16,8 +16,10 @@ Route::get('/', function () {
 });
 
 Route::resource('/batch', 'BatchController');
-
 Route::get('/batch/{batch}/created', 'StateController@created');
+
+Route::resource('/user', 'UserController');
+Route::resource('/spirit', 'SpiritController');
 
 /*
  * Colors
