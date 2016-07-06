@@ -1,7 +1,8 @@
 button, [role=button] {
-  padding: 6px 12px;
+  height: 36px;
+  padding: 0 12px;
   display: inline-block;
-  vertical-align: bottom;
+  line-height: 36px;
   background-color: transparent;
   outline: none;
   border: 1px solid color('blue');

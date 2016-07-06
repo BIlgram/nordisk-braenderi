@@ -415,12 +415,12 @@ a {
   -webkit-flex: 1 1 auto;
   -ms-flex: 1 1 auto;
   flex: 1 1 auto;
-  padding: 15px;
-  margin-left: 15px; }
+  padding: 16px;
+  margin-left: 16px; }
   #primary-content header {
     border-bottom: 2px solid #f0f0f0;
     margin-bottom: 30px;
-    padding-bottom: 15px;
+    padding-bottom: 16px;
     display: -webkit-flex;
     display: -ms-flexbox;
     display: flex; }
@@ -445,7 +445,7 @@ a {
       line-height: 0.857rem;
       font-weight: 400;
       letter-spacing: 1px;
-      margin: 15px 0 10px 0; }
+      margin: 16px 0 10px 0; }
     #primary-content header h1 {
       font-size: 2.143rem;
       line-height: 2.143rem;
@@ -456,23 +456,25 @@ a {
   -webkit-flex: 0 0 260px;
   -ms-flex: 0 0 260px;
   flex: 0 0 260px;
-  padding: 15px;
-  margin-right: 15px; }
+  padding: 16px;
+  margin-right: 16px; }
   #primary-navigation h1 {
     font-weight: 300;
     font-size: 1.714rem;
     line-height: 1.714rem;
-    margin: 15px 0; }
+    margin: 16px 0; }
   #primary-navigation ul {
     padding: 0;
-    margin-left: -15px; }
+    margin-left: -16px; }
     #primary-navigation ul li {
       display: block;
       margin-top: 2px; }
       #primary-navigation ul li a {
+        height: 36px;
+        line-height: 36px;
         display: block;
         width: 100%;
-        padding: 8px 15px;
+        padding: 0 16px;
         border-radius: 4px;
         font-weight: 300; }
         #primary-navigation ul li a:hover {
@@ -480,7 +482,7 @@ a {
           color: #137499; }
       #primary-navigation ul li.category {
         margin: 20px 0 5px;
-        padding: 0 15px;
+        padding: 0 16px;
         font-size: .857rem;
         letter-spacing: 1px;
         text-transform: uppercase;
@@ -489,10 +491,19 @@ a {
         margin: 20px 0 0; }
 
 #process button {
-  width: 100%; }
+  width: 100%;
+  margin-bottom: 8px; }
+
+#process table tr td {
+  padding: 0 8px;
+  border: none; }
+  #process table tr td:first-of-type {
+    padding-left: 0; }
+  #process table tr td:last-of-type {
+    padding-right: 0; }
 
 #process select {
-  margin-bottom: 15px; }
+  margin-bottom: 8px; }
 
 #primary-container {
   width: 960px;
@@ -500,7 +511,7 @@ a {
   display: -ms-flexbox;
   display: flex;
   position: relative;
-  padding: 81px 15px;
+  padding: 81px 16px;
   margin: 0 auto; }
 
 .modal {
@@ -523,7 +534,7 @@ a {
     margin-top: -200px; }
   .modal button {
     min-width: 100px;
-    margin-top: 15px; }
+    margin-top: 16px; }
     .modal button:first-of-type {
       margin-right: 7.5px; }
     .modal button:last-of-type {
@@ -554,9 +565,10 @@ a {
     color: #e64759; }
 
 button, [role=button] {
-  padding: 6px 12px;
+  height: 36px;
+  padding: 0 12px;
   display: inline-block;
-  vertical-align: bottom;
+  line-height: 36px;
   background-color: transparent;
   outline: none;
   border: 1px solid #1eaadc;
@@ -584,6 +596,10 @@ button, [role=button] {
 
 table {
   width: 100%; }
+  table tr th.span, table tr td.span {
+    width: 99%; }
+  table tr th.shrink, table tr td.shrink {
+    width: 1%; }
   table tr th {
     padding: 0 25px 8px 25px;
     text-align: left;
@@ -592,10 +608,6 @@ table {
       padding-left: 0; }
     table tr th:last-of-type {
       padding-right: 0; }
-    table tr th.span {
-      width: 99%; }
-    table tr th.shrink {
-      width: 1%; }
   table tr td {
     padding: 8px 25px;
     border-top: 1px solid #eeeeee;
@@ -626,8 +638,9 @@ label {
 input, textarea, select {
   display: block;
   width: 100%;
-  height: 35px;
-  padding: 6px 12px;
+  height: 36px;
+  padding: 0 12px;
+  line-height: 36px;
   border: 1px solid #d5d5d5;
   background-color: #ffffff;
   border-radius: 4px;

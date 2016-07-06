@@ -16,7 +16,7 @@ var states = new States();
 states.fetch().then($.proxy(function () {
     var processView = new ProcessView({states: states});
 
-    processView.render();
+    $('#process').html(processView.render().el);
 }, this));
 
 

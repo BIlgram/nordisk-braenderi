@@ -13542,7 +13542,7 @@ var states = new States();
 states.fetch().then($.proxy(function () {
     var processView = new ProcessView({ states: states });
 
-    processView.render();
+    $('#process').html(processView.render().el);
 }, undefined));
 
 },{"./collections/states.js":4,"./modal":6,"./views/process/index.js":11,"jquery":2}],6:[function(require,module,exports){
@@ -13620,7 +13620,7 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<div>Produktionsprocess</div>\n\n<table id="steps"></table>\n\n<button type="button">Tilføj</button>'); })();
+ buf.push('<span>Produktionsprocess</span>\n\n<table id="steps"></table>\n\n<!--<button type="button" data-role="add">Tilføj</button>-->\n\n<input type="button" role="button" value="Tilføj">\n'); })();
 } 
 return buf.join('');
 })
@@ -13637,7 +13637,7 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<td>\n    <select>\n        ');3; states.forEach(function(state, index) { ; buf.push('\n        <option value="', escape((4,  index )), '">', escape((4,  state.get('name') )), '</option>\n        ');5; }); ; buf.push('\n    </select>\n</td>\n<td>\n    <button type="button">Remove</button>\n</td>'); })();
+ buf.push('<td class="span">\n    <select>\n        ');3; states.forEach(function(state, index) { ; buf.push('\n        <option value="', escape((4,  index )), '">', escape((4,  state.get('name') )), '</option>\n        ');5; }); ; buf.push('\n    </select>\n</td>\n\n<!--<td class="shrink">-->\n    <!--<button type="button" data-role="remove">Fjern</button>-->\n<!--</td>-->\n<td class="shrink">\n    <input type="button" role="button" value="Fjern">\n</td>'); })();
 } 
 return buf.join('');
 })
@@ -13652,10 +13652,8 @@ var StepView = require('./step.js');
 var template = require('./../../templates/process/index.ejs');
 
 module.exports = Backbone.View.extend({
-    el: '#process',
-
     events: {
-        'click button': 'addProcessStep'
+        'click input': 'addProcessStep'
     },
 
     initialize: function initialize(options) {
@@ -13665,6 +13663,10 @@ module.exports = Backbone.View.extend({
     render: function render() {
         this.$el.html(template());
 
+        this.addProcessStep();
+        this.addProcessStep();
+        this.addProcessStep();
+        this.addProcessStep();
         this.addProcessStep();
 
         return this;
@@ -13686,13 +13688,24 @@ var Backbone = require('backbone');
 var template = require('./../../templates/process/step.ejs');
 
 module.exports = Backbone.View.extend({
+    tagName: 'tr',
+
+    events: {
+        'click input': 'removeProcessStep'
+    },
+
     initialize: function initialize(options) {
         this.states = options.states;
     },
 
     render: function render() {
         this.$el.html(template({ states: this.states }));
+
         return this;
+    },
+
+    removeProcessStep: function removeProcessStep() {
+        this.remove();
     }
 });
 

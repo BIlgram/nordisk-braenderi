@@ -6,10 +6,8 @@ var StepView = require('views/process/step');
 var template = require('templates/process');
 
 module.exports = Backbone.View.extend({
-    el: '#process',
-
     events: {
-        'click button': 'addProcessStep'
+         'click input': 'addProcessStep'
     },
 
     initialize: function(options) {
@@ -20,7 +18,11 @@ module.exports = Backbone.View.extend({
         this.$el.html(template());
 
         this.addProcessStep();
-
+        this.addProcessStep();
+        this.addProcessStep();
+        this.addProcessStep();
+        this.addProcessStep();
+        
         return this;
     },
 

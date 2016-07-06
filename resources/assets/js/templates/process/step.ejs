@@ -1,10 +1,14 @@
-<td>
+<td class="span">
     <select>
         <% states.forEach(function(state, index) { %>
         <option value="<%= index %>"><%= state.get('name') %></option>
         <% }); %>
     </select>
 </td>
-<td>
-    <button type="button">Remove</button>
+
+<!--<td class="shrink">-->
+    <!--<button type="button" data-role="remove">Fjern</button>-->
+<!--</td>-->
+<td class="shrink">
+    <input type="button" role="button" value="Fjern">
 </td>
