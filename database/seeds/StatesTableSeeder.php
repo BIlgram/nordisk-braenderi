@@ -12,9 +12,12 @@ class StatesTableSeeder extends Seeder
      */
     public function run()
     {
-        State::create(["name" => "created"]);
-        State::create(["name" => "distilled" ]);
-        State::create(["name" => "diluted" ]);
-        State::create(["name" => "filtered" ]);
+         State::create(["name" => "Mæskning"]);
+         State::create(["name" => "Destillering"]);
+         State::create(["name" => "Fortynding"]);
+         State::create(["name" => "Lagring"]);
+         State::create(["name" => "Filtrering"]);
+         State::create(["name" => "Tapning"]);
+         State::create(["name" => "Blanding"]);
     }
 }

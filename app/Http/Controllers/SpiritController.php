@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Spirit;
+use App\Models\State;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -111,5 +112,9 @@ class SpiritController extends Controller
         $spirit->delete();
         flash('Spirit was successfully removed!', 'success');
         return redirect()->route('spirit.index');
+    }
+
+    public function states() {
+        return State::all();
     }
 }

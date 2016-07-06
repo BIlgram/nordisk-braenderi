@@ -13514,14 +13514,43 @@ return jQuery;
 },{}],4:[function(require,module,exports){
 'use strict';
 
-require('./modal');
+var Backbone = require('backbone');
+var State = require('./../models/state.js');
 
-},{"./modal":5}],5:[function(require,module,exports){
+module.exports = Backbone.Collection.extend({
+    url: '/spirit/states',
+    model: State
+});
+
+},{"./../models/state.js":7,"backbone":1}],5:[function(require,module,exports){
+'use strict';
+
+var $ = require('jquery');
+
+var States = require('./collections/states.js');
+var ProcessView = require('./views/process/index.js');
+
+require('./modal');
+// $.ajaxSetup({
+//     headers: {
+//         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+//     }
+// });
+
+var states = new States();
+
+states.fetch().then($.proxy(function () {
+    var processView = new ProcessView({ states: states });
+
+    processView.render();
+}, undefined));
+
+},{"./collections/states.js":4,"./modal":6,"./views/process/index.js":11,"jquery":2}],6:[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
 var Backbone = require('backbone');
-var template = require('../templates/modal.ejs');
+var template = require('./templates/modal.ejs');
 
 var $form = $('form.confirm');
 
@@ -13552,7 +13581,16 @@ $form.submit(function (e) {
     $('body').prepend(new ModalView().render().el);
 });
 
-},{"../templates/modal.ejs":6,"backbone":1,"jquery":2}],6:[function(require,module,exports){
+},{"./templates/modal.ejs":8,"backbone":1,"jquery":2}],7:[function(require,module,exports){
+'use strict';
+
+var Backbone = require('backbone');
+
+module.exports = Backbone.Model.extend({
+    urlRoot: '/spirit/states'
+});
+
+},{"backbone":1}],8:[function(require,module,exports){
 module.exports = (function anonymous(locals, filters, escape, rethrow
 /**/) {
 escape = escape || function (html){
@@ -13569,6 +13607,95 @@ with (locals || {}) { (function(){
 } 
 return buf.join('');
 })
-},{}]},{},[4]);
+},{}],9:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<div>Produktionsprocess</div>\n\n<table id="steps"></table>\n\n<button type="button">Tilføj</button>'); })();
+} 
+return buf.join('');
+})
+},{}],10:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<td>\n    <select>\n        ');3; states.forEach(function(state, index) { ; buf.push('\n        <option value="', escape((4,  index )), '">', escape((4,  state.get('name') )), '</option>\n        ');5; }); ; buf.push('\n    </select>\n</td>\n<td>\n    <button type="button">Remove</button>\n</td>'); })();
+} 
+return buf.join('');
+})
+},{}],11:[function(require,module,exports){
+'use strict';
+
+var $ = require('jquery');
+var _ = require('underscore');
+var Backbone = require('backbone');
+
+var StepView = require('./step.js');
+var template = require('./../../templates/process/index.ejs');
+
+module.exports = Backbone.View.extend({
+    el: '#process',
+
+    events: {
+        'click button': 'addProcessStep'
+    },
+
+    initialize: function initialize(options) {
+        this.states = options.states;
+    },
+
+    render: function render() {
+        this.$el.html(template());
+
+        this.addProcessStep();
+
+        return this;
+    },
+
+    addProcessStep: function addProcessStep() {
+        var stepView = new StepView({ states: this.states });
+
+        this.$('#steps').append(stepView.render().el);
+    }
+});
+
+},{"./../../templates/process/index.ejs":9,"./step.js":12,"backbone":1,"jquery":2,"underscore":3}],12:[function(require,module,exports){
+'use strict';
+
+var $ = require('jquery');
+var _ = require('underscore');
+var Backbone = require('backbone');
+var template = require('./../../templates/process/step.ejs');
+
+module.exports = Backbone.View.extend({
+    initialize: function initialize(options) {
+        this.states = options.states;
+    },
+
+    render: function render() {
+        this.$el.html(template({ states: this.states }));
+        return this;
+    }
+});
+
+},{"./../../templates/process/step.ejs":10,"backbone":1,"jquery":2,"underscore":3}]},{},[5]);
 
 //# sourceMappingURL=main.js.map

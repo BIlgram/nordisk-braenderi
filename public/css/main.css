@@ -462,17 +462,17 @@ a {
     font-weight: 300;
     font-size: 1.714rem;
     line-height: 1.714rem;
-    padding: 0;
     margin: 15px 0; }
   #primary-navigation ul {
-    padding: 0; }
+    padding: 0;
+    margin-left: -15px; }
     #primary-navigation ul li {
       display: block;
       margin-top: 2px; }
       #primary-navigation ul li a {
         display: block;
         width: 100%;
-        padding: 8px 0;
+        padding: 8px 15px;
         border-radius: 4px;
         font-weight: 300; }
         #primary-navigation ul li a:hover {
@@ -480,12 +480,19 @@ a {
           color: #137499; }
       #primary-navigation ul li.category {
         margin: 20px 0 5px;
+        padding: 0 15px;
         font-size: .857rem;
         letter-spacing: 1px;
         text-transform: uppercase;
         color: #969696; }
       #primary-navigation ul li.logoff {
         margin: 20px 0 0; }
+
+#process button {
+  width: 100%; }
+
+#process select {
+  margin-bottom: 15px; }
 
 #primary-container {
   width: 960px;
@@ -640,6 +647,13 @@ textarea {
     display: block;
     padding-bottom: 5px;
     font-weight: 500; }
+
+hr {
+  height: 2px;
+  width: 100%;
+  border: none;
+  background-color: #f0f0f0;
+  margin-bottom: 30px; }
 
 #batch-show .button-group {
   width: 100%; }

@@ -1,0 +1,10 @@
+<td>
+    <select>
+        <% states.forEach(function(state, index) { %>
+        <option value="<%= index %>"><%= state.get('name') %></option>
+        <% }); %>
+    </select>
+</td>
+<td>
+    <button type="button">Remove</button>
+</td>

@@ -33,6 +33,14 @@
                 <textarea name="recipe" value="{{ old('recipe') }}" rows="5"></textarea>
             </label>
 
+            <hr>
+
+            <label id="process">
+                {{--Javascript Generated--}}
+            </label>
+
+            <hr>
+
             <button type="submit">Opret</button>
         </form>
     </section>

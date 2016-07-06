@@ -1,6 +1,6 @@
 var $ = require('jquery');
 var Backbone = require('backbone');
-var template = require('../templates/modal.ejs');
+var template = require('templates/modal.ejs');
 
 var $form = $('form.confirm');
 

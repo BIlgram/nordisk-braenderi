@@ -19,6 +19,8 @@ Route::resource('/batch', 'BatchController');
 Route::get('/batch/{batch}/created', 'StateController@created');
 
 Route::resource('/user', 'UserController');
+
+Route::get('/spirit/states', 'SpiritController@states');
 Route::resource('/spirit', 'SpiritController');
 
 /*
