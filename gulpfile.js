@@ -1,6 +1,8 @@
 var fs = require('fs');
 var path = require('path');
 var elixir = require('laravel-elixir');
+require('laravel-elixir-browserify-official');
+require('laravel-elixir-browsersync-official');
 
 function replacement(alias, basePath, ext) {
     if (path.extname(alias)) {

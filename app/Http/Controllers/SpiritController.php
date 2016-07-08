@@ -17,7 +17,7 @@ class SpiritController extends Controller
      */
     public function index()
     {
-        return view('spirit.index', ['spirits' => Spirit::all()]);
+        return Spirit::all();
     }
 
     /**
@@ -27,7 +27,7 @@ class SpiritController extends Controller
      */
     public function create()
     {
-        return view('spirit.create');
+        return view('spirit.create', ['states' => State::all()]);
     }
 
     /**
@@ -38,6 +38,7 @@ class SpiritController extends Controller
      */
     public function store(Request $request)
     {
+        var_dump($request->process);
         $this->validate($request, Spirit::rules());
 
         $spirit = new Spirit();
@@ -45,6 +46,7 @@ class SpiritController extends Controller
         $spirit->name = $request->name;
         $spirit->abv = $request->abv;
         $spirit->recipe = $request->recipe;
+        $spirit->process = $request->process;
 
         $spirit->save();
 
@@ -74,7 +76,7 @@ class SpiritController extends Controller
      */
     public function edit(Spirit $spirit)
     {
-        return view('spirit.edit', ['spirit' => $spirit]);
+        return view('spirit.edit', ['spirit' => $spirit, 'states' => State::all()]);
     }
 
     /**
@@ -114,7 +116,8 @@ class SpiritController extends Controller
         return redirect()->route('spirit.index');
     }
 
-    public function states() {
+    public function states()
+    {
         return State::all();
     }
 }

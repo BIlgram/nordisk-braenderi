@@ -35,9 +35,9 @@
 
             <hr>
 
-            <label id="process">
-                {{--Javascript Generated--}}
-            </label>
+            <div id="process">
+                <input type="hidden" name="states" value="{{ json_encode($states) }}">
+            </div>
 
             <hr>
 

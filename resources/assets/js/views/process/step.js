@@ -1,5 +1,3 @@
-var $ = require('jquery');
-var _ = require('underscore');
 var Backbone = require('backbone');
 var template = require('templates/process/step');
 
@@ -7,7 +5,7 @@ module.exports = Backbone.View.extend({
     tagName: 'tr',
 
     events: {
-        'click input': 'removeProcessStep'
+        'click button': 'removeProcess'
     },
 
     initialize: function (options) {
@@ -20,7 +18,7 @@ module.exports = Backbone.View.extend({
         return this;
     },
 
-    removeProcessStep: function () {
+    removeProcess: function () {
         this.remove();
     }
 });

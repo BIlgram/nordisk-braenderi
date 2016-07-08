@@ -1,17 +1,19 @@
 var $ = require('jquery');
 var Backbone = require('backbone');
-var template = require('templates/modal.ejs');
+var template = require('templates/form-confirm/base');
 
-var $form = $('form.confirm');
-
-var ModalView = Backbone.View.extend({
-    className: 'modal',
+module.exports = Backbone.View.extend({
+    className: 'form-confirm',
+    
+    initialize: function (options) {
+        this.$form = $(options.form);
+    },
 
     events: {
         'click button': function (e) {
             if ($(e.target).data('answer') == 'y') {
-                $form.unbind('submit');
-                $form.submit();
+                this.$form.unbind('submit');
+                this.$form.submit();
             } else {
                 this.remove();
             }
@@ -20,13 +22,6 @@ var ModalView = Backbone.View.extend({
 
     render: function () {
         this.$el.html(template);
-
         return this;
     }
-});
-
-$form.submit(function (e) {
-    e.preventDefault();
-
-    $('body').prepend(new ModalView().render().el)
 });

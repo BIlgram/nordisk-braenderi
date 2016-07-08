@@ -29,6 +29,15 @@
             <span>Opskrift</span>
             <div>{{ $spirit->recipe }}</div>
         </div>
+
+        <div class="output">
+            <span>Produktionsprocess</span>
+            <ul>
+                {{--@foreach($spirit->process as $step)--}}
+                    {{--<li>{{ $step->name }}</li>--}}
+                {{--@endforeach--}}
+            </ul>
+        </div>
     </section>
 
 @endsection

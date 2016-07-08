@@ -1,27 +1,33 @@
 var $ = require('jquery');
+var _ = require('underscore');
+var Backbone = require('backbone');
+var Marionette = require('backbone.marionette');
+var Router = require('./router');
+var AppView = require('views/app');
+var NavigationView = require('views/navigation');
 
-var States = require('collections/states');
-var ProcessView = require('views/process');
+var App = Marionette.Application.extend({
+    region: '#application',
+    onStart: function () {
+        this.showView(new AppView());
+    }
+});
 
-require('./modal');
-// $.ajaxSetup({
-//     headers: {
-//         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-//     }
-// });
+var app = new App();
 
+app.on('start', function () {
+    var router = new Router();
 
-var states = new States();
+    Backbone.history.start({pushState: true});
 
-states.fetch().then($.proxy(function () {
-    var processView = new ProcessView({states: states});
+    $(document).on('click', 'a[href]:not([data-bypass])', function (e) {
+        var href = {prop: $(this).prop("href"), attr: $(this).attr("href")};
+        var root = location.protocol + "//" + location.host;
+        if (href.prop.slice(0, root.length) === root) {
+            e.preventDefault();
+            Backbone.history.navigate(href.attr, true);
+        }
+    });
+});
 
-    $('#process').html(processView.render().el);
-}, this));
-
-
-
-
-
-
-
+app.start();

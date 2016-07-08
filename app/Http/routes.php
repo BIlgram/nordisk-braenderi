@@ -11,18 +11,12 @@
 |
 */
 
-Route::get('/', function () {
-    return redirect()->route('batch.index');
+Route::group(['prefix' => 'api'], function () {
+    Route::resource('/user', 'UserController');
+    Route::resource('/batch', 'BatchController');
+    Route::resource('/spirit', 'SpiritController');
 });
 
-Route::resource('/batch', 'BatchController');
-Route::get('/batch/{batch}/created', 'StateController@created');
-
-Route::resource('/user', 'UserController');
-
-Route::get('/spirit/states', 'SpiritController@states');
-Route::resource('/spirit', 'SpiritController');
-
-/*
- * Colors
- * */
+Route::any('/{route?}', function () {
+    return view('main');
+})->where('route', '[\/\w\.-]*');

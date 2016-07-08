@@ -16,7 +16,8 @@ class CreateSpiritsTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->decimal('abv');
-            $table->string('recipe')->nullable();
+            $table->text('recipe')->nullable();
+            $table->string('process')->nullable();
             $table->dateTime('deleted_at');
             $table->timestamps();
         });
