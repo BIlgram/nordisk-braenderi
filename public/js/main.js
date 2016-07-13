@@ -190,7 +190,7 @@
 
 }));
 
-},{"backbone":4,"underscore":6}],2:[function(require,module,exports){
+},{"backbone":4,"underscore":7}],2:[function(require,module,exports){
 // MarionetteJS (Backbone.Marionette)
 // ----------------------------------
 // v3.0.0-pre.4
@@ -3281,7 +3281,7 @@
 
 
 
-},{"backbone":4,"backbone.babysitter":1,"backbone.radio":3,"underscore":6}],3:[function(require,module,exports){
+},{"backbone":4,"backbone.babysitter":1,"backbone.radio":3,"underscore":7}],3:[function(require,module,exports){
 // Backbone.Radio v2.0.0-pre.1
 
 (function (global, factory) {
@@ -3632,7 +3632,7 @@
 
 }));
 
-},{"backbone":4,"underscore":6}],4:[function(require,module,exports){
+},{"backbone":4,"underscore":7}],4:[function(require,module,exports){
 (function (global){
 //     Backbone.js 1.3.3
 
@@ -5556,7 +5556,155 @@
 });
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"jquery":5,"underscore":6}],5:[function(require,module,exports){
+},{"jquery":6,"underscore":7}],5:[function(require,module,exports){
+/**
+ * jQuery serializeObject
+ * @copyright 2014, macek <paulmacek@gmail.com>
+ * @link https://github.com/macek/jquery-serialize-object
+ * @license BSD
+ * @version 2.5.0
+ */
+(function(root, factory) {
+
+  // AMD
+  if (typeof define === "function" && define.amd) {
+    define(["exports", "jquery"], function(exports, $) {
+      return factory(exports, $);
+    });
+  }
+
+  // CommonJS
+  else if (typeof exports !== "undefined") {
+    var $ = require("jquery");
+    factory(exports, $);
+  }
+
+  // Browser
+  else {
+    factory(root, (root.jQuery || root.Zepto || root.ender || root.$));
+  }
+
+}(this, function(exports, $) {
+
+  var patterns = {
+    validate: /^[a-z_][a-z0-9_]*(?:\[(?:\d*|[a-z0-9_]+)\])*$/i,
+    key:      /[a-z0-9_]+|(?=\[\])/gi,
+    push:     /^$/,
+    fixed:    /^\d+$/,
+    named:    /^[a-z0-9_]+$/i
+  };
+
+  function FormSerializer(helper, $form) {
+
+    // private variables
+    var data     = {},
+        pushes   = {};
+
+    // private API
+    function build(base, key, value) {
+      base[key] = value;
+      return base;
+    }
+
+    function makeObject(root, value) {
+
+      var keys = root.match(patterns.key), k;
+
+      // nest, nest, ..., nest
+      while ((k = keys.pop()) !== undefined) {
+        // foo[]
+        if (patterns.push.test(k)) {
+          var idx = incrementPush(root.replace(/\[\]$/, ''));
+          value = build([], idx, value);
+        }
+
+        // foo[n]
+        else if (patterns.fixed.test(k)) {
+          value = build([], k, value);
+        }
+
+        // foo; foo[bar]
+        else if (patterns.named.test(k)) {
+          value = build({}, k, value);
+        }
+      }
+
+      return value;
+    }
+
+    function incrementPush(key) {
+      if (pushes[key] === undefined) {
+        pushes[key] = 0;
+      }
+      return pushes[key]++;
+    }
+
+    function encode(pair) {
+      switch ($('[name="' + pair.name + '"]', $form).attr("type")) {
+        case "checkbox":
+          return pair.value === "on" ? true : pair.value;
+        default:
+          return pair.value;
+      }
+    }
+
+    function addPair(pair) {
+      if (!patterns.validate.test(pair.name)) return this;
+      var obj = makeObject(pair.name, encode(pair));
+      data = helper.extend(true, data, obj);
+      return this;
+    }
+
+    function addPairs(pairs) {
+      if (!helper.isArray(pairs)) {
+        throw new Error("formSerializer.addPairs expects an Array");
+      }
+      for (var i=0, len=pairs.length; i<len; i++) {
+        this.addPair(pairs[i]);
+      }
+      return this;
+    }
+
+    function serialize() {
+      return data;
+    }
+
+    function serializeJSON() {
+      return JSON.stringify(serialize());
+    }
+
+    // public API
+    this.addPair = addPair;
+    this.addPairs = addPairs;
+    this.serialize = serialize;
+    this.serializeJSON = serializeJSON;
+  }
+
+  FormSerializer.patterns = patterns;
+
+  FormSerializer.serializeObject = function serializeObject() {
+    return new FormSerializer($, this).
+      addPairs(this.serializeArray()).
+      serialize();
+  };
+
+  FormSerializer.serializeJSON = function serializeJSON() {
+    return new FormSerializer($, this).
+      addPairs(this.serializeArray()).
+      serializeJSON();
+  };
+
+  if (typeof $.fn !== "undefined") {
+    $.fn.serializeObject = FormSerializer.serializeObject;
+    $.fn.serializeJSON   = FormSerializer.serializeJSON;
+  }
+
+  exports.FormSerializer = FormSerializer;
+
+  return FormSerializer;
+}));
+
+},{"jquery":6}],6:[function(require,module,exports){
 /*eslint-disable no-unused-vars*/
 /*!
  * jQuery JavaScript Library v3.1.0
@@ -15632,7 +15780,7 @@ if ( !noGlobal ) {
 return jQuery;
 } );
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 //     Underscore.js 1.8.3
 //     http://underscorejs.org
 //     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -17182,67 +17330,221 @@ return jQuery;
   }
 }.call(this));
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
+'use strict';
+
+var Backbone = require('backbone');
+var Spirit = require('./../models/spirit');
+
+module.exports = Backbone.Collection.extend({
+    url: '/api/spirit',
+    model: Spirit
+});
+
+},{"./../models/spirit":11,"backbone":4}],9:[function(require,module,exports){
+'use strict';
+
+var Backbone = require('backbone');
+var User = require('./../models/user');
+
+module.exports = Backbone.Collection.extend({
+    url: '/api/user',
+    model: User
+});
+
+},{"./../models/user":12,"backbone":4}],10:[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
-var _ = require('underscore');
 var Backbone = require('backbone');
 var Marionette = require('backbone.marionette');
-var Router = require('./router');
-var AppView = require('./views/app.js');
-var NavigationView = require('./views/navigation.js');
+
+var SpiritRouter = require('./routers/spirit');
+var UserRouter = require('./routers/user');
+var RootView = require('./views/root');
+
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
 
 var App = Marionette.Application.extend({
     region: '#application',
+
     onStart: function onStart() {
-        this.showView(new AppView());
+        this.rootView = new RootView();
+        this.showView(this.rootView);
+
+        new SpiritRouter({ app: this });
+        new UserRouter({ app: this });
+
+        Backbone.history.start({ pushState: true });
+
+        $(document).on('click', 'a[href]:not([data-bypass])', function (e) {
+            var href = { prop: $(this).prop('href'), attr: $(this).attr('href') };
+            var root = location.protocol + '//' + location.host;
+            if (href.prop.slice(0, root.length) === root) {
+                e.preventDefault();
+                Backbone.history.navigate(href.attr, true);
+            }
+        });
     }
 });
 
 var app = new App();
 
-app.on('start', function () {
-    var router = new Router();
-
-    Backbone.history.start({ pushState: true });
-
-    $(document).on('click', 'a[href]:not([data-bypass])', function (e) {
-        var href = { prop: $(this).prop("href"), attr: $(this).attr("href") };
-        var root = location.protocol + "//" + location.host;
-        if (href.prop.slice(0, root.length) === root) {
-            e.preventDefault();
-            Backbone.history.navigate(href.attr, true);
-        }
-    });
-});
-
 app.start();
 
-},{"./router":8,"./views/app.js":10,"./views/navigation.js":12,"backbone":4,"backbone.marionette":2,"jquery":5,"underscore":6}],8:[function(require,module,exports){
+},{"./routers/spirit":13,"./routers/user":14,"./views/root":25,"backbone":4,"backbone.marionette":2,"jquery":6}],11:[function(require,module,exports){
 'use strict';
 
-var $ = require('jquery');
-var _ = require('underscore');
 var Backbone = require('backbone');
-var Marionette = require('backbone.marionette');
 
-module.exports = Marionette.AppRouter.extend({
+module.exports = Backbone.Model.extend({
+    urlRoot: '/api/spirit'
+});
+
+},{"backbone":4}],12:[function(require,module,exports){
+'use strict';
+
+var Backbone = require('backbone');
+
+module.exports = Backbone.Model.extend({
+    urlRoot: '/api/user'
+});
+
+},{"backbone":4}],13:[function(require,module,exports){
+'use strict';
+
+var Backbone = require('backbone');
+
+var Spirit = require('./../models/spirit');
+var Spirits = require('./../collections/spirits');
+var SpiritIndexView = require('./../views/spirit/index');
+var SpiritCreateView = require('./../views/spirit/create');
+var SpiritShowView = require('./../views/spirit/show');
+var SpiritEditView = require('./../views/spirit/edit');
+
+module.exports = Backbone.Router.extend({
     routes: {
-        '': 'index',
-        'spirit': 'spirit'
+        'spirit': 'index',
+        'spirit/create': 'create',
+        'spirit/:id': 'show',
+        'spirit/:id/edit': 'edit'
+    },
+
+    initialize: function initialize(options) {
+        this.app = options.app;
     },
 
     index: function index() {
-        console.log('index');
+        var _this = this;
+
+        var spirits = new Spirits();
+
+        spirits.fetch().then(function () {
+            _this.app.rootView.showChildView('content', new SpiritIndexView({
+                collection: spirits
+            }));
+        });
     },
 
-    spirit: function spirit() {
-        console.log('spirit');
+    create: function create() {
+        this.app.rootView.showChildView('content', new SpiritCreateView());
+    },
+
+    show: function show(id) {
+        var _this2 = this;
+
+        var spirit = new Spirit({ id: id });
+
+        spirit.fetch().then(function () {
+            _this2.app.rootView.showChildView('content', new SpiritShowView({
+                model: spirit
+            }));
+        });
+    },
+
+    edit: function edit(id) {
+        var _this3 = this;
+
+        var spirit = new Spirit({ id: id });
+
+        spirit.fetch().then(function () {
+            _this3.app.rootView.showChildView('content', new SpiritEditView({
+                model: spirit
+            }));
+        });
     }
 });
 
-},{"backbone":4,"backbone.marionette":2,"jquery":5,"underscore":6}],9:[function(require,module,exports){
+},{"./../collections/spirits":8,"./../models/spirit":11,"./../views/spirit/create":26,"./../views/spirit/edit":27,"./../views/spirit/index":28,"./../views/spirit/show":29,"backbone":4}],14:[function(require,module,exports){
+'use strict';
+
+var Backbone = require('backbone');
+
+var User = require('./../models/user');
+var Users = require('./../collections/users');
+var UserIndexView = require('./../views/user/index/base');
+var UserCreateView = require('./../views/user/create');
+var UserShowView = require('./../views/user/show');
+var UserEditView = require('./../views/user/edit');
+
+module.exports = Backbone.Router.extend({
+    routes: {
+        'user': 'index',
+        'user/create': 'create',
+        'user/:id': 'show',
+        'user/:id/edit': 'edit'
+    },
+
+    initialize: function initialize(options) {
+        this.app = options.app;
+    },
+
+    index: function index() {
+        var _this = this;
+
+        var users = new Users();
+
+        users.fetch().then(function () {
+            _this.app.rootView.showChildView('content', new UserIndexView({
+                collection: users
+            }));
+        });
+    },
+
+    create: function create() {
+        this.app.rootView.showChildView('content', new UserCreateView());
+    },
+
+    show: function show(id) {
+        var _this2 = this;
+
+        var user = new User({ id: id });
+
+        user.fetch().then(function () {
+            _this2.app.rootView.showChildView('content', new UserShowView({
+                model: user
+            }));
+        });
+    },
+
+    edit: function edit(id) {
+        var _this3 = this;
+
+        var user = new User({ id: id });
+
+        user.fetch().then(function () {
+            _this3.app.rootView.showChildView('content', new UserEditView({
+                model: user
+            }));
+        });
+    }
+});
+
+},{"./../collections/users":9,"./../models/user":12,"./../views/user/create":30,"./../views/user/edit":31,"./../views/user/index/base":32,"./../views/user/show":35,"backbone":4}],15:[function(require,module,exports){
 module.exports = (function anonymous(locals, filters, escape, rethrow
 /**/) {
 escape = escape || function (html){
@@ -17255,74 +17557,436 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<h1>Nordisk Brænderi</h1>\n<ul>\n    <li class="category">Produktion</li>\n    <li><a href="#">Oversigt</a></li>\n    <li><a href="#">Opret</a></li>\n\n    <li class="category">Opgørelser</li>\n    <li><a href="#">Årsopgørelse</a></li>\n    <li><a href="#">Kvartalsopgørelse</a></li>\n    <li><a href="#">Månedsopgørelse</a></li>\n\n    <li class="category">Administration</li>\n    <li><a href="/user">Brugere</a></li>\n    <li><a href="/spirit">Spiritus</a></li>\n\n    <li class="logoff"><a href="#">Log af</a></li>\n</ul>'); })();
+ buf.push('<div id="navigation">\n    <h1>Nordisk Brænderi</h1>\n    <ul>\n        <li class="category">Produktion</li>\n        <li><a href="/">Oversigt</a></li>\n        <li><a href="/batch/create">Opret</a></li>\n\n        <li class="category">Opgørelser</li>\n        <li><a href="#">Årsopgørelse</a></li>\n        <li><a href="#">Kvartalsopgørelse</a></li>\n        <li><a href="#">Månedsopgørelse</a></li>\n\n        <li class="category">Administration</li>\n        <li><a href="/user">Brugere</a></li>\n        <li><a href="/spirit">Spiritus</a></li>\n\n        <li class="logoff"><a href="#">Log af</a></li>\n    </ul>\n</div>\n<div id="content"></div>'); })();
 } 
 return buf.join('');
 })
-},{}],10:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<form action="">\n    <label>\n        <span>Spiritusnavn</span>\n        <input name="name" type="text">\n    </label>\n\n    <label>\n        <span>Alkoholprocent</span>\n        <input name="abv" step="0.01">\n    </label>\n\n    <label>\n        <span>Opskrift</span>\n        <textarea name="recipe"></textarea>\n    </label>\n\n    <button type="submit">Opret</button>\n</form>\n'); })();
+} 
+return buf.join('');
+})
+},{}],17:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<form action="">\n    <label>\n        <span>Spiritusnavn</span>\n        <input name="name" value="', escape((4,  name )), '" type="text">\n    </label>\n\n    <label>\n        <span>Alkoholprocent</span>\n        <input name="abv" value="', escape((9,  abv )), '" type="number" step="0.01">\n    </label>\n\n    <label>\n        <span>Opskrift</span>\n        <textarea name="recipe" rows="5">', escape((14,  recipe )), '</textarea>\n    </label>\n\n    <button type="submit">Gem</button>\n</form>\n'); })();
+} 
+return buf.join('');
+})
+},{}],18:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Administration</h2>\n        <h1>Spiritus</h1>\n    </div>\n\n    <div class="buttons">\n        <a href="/spirit/create" role="button">Opret</a>\n    </div>\n</div>\n\n<div id="content-body">\n    <table>\n        <tr>\n            <th>Navn</th>\n        </tr>\n\n        ');18; items.forEach((item) => { ; buf.push('\n            <tr>\n                <td>\n                    <a href="/spirit/', escape((21,  item.id )), '">', escape((21,  item.name )), '</a>\n                </td>\n            </tr>\n        ');24; }) ; buf.push('\n    </table>\n</div>\n'); })();
+} 
+return buf.join('');
+})
+},{}],19:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<div class="output">\n    <span>Spiritustype</span>\n    <div>', escape((3,  name )), '</div>\n</div>\n\n<div class="output">\n    <span>Alkoholprocent</span>\n    <div>', escape((8,  abv )), '</div>\n</div>\n\n<div class="output">\n    <span>Opskrift</span>\n    <div>', escape((13,  recipe ? recipe : 'N/A' )), '</div>\n</div>\n<a href="/spirit/', escape((15,  id )), '/edit" role="button">Redigér</a>\n<button>Fjern</button>'); })();
+} 
+return buf.join('');
+})
+},{}],20:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<form action="">\n    <label>\n        <span>Brugernavn</span>\n        <input name="name" type="text">\n    </label>\n\n    <label>\n        <span>Adgangskode</span>\n        <input name="password" step="0.01">\n    </label>\n\n    <label>\n        <span>Bekræft adgangskode</span>\n        <input name="confirm-password">\n    </label>\n\n    <button type="submit">Opret</button>\n</form>'); })();
+} 
+return buf.join('');
+})
+},{}],21:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<form action="">\n    <label>\n        <span>Brugernavn</span>\n        <input name="name" value="', escape((4,  name )), '" type="text">\n    </label>\n\n    <label>\n        <span>Adgangskode</span>\n        <input name="password" type="password">\n    </label>\n\n    <label>\n        <span>Bekræft adgangskode</span>\n        <input name="confirm-password" type="password">\n    </label>\n\n    <button type="submit">Gem</button>\n</form>\n'); })();
+} 
+return buf.join('');
+})
+},{}],22:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<div id="content-header"></div>\n<div id="content-body"></div>\n<a href="/user/create" role="button">Opret</a>'); })();
+} 
+return buf.join('');
+})
+},{}],23:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<td><a href="/user/', escape((1,  id )), '">', escape((1,  name )), '</a></td>'); })();
+} 
+return buf.join('');
+})
+},{}],24:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<div class="output">\n    <span>Brugernavn</span>\n    <div>', escape((3,  name )), '</div>\n</div>\n\n<a href="/user/', escape((6,  id )), '/edit" role="button">Redigér</a>\n<button>Fjern</button>'); })();
+} 
+return buf.join('');
+})
+},{}],25:[function(require,module,exports){
 'use strict';
 
-var $ = require('jquery');
-var _ = require('underscore');
-var Backbone = require('backbone');
 var Marionette = require('backbone.marionette');
-var NavigationView = require('./navigation.js');
-var ContentView = require('./content.js');
+var template = require('./../templates/root.ejs');
 
-module.exports = Backbone.View.extend({
-    id: 'primary-container',
+module.exports = Marionette.View.extend({
+    id: 'root',
 
-    initialize: function initialize(options) {},
+    template: template,
 
-    render: function render() {
-        this.$el.html('');
-        this.$el.append(new NavigationView().render().el, new ContentView().render().el);
-
-        return this;
+    regions: {
+        content: '#content'
     }
 });
 
-},{"./content.js":11,"./navigation.js":12,"backbone":4,"backbone.marionette":2,"jquery":5,"underscore":6}],11:[function(require,module,exports){
+},{"./../templates/root.ejs":15,"backbone.marionette":2}],26:[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
-var _ = require('underscore');
 var Backbone = require('backbone');
 var Marionette = require('backbone.marionette');
+require('form-serializer');
 
-module.exports = Backbone.View.extend({
-    id: 'primary-content',
+var Spirit = require('./../../models/spirit');
+var template = require('./../../templates/spirit/create.ejs');
 
-    initialize: function initialize(options) {},
+module.exports = Marionette.View.extend({
+    id: 'spirit-create',
 
-    render: function render() {
-        this.$el.html('hello wrolsdasd');
+    template: template,
 
-        return this;
+    events: {
+        'submit form': 'create'
+    },
+
+    create: function create(e) {
+        e.preventDefault();
+
+        var spirit = new Spirit($(e.target).serializeObject());
+
+        spirit.save(null, {
+            success: function success() {
+                Backbone.history.navigate('spirit/' + spirit.get('id'), true);
+            },
+            error: function error() {
+                console.log("error", arguments);
+            }
+        });
     }
 });
 
-},{"backbone":4,"backbone.marionette":2,"jquery":5,"underscore":6}],12:[function(require,module,exports){
+},{"./../../models/spirit":11,"./../../templates/spirit/create.ejs":16,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],27:[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
-var _ = require('underscore');
 var Backbone = require('backbone');
 var Marionette = require('backbone.marionette');
-var template = require('./../templates/navigation.ejs');
+require('form-serializer');
 
-module.exports = Backbone.View.extend({
-    id: 'primary-navigation',
-    tagName: 'nav',
-    initialize: function initialize(options) {},
+var template = require('./../../templates/spirit/edit.ejs');
 
-    render: function render() {
-        this.$el.html(template);
+module.exports = Marionette.View.extend({
+    id: 'spirit-edit',
 
-        return this;
+    template: template,
+
+    events: {
+        'submit form': 'edit'
+    },
+
+    edit: function edit(e) {
+        var that = this;
+
+        e.preventDefault();
+
+        this.model.set($(e.target).serializeObject());
+
+        this.model.save(null, {
+            success: function success() {
+                Backbone.history.navigate('spirit/' + that.model.get('id'), true);
+            },
+            error: function error() {
+                console.log("error", arguments);
+            }
+        });
     }
 });
 
-},{"./../templates/navigation.ejs":9,"backbone":4,"backbone.marionette":2,"jquery":5,"underscore":6}]},{},[7]);
+},{"./../../templates/spirit/edit.ejs":17,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],28:[function(require,module,exports){
+'use strict';
+
+var Marionette = require('backbone.marionette');
+var template = require('./../../templates/spirit/index.ejs');
+
+module.exports = Marionette.View.extend({
+    id: 'spirit-index',
+
+    template: template
+});
+
+},{"./../../templates/spirit/index.ejs":18,"backbone.marionette":2}],29:[function(require,module,exports){
+'use strict';
+
+var Backbone = require('backbone');
+var Marionette = require('backbone.marionette');
+var template = require('./../../templates/spirit/show.ejs');
+
+module.exports = Marionette.View.extend({
+    id: 'spirit-show',
+
+    template: template,
+
+    events: {
+        'click button': 'delete'
+    },
+
+    delete: function _delete() {
+        this.model.destroy({
+            success: function success() {
+                Backbone.history.navigate('/spirit', true);
+            },
+            error: function error() {
+                console.log("error");
+            }
+        });
+    }
+});
+
+},{"./../../templates/spirit/show.ejs":19,"backbone":4,"backbone.marionette":2}],30:[function(require,module,exports){
+'use strict';
+
+var $ = require('jquery');
+var Backbone = require('backbone');
+var Marionette = require('backbone.marionette');
+require('form-serializer');
+
+var User = require('./../../models/user');
+var template = require('./../../templates/user/create.ejs');
+
+module.exports = Marionette.View.extend({
+    id: 'user-create',
+
+    template: template,
+
+    events: {
+        'submit form': 'create'
+    },
+
+    create: function create(e) {
+        e.preventDefault();
+
+        var user = new User($(e.target).serializeObject());
+
+        user.save(null, {
+            success: function success() {
+                Backbone.history.navigate('user/' + user.get('id'), true);
+            },
+            error: function error() {
+                console.log("error", arguments);
+            }
+        });
+    }
+});
+
+},{"./../../models/user":12,"./../../templates/user/create.ejs":20,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],31:[function(require,module,exports){
+'use strict';
+
+var $ = require('jquery');
+var Backbone = require('backbone');
+var Marionette = require('backbone.marionette');
+require('form-serializer');
+
+var template = require('./../../templates/user/edit.ejs');
+
+module.exports = Marionette.View.extend({
+    id: 'user-edit',
+
+    template: template,
+
+    events: {
+        'submit form': 'edit'
+    },
+
+    edit: function edit(e) {
+        var that = this;
+
+        e.preventDefault();
+
+        this.model.set($(e.target).serializeObject());
+
+        this.model.save(null, {
+            success: function success() {
+                Backbone.history.navigate('user/' + that.model.get('id'), true);
+            },
+            error: function error() {
+                console.log("error", arguments);
+            }
+        });
+    }
+});
+
+},{"./../../templates/user/edit.ejs":21,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],32:[function(require,module,exports){
+'use strict';
+
+var Marionette = require('backbone.marionette');
+var TableView = require('./table');
+var template = require('./../../../templates/user/index/base.ejs');
+
+module.exports = Marionette.View.extend({
+    id: 'user-index',
+
+    template: template,
+
+    regions: {
+        header: '#content-header',
+        body: '#content-body'
+    },
+
+    onRender: function onRender() {
+        this.showChildView('body', new TableView({ collection: this.collection }));
+    }
+});
+
+},{"./../../../templates/user/index/base.ejs":22,"./table":34,"backbone.marionette":2}],33:[function(require,module,exports){
+'use strict';
+
+var Marionette = require('backbone.marionette');
+var template = require('./../../../templates/user/index/row.ejs');
+
+module.exports = Marionette.View.extend({
+    tagName: 'tr',
+
+    template: template
+});
+
+},{"./../../../templates/user/index/row.ejs":23,"backbone.marionette":2}],34:[function(require,module,exports){
+'use strict';
+
+var Marionette = require('backbone.marionette');
+var TableRowView = require('./row');
+
+module.exports = Marionette.CollectionView.extend({
+    tagName: 'table',
+
+    childView: TableRowView
+});
+
+},{"./row":33,"backbone.marionette":2}],35:[function(require,module,exports){
+'use strict';
+
+var Backbone = require('backbone');
+var Marionette = require('backbone.marionette');
+var template = require('./../../templates/user/show.ejs');
+
+module.exports = Marionette.View.extend({
+    id: 'user-show',
+
+    template: template,
+
+    events: {
+        'click button': 'delete'
+    },
+
+    delete: function _delete() {
+        this.model.destroy().done(function () {
+            Backbone.history.navigate('/user', true);
+        }).fail(function (error) {
+            console.log(error);
+        });
+    }
+});
+
+},{"./../../templates/user/show.ejs":24,"backbone":4,"backbone.marionette":2}]},{},[10]);
 
 //# sourceMappingURL=main.js.map

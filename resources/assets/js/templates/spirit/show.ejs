@@ -1,0 +1,16 @@
+<div class="output">
+    <span>Spiritustype</span>
+    <div><%= name %></div>
+</div>
+
+<div class="output">
+    <span>Alkoholprocent</span>
+    <div><%= abv %></div>
+</div>
+
+<div class="output">
+    <span>Opskrift</span>
+    <div><%= recipe ? recipe : 'N/A' %></div>
+</div>
+<a href="/spirit/<%= id %>/edit" role="button">Redigér</a>
+<button>Fjern</button>

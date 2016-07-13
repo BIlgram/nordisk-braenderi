@@ -1,8 +1,8 @@
 var Marionette = require('backbone.marionette');
-var template = require('templates/spirit/index');
+var template = require('templates/user/index/row');
 
 module.exports = Marionette.View.extend({
-    id: 'spirit-index',
+    tagName: 'tr',
 
     template: template
 });

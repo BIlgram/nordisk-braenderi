@@ -381,20 +381,6 @@ html {
 *::after {
   box-sizing: inherit; }
 
-html {
-  font-size: 14px; }
-
-body {
-  font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  line-height: 1.618;
-  color: #555555; }
-
-a {
-  color: #1eaadc;
-  text-decoration: none; }
-  a:hover {
-    color: #126582; }
-
 @-webkit-keyframes fadeOutUp {
   from {
     opacity: 1; }
@@ -411,28 +397,50 @@ a {
     -webkit-transform: translate3d(0, -100%, 0);
     transform: translate3d(0, -100%, 0); } }
 
-#primary-content {
+html {
+  font-size: 14px; }
+
+body {
+  font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  line-height: 1.618;
+  color: #555555; }
+
+a {
+  color: #1eaadc;
+  text-decoration: none; }
+  a:hover {
+    color: #126582; }
+
+#root {
+  width: 960px;
+  display: -webkit-box;
+  display: flex;
+  position: relative;
+  padding: 81px 16px;
+  margin: 0 auto; }
+
+#content {
   -webkit-box-flex: 1;
   flex: 1 1 auto;
   padding: 16px;
   margin-left: 16px; }
-  #primary-content header {
+  #content #content-header {
     border-bottom: 2px solid #f0f0f0;
     margin-bottom: 30px;
     padding-bottom: 16px;
     display: -webkit-box;
     display: flex; }
-    #primary-content header .headings {
+    #content #content-header .headings {
       -webkit-box-flex: 1;
       flex: 1 0 auto; }
-    #primary-content header .buttons {
+    #content #content-header .buttons {
       display: -webkit-box;
       display: flex;
       -webkit-box-flex: 0;
       flex: 0 1 auto;
       -webkit-box-align: end;
       align-items: flex-end; }
-    #primary-content header h2 {
+    #content #content-header h2 {
       color: #aeaeae;
       text-transform: uppercase;
       font-size: 0.857rem;
@@ -440,29 +448,29 @@ a {
       font-weight: 400;
       letter-spacing: 1px;
       margin: 16px 0 10px 0; }
-    #primary-content header h1 {
+    #content #content-header h1 {
       font-size: 2.143rem;
       line-height: 2.143rem;
       font-weight: 300;
       margin: 0; }
 
-#primary-navigation {
+#navigation {
   -webkit-box-flex: 0;
   flex: 0 0 260px;
   padding: 16px;
   margin-right: 16px; }
-  #primary-navigation h1 {
+  #navigation h1 {
     font-weight: 300;
     font-size: 1.714rem;
     line-height: 1.714rem;
     margin: 16px 0; }
-  #primary-navigation ul {
+  #navigation ul {
     padding: 0;
     margin-left: -16px; }
-    #primary-navigation ul li {
+    #navigation ul li {
       display: block;
       margin-top: 2px; }
-      #primary-navigation ul li a {
+      #navigation ul li a {
         height: 36px;
         line-height: 36px;
         display: block;
@@ -470,64 +478,18 @@ a {
         padding: 0 16px;
         border-radius: 4px;
         font-weight: 300; }
-        #primary-navigation ul li a:hover {
+        #navigation ul li a:hover {
           background-color: #e6f5fa;
           color: #137499; }
-      #primary-navigation ul li.category {
+      #navigation ul li.category {
         margin: 20px 0 5px;
         padding: 0 16px;
         font-size: .857rem;
         letter-spacing: 1px;
         text-transform: uppercase;
         color: #969696; }
-      #primary-navigation ul li.logoff {
+      #navigation ul li.logoff {
         margin: 20px 0 0; }
-
-#process button {
-  width: 100%;
-  margin-bottom: 8px; }
-
-#process table tr td {
-  padding: 0 8px;
-  border: none; }
-  #process table tr td:first-of-type {
-    padding-left: 0; }
-  #process table tr td:last-of-type {
-    padding-right: 0; }
-
-#process select {
-  margin-bottom: 8px; }
-
-.form-confirm {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  z-index: 100;
-  display: -webkit-box;
-  display: flex;
-  -webkit-box-pack: center;
-  justify-content: center;
-  -webkit-box-align: center;
-  align-items: center;
-  background-color: rgba(255, 255, 255, 0.8);
-  text-align: center; }
-  .form-confirm > div {
-    margin-top: -200px; }
-  .form-confirm button {
-    min-width: 100px;
-    margin-top: 16px; }
-    .form-confirm button:first-of-type {
-      margin-right: 7.5px; }
-    .form-confirm button:last-of-type {
-      margin-left: 7.5px; }
-
-#primary-container {
-  width: 960px;
-  display: -webkit-box;
-  display: flex;
-  position: relative;
-  padding: 81px 16px;
-  margin: 0 auto; }
 
 .alert {
   width: 100%;
@@ -654,10 +616,5 @@ hr {
   border: none;
   background-color: #f0f0f0;
   margin-bottom: 30px; }
-
-#batch-show .button-group {
-  width: 100%; }
-  #batch-show .button-group button {
-    width: 50%; }
 
 /*# sourceMappingURL=main.css.map */

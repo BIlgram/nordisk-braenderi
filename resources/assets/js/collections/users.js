@@ -1,7 +1,7 @@
 var Backbone = require('backbone');
-var Spirit = require('models/spirit');
+var User = require('models/user');
 
 module.exports = Backbone.Collection.extend({
-    url: '/api/spirit',
-    model: Spirit
+    url: '/api/user',
+    model: User
 });

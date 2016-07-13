@@ -4,30 +4,6 @@ var elixir = require('laravel-elixir');
 require('laravel-elixir-browserify-official');
 require('laravel-elixir-browsersync-official');
 
-function replacement(alias, basePath, ext) {
-    if (path.extname(alias)) {
-        return basePath + alias;
-    }
-
-    if (exists(basePath + alias + '/index' + ext)) {
-        return basePath + alias + '/index' + ext;
-    }
-
-    if (exists(basePath + alias + ext)) {
-        return basePath + alias + ext;
-    }
-}
-
-function exists(path) {
-    try {
-        fs.accessSync(path, fs.F_OK);
-        return true;
-    } catch (e) {
-    }
-    return false
-}
-
-
 elixir.config.js.browserify.transformers.push({
     name: 'ejsify',
     options: {}
@@ -36,19 +12,14 @@ elixir.config.js.browserify.transformers.push({
 elixir.config.js.browserify.transformers.push({
     name: 'aliasify',
     options: {
+        aliases: {
+            'models': './resources/assets/js/models',
+            'collections': './resources/assets/js/collections',
+            'views': './resources/assets/js/views',
+            'routers': './resources/assets/js/routers'
+        },
         replacements: {
-            'models/(\\w+)': function (alias) {
-                return replacement(alias, './resources/assets/js/', '.js');
-            },
-            'collections/(\\w+)': function (alias) {
-                return replacement(alias, './resources/assets/js/', '.js');
-            },
-            'views/(\\w+)': function (alias) {
-                return replacement(alias, './resources/assets/js/', '.js');
-            },
-            'templates/(\\w+)': function (alias) {
-                return replacement(alias, './resources/assets/js/', '.ejs');
-            }
+            'templates/(.+)': './resources/assets/js/templates/$1.ejs'
         }
     }
 });

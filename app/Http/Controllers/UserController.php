@@ -11,12 +11,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        return view('user.index', ['users' => User::all()]);
-    }
-
-    public function create()
-    {
-        return view('user.create');
+        return User::all();
     }
 
     public function store(Request $request)
@@ -31,19 +26,12 @@ class UserController extends Controller
 
         $user->save();
 
-        flash('User was successfully created!', 'success');
-
-        return redirect()->route('user.show', $user->id);
+        return $user;
     }
 
     public function show(User $user)
     {
-        return view('user.show', ['user' => $user]);
-    }
-
-    public function edit(User $user)
-    {
-        return view('user.edit', ['user' => $user]);
+        return $user;
     }
 
     public function update(Request $request, User $user)
@@ -52,16 +40,14 @@ class UserController extends Controller
 
         $user->name = $request->name;
         $user->save();
-
-        flash('User was successfully updated!', 'success');
-
-        return redirect()->route('user.show', $user->id);
+        
+        return $user;
     }
 
     public function destroy(User $user)
     {
         $user->delete();
-        flash('User was successfully removed!', 'success');
-        return redirect()->route('user.index');
+        
+        return $user;
     }
 }

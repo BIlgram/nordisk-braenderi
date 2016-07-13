@@ -6,15 +6,13 @@
 @import "vendors/normalize";
 
 @import "base/base";
-@import "base/typography";
 @import "base/keyframes";
+@import "base/typography";
 
+@import "layout/root";
 @import "layout/content";
 @import "layout/navigation";
-@import "layout/process";
-@import "layout/form-confirm";
 
-@import "components/container";
 @import "components/alert";
 @import "components/button";
 @import "components/table";
@@ -23,6 +21,5 @@
 @import "components/hr";
 
 @import "pages/home";
-@import "pages/batch-show";
 
 @import "themes/default";
