@@ -19,15 +19,15 @@ vagrantfile:
                         check_guest_tools: 0
                         update_guest_tools: 0
                 machines:
-                    vflm_pb2ecqgrstp8:
+                    vflm_1mava98z5v07:
                         id: nordiskbraenderi
+                        hostname: nordiskbraenderi.local
                         network:
                             private_network: 192.168.56.101
                             forwarded_port:
-                                vflmnfp_yqqejkhhbuxu:
-                                    host: '6051'
+                                vflmnfp_2nlb8dbnqreg:
+                                    host: '5082'
                                     guest: '22'
-                        hostname: nordiskbraenderi.local
                         memory: '512'
                         cpus: '1'
         provision:
@@ -38,7 +38,7 @@ vagrantfile:
                     - '--verbose'
                     - '--hiera_config /vagrant/puphpet/puppet/hiera.yaml'
         synced_folder:
-            vflsf_1cnh1f4601o0:
+            vflsf_g4r6li9mhhzs:
                 source: ./
                 target: /var/www
                 sync_type: default
@@ -82,7 +82,6 @@ vagrantfile:
         https: ''
         ftp: ''
         no_proxy: ''
-        enabled: ''
 server:
     install: '1'
     packages: {  }
@@ -93,12 +92,11 @@ users_groups:
 locale:
     install: '1'
     settings:
-        default_locale: da_DK.UTF-8
+        default_locale: en_US.UTF-8
         locales:
             - en_GB.UTF-8
             - en_US.UTF-8
-            - da_DK.UTF-8
-        timezone: Europe/Copenhagen
+        timezone: UTC
 firewall:
     install: '1'
     rules: {  }
@@ -117,11 +115,11 @@ nginx:
         names_hash_bucket_size: 128
     upstreams: {  }
     vhosts:
-        nxv_841zv7fd91la:
+        nxv_g3p6tvqwda8k:
             server_name: nordiskbraenderi.local
             server_aliases:
                 - www.nordiskbraenderi.local
-            www_root: /var/www/public
+            www_root: /var/www/laravel/public
             listen_port: '80'
             index_files:
                 - index.html
@@ -137,10 +135,8 @@ nginx:
             rewrite_to_https: '1'
             spdy: '1'
             locations:
-                nxvl_005xokxalei9:
+                nxvl_uj2vn74270wa:
                     location: /
-                    autoindex: 'off'
-                    internal: 'false'
                     try_files:
                         - $uri
                         - $uri/
@@ -150,10 +146,8 @@ nginx:
                     fastcgi_split_path: ''
                     proxy: ''
                     proxy_redirect: ''
-                nxvl_g3b2grtrak28:
+                nxvl_gme0fx3q30lf:
                     location: '~ \.php$'
-                    autoindex: 'off'
-                    internal: 'false'
                     try_files:
                         - $uri
                         - $uri/
@@ -183,7 +177,7 @@ apache:
         - proxy_fcgi
         - rewrite
     vhosts:
-        av_q6yjdrj1zuve:
+        av_ckmhjst5iphx:
             servername: awesome.dev
             serveraliases:
                 - www.awesome.dev
@@ -202,7 +196,7 @@ apache:
             ssl_protocol: ''
             ssl_cipher: ''
             directories:
-                avd_jml3hdl3e5hu:
+                avd_r0522gif2ghb:
                     path: /var/www/awesome
                     options:
                         - Indexes
@@ -214,12 +208,17 @@ apache:
                         - 'all granted'
                     custom_fragment: ''
                     files_match:
-                        avdfm_yuc3ofcbena6:
+                        avdfm_03qnfwkf789f:
                             path: \.php$
                             sethandler: 'proxy:fcgi://127.0.0.1:9000'
                             custom_fragment: ''
                             provider: filesmatch
                     provider: directory
+letsencrypt:
+    install: '1'
+    settings:
+        email: ''
+    domains: {  }
 php:
     install: '1'
     settings:
@@ -238,7 +237,7 @@ php:
     fpm_ini:
         error_log: /var/log/php-fpm.log
     fpm_pools:
-        phpfp_0qyw78w6sv0o:
+        phpfp_twgsfll3a89n:
             ini:
                 prefix: www
                 listen: '127.0.0.1:9000'
@@ -281,14 +280,14 @@ drush:
 ruby:
     install: '1'
     versions:
-        rv_zsqr7wv7qne7:
+        rv_g9m6ded188s4:
             default: '1'
             bundler: '1'
             version: 1.9.3
             gems:
-                - deep_merge
-                - activesupport
-                - vine
+                - deep_merge@1.0.1
+                - activesupport@4.2.6
+                - vine@0.2
 python:
     install: '1'
     packages: {  }
@@ -321,15 +320,15 @@ mariadb:
         override_options: {  }
     adminer: 0
     users:
-        mariadbnu_vwemmi2tuwbg:
+        mariadbnu_lusa2zti6wc5:
             name: dbuser
             password: '123'
     databases:
-        mariadbnd_gf4dx6j2yrq5:
+        mariadbnd_e84dhr0hqb1d:
             name: dbname
             sql: ''
     grants:
-        mariadbng_cx7gn94h4ib3:
+        mariadbng_fprpkzzf50a6:
             user: dbuser
             table: '*.*'
             privileges:
@@ -342,15 +341,15 @@ mysql:
         override_options: {  }
     adminer: 0
     users:
-        mysqlnu_1sxuili5zih3:
+        mysqlnu_eqtv2psw42xc:
             name: dbuser
             password: '123'
     databases:
-        mysqlnd_sly00o5bzv56:
+        mysqlnd_0alucmlanzu4:
             name: dbname
             sql: ''
     grants:
-        mysqlng_j39bglw4r5n3:
+        mysqlng_bi1r6mvpgnts:
             user: dbuser
             table: '*.*'
             privileges:
@@ -415,7 +414,7 @@ elastic_search:
         version: 2.3.1
         java_install: true
     instances:
-        esi_mobbgalodafj:
+        esi_ffeonyq0v3wp:
             name: es-01
 solr:
     install: '0'
