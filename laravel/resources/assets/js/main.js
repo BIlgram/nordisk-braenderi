@@ -4,6 +4,7 @@ var Marionette = require('backbone.marionette');
 
 var SpiritRouter = require('routers/spirit');
 var UserRouter = require('routers/user');
+var BatchRouter = require('routers/batch');
 var RootView = require('views/root');
 
 $.ajaxSetup({
@@ -21,6 +22,7 @@ var App = Marionette.Application.extend({
 
         new SpiritRouter({app: this});
         new UserRouter({app: this});
+        new BatchRouter({app: this});
 
 
         Backbone.history.start({pushState: true});

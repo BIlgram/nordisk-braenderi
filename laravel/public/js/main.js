@@ -17334,6 +17334,17 @@ return jQuery;
 'use strict';
 
 var Backbone = require('backbone');
+var Batch = require('./../models/batch');
+
+module.exports = Backbone.Collection.extend({
+    url: '/api/batch',
+    model: Batch
+});
+
+},{"./../models/batch":13,"backbone":4}],9:[function(require,module,exports){
+'use strict';
+
+var Backbone = require('backbone');
 var Spirit = require('./../models/spirit');
 
 module.exports = Backbone.Collection.extend({
@@ -17341,7 +17352,18 @@ module.exports = Backbone.Collection.extend({
     model: Spirit
 });
 
-},{"./../models/spirit":11,"backbone":4}],9:[function(require,module,exports){
+},{"./../models/spirit":14,"backbone":4}],10:[function(require,module,exports){
+'use strict';
+
+var Backbone = require('backbone');
+var State = require('./../models/state');
+
+module.exports = Backbone.Collection.extend({
+    url: '/api/state',
+    model: State
+});
+
+},{"./../models/state":15,"backbone":4}],11:[function(require,module,exports){
 'use strict';
 
 var Backbone = require('backbone');
@@ -17352,7 +17374,7 @@ module.exports = Backbone.Collection.extend({
     model: User
 });
 
-},{"./../models/user":12,"backbone":4}],10:[function(require,module,exports){
+},{"./../models/user":16,"backbone":4}],12:[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -17361,6 +17383,7 @@ var Marionette = require('backbone.marionette');
 
 var SpiritRouter = require('./routers/spirit');
 var UserRouter = require('./routers/user');
+var BatchRouter = require('./routers/batch');
 var RootView = require('./views/root');
 
 $.ajaxSetup({
@@ -17378,6 +17401,7 @@ var App = Marionette.Application.extend({
 
         new SpiritRouter({ app: this });
         new UserRouter({ app: this });
+        new BatchRouter({ app: this });
 
         Backbone.history.start({ pushState: true });
 
@@ -17396,7 +17420,16 @@ var app = new App();
 
 app.start();
 
-},{"./routers/spirit":13,"./routers/user":14,"./views/root":24,"backbone":4,"backbone.marionette":2,"jquery":6}],11:[function(require,module,exports){
+},{"./routers/batch":17,"./routers/spirit":18,"./routers/user":19,"./views/root":31,"backbone":4,"backbone.marionette":2,"jquery":6}],13:[function(require,module,exports){
+'use strict';
+
+var Backbone = require('backbone');
+
+module.exports = Backbone.Model.extend({
+    urlRoot: '/api/batch'
+});
+
+},{"backbone":4}],14:[function(require,module,exports){
 'use strict';
 
 var Backbone = require('backbone');
@@ -17405,7 +17438,16 @@ module.exports = Backbone.Model.extend({
     urlRoot: '/api/spirit'
 });
 
-},{"backbone":4}],12:[function(require,module,exports){
+},{"backbone":4}],15:[function(require,module,exports){
+'use strict';
+
+var Backbone = require('backbone');
+
+module.exports = Backbone.Model.extend({
+    urlRoot: '/api/state'
+});
+
+},{"backbone":4}],16:[function(require,module,exports){
 'use strict';
 
 var Backbone = require('backbone');
@@ -17414,13 +17456,44 @@ module.exports = Backbone.Model.extend({
     urlRoot: '/api/user'
 });
 
-},{"backbone":4}],13:[function(require,module,exports){
+},{"backbone":4}],17:[function(require,module,exports){
+'use strict';
+
+var Backbone = require('backbone');
+
+var Batches = require('./../collections/batches');
+var Batch = require('./../models/batch');
+var BatchIndexView = require('./../views/batch/index');
+
+module.exports = Backbone.Router.extend({
+    routes: {
+        'batch': 'index'
+    },
+
+    initialize: function initialize(options) {
+        this.app = options.app;
+    },
+
+    index: function index() {
+        var _this = this;
+
+        var batches = new Batches();
+        batches.fetch().then(function () {
+            _this.app.rootView.showChildView('content', new BatchIndexView({
+                collection: batches
+            }));
+        });
+    }
+});
+
+},{"./../collections/batches":8,"./../models/batch":13,"./../views/batch/index":30,"backbone":4}],18:[function(require,module,exports){
 'use strict';
 
 var Backbone = require('backbone');
 
 var Spirit = require('./../models/spirit');
 var Spirits = require('./../collections/spirits');
+var States = require('./../collections/states');
 var SpiritIndexView = require('./../views/spirit/index');
 var SpiritCreateView = require('./../views/spirit/create');
 var SpiritShowView = require('./../views/spirit/show');
@@ -17451,35 +17524,44 @@ module.exports = Backbone.Router.extend({
     },
 
     create: function create() {
-        this.app.rootView.showChildView('content', new SpiritCreateView());
+        var _this2 = this;
+
+        var states = new States();
+
+        states.fetch().then(function () {
+            console.log(states);
+            _this2.app.rootView.showChildView('content', new SpiritCreateView({
+                states: states
+            }));
+        });
     },
 
     show: function show(id) {
-        var _this2 = this;
+        var _this3 = this;
 
         var spirit = new Spirit({ id: id });
 
         spirit.fetch().then(function () {
-            _this2.app.rootView.showChildView('content', new SpiritShowView({
+            _this3.app.rootView.showChildView('content', new SpiritShowView({
                 model: spirit
             }));
         });
     },
 
     edit: function edit(id) {
-        var _this3 = this;
+        var _this4 = this;
 
         var spirit = new Spirit({ id: id });
 
         spirit.fetch().then(function () {
-            _this3.app.rootView.showChildView('content', new SpiritEditView({
+            _this4.app.rootView.showChildView('content', new SpiritEditView({
                 model: spirit
             }));
         });
     }
 });
 
-},{"./../collections/spirits":8,"./../models/spirit":11,"./../views/spirit/create":25,"./../views/spirit/edit":26,"./../views/spirit/index":27,"./../views/spirit/show":28,"backbone":4}],14:[function(require,module,exports){
+},{"./../collections/spirits":9,"./../collections/states":10,"./../models/spirit":14,"./../views/spirit/create":32,"./../views/spirit/edit":33,"./../views/spirit/index":34,"./../views/spirit/show":35,"backbone":4}],19:[function(require,module,exports){
 'use strict';
 
 var Backbone = require('backbone');
@@ -17544,7 +17626,7 @@ module.exports = Backbone.Router.extend({
     }
 });
 
-},{"./../collections/users":9,"./../models/user":12,"./../views/user/create":29,"./../views/user/edit":30,"./../views/user/index":31,"./../views/user/show":32,"backbone":4}],15:[function(require,module,exports){
+},{"./../collections/users":11,"./../models/user":16,"./../views/user/create":36,"./../views/user/edit":37,"./../views/user/index":38,"./../views/user/show":39,"backbone":4}],20:[function(require,module,exports){
 module.exports = (function anonymous(locals, filters, escape, rethrow
 /**/) {
 escape = escape || function (html){
@@ -17557,92 +17639,7 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<div id="navigation">\n    <h1>Nordisk Brænderi</h1>\n    <ul>\n        <li class="category">Produktion</li>\n        <li><a href="/">Oversigt</a></li>\n        <li><a href="/batch/create">Opret</a></li>\n\n        <li class="category">Opgørelser</li>\n        <li><a href="#">Årsopgørelse</a></li>\n        <li><a href="#">Kvartalsopgørelse</a></li>\n        <li><a href="#">Månedsopgørelse</a></li>\n\n        <li class="category">Administration</li>\n        <li><a href="/user">Brugere</a></li>\n        <li><a href="/spirit">Spiritus</a></li>\n\n        <li class="logoff"><a href="#">Log af</a></li>\n    </ul>\n</div>\n<div id="content"></div>'); })();
-} 
-return buf.join('');
-})
-},{}],16:[function(require,module,exports){
-module.exports = (function anonymous(locals, filters, escape, rethrow
-/**/) {
-escape = escape || function (html){
-  return String(html)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/'/g, '&#39;')
-    .replace(/"/g, '&quot;');
-};
-var buf = [];
-with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Spiritus</h2>\n        <h1>Opret spiritus</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Spiritusnavn</span>\n        <input name="name" type="text">\n    </label>\n\n    <label>\n        <span>Alkoholprocent</span>\n        <input name="abv" step="0.01">\n    </label>\n\n    <label>\n        <span>Opskrift</span>\n        <textarea name="recipe"></textarea>\n    </label>\n\n    <button type="submit">Opret</button>\n</form>\n'); })();
-} 
-return buf.join('');
-})
-},{}],17:[function(require,module,exports){
-module.exports = (function anonymous(locals, filters, escape, rethrow
-/**/) {
-escape = escape || function (html){
-  return String(html)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/'/g, '&#39;')
-    .replace(/"/g, '&quot;');
-};
-var buf = [];
-with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Spiritus</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Spiritusnavn</span>\n        <input name="name" value="', escape((11,  name )), '" type="text">\n    </label>\n\n    <label>\n        <span>Alkoholprocent</span>\n        <input name="abv" value="', escape((16,  abv )), '" type="number" step="0.01">\n    </label>\n\n    <label>\n        <span>Opskrift</span>\n        <textarea name="recipe" rows="5">', escape((21,  recipe )), '</textarea>\n    </label>\n\n    <button type="submit">Gem</button>\n</form>\n'); })();
-} 
-return buf.join('');
-})
-},{}],18:[function(require,module,exports){
-module.exports = (function anonymous(locals, filters, escape, rethrow
-/**/) {
-escape = escape || function (html){
-  return String(html)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/'/g, '&#39;')
-    .replace(/"/g, '&quot;');
-};
-var buf = [];
-with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Administration</h2>\n        <h1>Spiritus</h1>\n    </div>\n\n    <div class="buttons">\n        <a href="/spirit/create" role="button">Opret</a>\n    </div>\n</div>\n\n<div id="content-body">\n    <table>\n        <tr>\n            <th>Navn</th>\n        </tr>\n\n        ');18; items.forEach((item) => { ; buf.push('\n            <tr>\n                <td>\n                    <a href="/spirit/', escape((21,  item.id )), '">', escape((21,  item.name )), '</a>\n                </td>\n            </tr>\n        ');24; }) ; buf.push('\n    </table>\n</div>\n'); })();
-} 
-return buf.join('');
-})
-},{}],19:[function(require,module,exports){
-module.exports = (function anonymous(locals, filters, escape, rethrow
-/**/) {
-escape = escape || function (html){
-  return String(html)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/'/g, '&#39;')
-    .replace(/"/g, '&quot;');
-};
-var buf = [];
-with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Spiritus</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n\n    <div class="buttons button-group">\n        <a href="/spirit/', escape((8,  id )), '/edit" role="button">Redigér</a>\n        <button>Fjern</button>\n    </div>\n</div>\n\n<div class="output">\n    <span>Spiritustype</span>\n    <div>', escape((15,  name )), '</div>\n</div>\n\n<div class="output">\n    <span>Alkoholprocent</span>\n    <div>', escape((20,  abv )), '</div>\n</div>\n\n<div class="output">\n    <span>Opskrift</span>\n    <div>', escape((25,  recipe ? recipe : 'N/A' )), '</div>\n</div>\n'); })();
-} 
-return buf.join('');
-})
-},{}],20:[function(require,module,exports){
-module.exports = (function anonymous(locals, filters, escape, rethrow
-/**/) {
-escape = escape || function (html){
-  return String(html)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/'/g, '&#39;')
-    .replace(/"/g, '&quot;');
-};
-var buf = [];
-with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Bruger</h2>\n        <h1>Opret bruger</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Brugernavn</span>\n        <input name="name" type="text">\n    </label>\n\n    <label>\n        <span>Adgangskode</span>\n        <input name="password" step="0.01">\n    </label>\n\n    <label>\n        <span>Bekræft adgangskode</span>\n        <input name="confirm-password">\n    </label>\n\n    <button type="submit">Opret</button>\n</form>'); })();
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Produktion</h2>\n        <h1>Batches</h1>\n    </div>\n\n    <div class="buttons">\n        <a href="/batch/create" role="button">Opret</a>\n    </div>\n</div>\n\n<div id="content-body">\n    <table>\n        <tr>\n            <th>Navn</th>\n        </tr>\n        ');17; items.forEach((item) => { ; buf.push('\n        <tr>\n            <td>\n                <a href="/batch/', escape((20,  item.id )), '">', escape((20,  item.name )), '</a>\n            </td>\n            <td class="output">\n                ', escape((23,  item.spirit_id )), '\n            </td>\n            <td>\n                ', escape((26,  item.created_at )), '\n            </td>\n        </tr>\n        ');29; }) ; buf.push('\n    </table>\n</div>'); })();
 } 
 return buf.join('');
 })
@@ -17659,7 +17656,7 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Bruger</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Brugernavn</span>\n        <input name="name" value="', escape((11,  name )), '" type="text">\n    </label>\n\n    <label>\n        <span>Adgangskode</span>\n        <input name="password" type="password">\n    </label>\n\n    <label>\n        <span>Bekræft adgangskode</span>\n        <input name="confirm-password" type="password">\n    </label>\n\n    <button type="submit">Gem</button>\n</form>\n'); })();
+ buf.push('<div id="navigation">\n    <h1>Nordisk Brænderi</h1>\n    <ul>\n        <li class="category">Produktion</li>\n        <li><a href="/batch">Oversigt</a></li>\n        <li><a href="/batch/create">Opret</a></li>\n\n        <li class="category">Opgørelser</li>\n        <li><a href="#">Årsopgørelse</a></li>\n        <li><a href="#">Kvartalsopgørelse</a></li>\n        <li><a href="#">Månedsopgørelse</a></li>\n\n        <li class="category">Administration</li>\n        <li><a href="/user">Brugere</a></li>\n        <li><a href="/spirit">Spiritus</a></li>\n\n        <li class="logoff"><a href="#">Log af</a></li>\n    </ul>\n</div>\n<div id="content"></div>'); })();
 } 
 return buf.join('');
 })
@@ -17676,7 +17673,7 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Administration</h2>\n        <h1>Bruger</h1>\n    </div>\n\n    <div class="buttons">\n        <a href="/user/create" role="button">Opret</a>\n    </div>\n</div>\n\n<div id="content-body">\n    <table>\n        <tr>\n            <th>Navn</th>\n        </tr>\n\n        ');18; items.forEach((item) => { ; buf.push('\n        <tr>\n            <td>\n                <a href="/user/', escape((21,  item.id )), '">', escape((21,  item.name )), '</a>\n            </td>\n        </tr>\n        ');24; }) ; buf.push('\n    </table>\n</div>'); })();
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Spiritus</h2>\n        <h1>Opret spiritus</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Spiritusnavn</span>\n        <input name="name" type="text">\n    </label>\n\n    <label>\n        <span>Alkoholprocent</span>\n        <input name="abv" step="0.01">\n    </label>\n\n    <label>\n        <span>Opskrift</span>\n        <textarea name="recipe"></textarea>\n    </label>\n\n    <div>\n        Produktionsprocess\n        <table>\n            <tr>\n                <td>\n                    <select name="" id="">\n                        <option value="">Mæskning</option>\n                        <option value="">Destillering</option>\n                    </select>\n\n                    <button>Tilføj</button>\n                </td>\n            </tr>\n        </table>\n    </div>\n\n    <button class="button-final" type="submit">Opret</button>\n</form>\n'); })();
 } 
 return buf.join('');
 })
@@ -17693,11 +17690,125 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Bruger</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n\n    <div class="buttons button-group">\n        <a href="/user/', escape((8,  id )), '/edit" role="button">Redigér</a>\n        <button>Fjern</button>\n    </div>\n</div>\n\n<div class="output">\n    <span>Brugernavn</span>\n    <div>', escape((15,  name )), '</div>\n</div>\n'); })();
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Spiritus</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Spiritusnavn</span>\n        <input name="name" value="', escape((11,  name )), '" type="text">\n    </label>\n\n    <label>\n        <span>Alkoholprocent</span>\n        <input name="abv" value="', escape((16,  abv )), '" type="number" step="0.01">\n    </label>\n\n    <label>\n        <span>Opskrift</span>\n        <textarea name="recipe" rows="5">', escape((21,  recipe )), '</textarea>\n    </label>\n\n    <button class="button-final" type="submit">Gem</button>\n</form>\n'); })();
 } 
 return buf.join('');
 })
 },{}],24:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Administration</h2>\n        <h1>Spiritus</h1>\n    </div>\n\n    <div class="buttons">\n        <a href="/spirit/create" role="button">Opret</a>\n    </div>\n</div>\n\n<div id="content-body">\n    <table>\n        <tr>\n            <th>Navn</th>\n        </tr>\n\n        ');18; items.forEach((item) => { ; buf.push('\n            <tr>\n                <td>\n                    <a href="/spirit/', escape((21,  item.id )), '">', escape((21,  item.name )), '</a>\n                </td>\n            </tr>\n        ');24; }) ; buf.push('\n    </table>\n</div>\n'); })();
+} 
+return buf.join('');
+})
+},{}],25:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Spiritus</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n\n    <div class="buttons button-group">\n        <a href="/spirit/', escape((8,  id )), '/edit" role="button">Redigér</a>\n        <button>Fjern</button>\n    </div>\n</div>\n\n<div class="output">\n    <span>Spiritustype</span>\n    <div>', escape((15,  name )), '</div>\n</div>\n\n<div class="output">\n    <span>Alkoholprocent</span>\n    <div>', escape((20,  abv )), '</div>\n</div>\n\n<div class="output">\n    <span>Opskrift</span>\n    <div>', escape((25,  recipe ? recipe : 'N/A' )), '</div>\n</div>\n\n'); })();
+} 
+return buf.join('');
+})
+},{}],26:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Bruger</h2>\n        <h1>Opret bruger</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Brugernavn</span>\n        <input name="name" type="text">\n    </label>\n\n    <label>\n        <span>Adgangskode</span>\n        <input name="password" step="0.01">\n    </label>\n\n    <label>\n        <span>Bekræft adgangskode</span>\n        <input name="confirm-password">\n    </label>\n\n    <button class="button-final" type="submit">Opret</button>\n</form>'); })();
+} 
+return buf.join('');
+})
+},{}],27:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Bruger</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Brugernavn</span>\n        <input name="name" value="', escape((11,  name )), '" type="text">\n    </label>\n\n    <label>\n        <span>Adgangskode</span>\n        <input name="password" type="password">\n    </label>\n\n    <label>\n        <span>Bekræft adgangskode</span>\n        <input name="confirm-password" type="password">\n    </label>\n\n    <button class="button-final" type="submit">Gem</button>\n</form>\n'); })();
+} 
+return buf.join('');
+})
+},{}],28:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Administration</h2>\n        <h1>Bruger</h1>\n    </div>\n\n    <div class="buttons">\n        <a href="/user/create" role="button">Opret</a>\n    </div>\n</div>\n\n<div id="content-body">\n    <table>\n        <tr>\n            <th>Navn</th>\n        </tr>\n\n        ');18; items.forEach((item) => { ; buf.push('\n        <tr>\n            <td>\n                <a href="/user/', escape((21,  item.id )), '">', escape((21,  item.name )), '</a>\n            </td>\n        </tr>\n        ');24; }) ; buf.push('\n    </table>\n</div>'); })();
+} 
+return buf.join('');
+})
+},{}],29:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Bruger</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n\n    <div class="buttons button-group">\n        <a href="/user/', escape((8,  id )), '/edit" role="button">Redigér</a>\n        <button>Fjern</button>\n    </div>\n</div>\n\n<div class="output">\n    <span>Brugernavn</span>\n    <div>', escape((15,  name )), '</div>\n</div>\n'); })();
+} 
+return buf.join('');
+})
+},{}],30:[function(require,module,exports){
+'use strict';
+
+var Marionette = require('backbone.marionette');
+var template = require('./../../templates/batch/index.ejs');
+
+module.exports = Marionette.View.extend({
+    id: 'batch-index',
+
+    template: template
+});
+
+},{"./../../templates/batch/index.ejs":20,"backbone.marionette":2}],31:[function(require,module,exports){
 'use strict';
 
 var Marionette = require('backbone.marionette');
@@ -17713,7 +17824,7 @@ module.exports = Marionette.View.extend({
     }
 });
 
-},{"./../templates/root.ejs":15,"backbone.marionette":2}],25:[function(require,module,exports){
+},{"./../templates/root.ejs":21,"backbone.marionette":2}],32:[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -17722,15 +17833,22 @@ var Marionette = require('backbone.marionette');
 require('form-serializer');
 
 var Spirit = require('./../../models/spirit');
-var template = require('./../../templates/spirit/create.ejs');
+var _template = require('./../../templates/spirit/create.ejs');
 
 module.exports = Marionette.View.extend({
     id: 'spirit-create',
 
-    template: template,
+    template: function template(data) {
+        console.log(data);
+        return _template;
+    },
 
     events: {
         'submit form': 'create'
+    },
+
+    onRender: function onRender() {
+        console.log(this.states);
     },
 
     create: function create(e) {
@@ -17749,7 +17867,7 @@ module.exports = Marionette.View.extend({
     }
 });
 
-},{"./../../models/spirit":11,"./../../templates/spirit/create.ejs":16,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],26:[function(require,module,exports){
+},{"./../../models/spirit":14,"./../../templates/spirit/create.ejs":22,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],33:[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -17786,7 +17904,7 @@ module.exports = Marionette.View.extend({
     }
 });
 
-},{"./../../templates/spirit/edit.ejs":17,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],27:[function(require,module,exports){
+},{"./../../templates/spirit/edit.ejs":23,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],34:[function(require,module,exports){
 'use strict';
 
 var Marionette = require('backbone.marionette');
@@ -17798,7 +17916,7 @@ module.exports = Marionette.View.extend({
     template: template
 });
 
-},{"./../../templates/spirit/index.ejs":18,"backbone.marionette":2}],28:[function(require,module,exports){
+},{"./../../templates/spirit/index.ejs":24,"backbone.marionette":2}],35:[function(require,module,exports){
 'use strict';
 
 var Backbone = require('backbone');
@@ -17826,7 +17944,7 @@ module.exports = Marionette.View.extend({
     }
 });
 
-},{"./../../templates/spirit/show.ejs":19,"backbone":4,"backbone.marionette":2}],29:[function(require,module,exports){
+},{"./../../templates/spirit/show.ejs":25,"backbone":4,"backbone.marionette":2}],36:[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -17862,7 +17980,7 @@ module.exports = Marionette.View.extend({
     }
 });
 
-},{"./../../models/user":12,"./../../templates/user/create.ejs":20,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],30:[function(require,module,exports){
+},{"./../../models/user":16,"./../../templates/user/create.ejs":26,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],37:[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -17899,7 +18017,7 @@ module.exports = Marionette.View.extend({
     }
 });
 
-},{"./../../templates/user/edit.ejs":21,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],31:[function(require,module,exports){
+},{"./../../templates/user/edit.ejs":27,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],38:[function(require,module,exports){
 'use strict';
 
 var Marionette = require('backbone.marionette');
@@ -17911,7 +18029,7 @@ module.exports = Marionette.View.extend({
     template: template
 });
 
-},{"./../../templates/user/index.ejs":22,"backbone.marionette":2}],32:[function(require,module,exports){
+},{"./../../templates/user/index.ejs":28,"backbone.marionette":2}],39:[function(require,module,exports){
 'use strict';
 
 var Backbone = require('backbone');
@@ -17936,6 +18054,6 @@ module.exports = Marionette.View.extend({
     }
 });
 
-},{"./../../templates/user/show.ejs":23,"backbone":4,"backbone.marionette":2}]},{},[10]);
+},{"./../../templates/user/show.ejs":29,"backbone":4,"backbone.marionette":2}]},{},[12]);
 
 //# sourceMappingURL=main.js.map

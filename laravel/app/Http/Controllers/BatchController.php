@@ -14,11 +14,11 @@ class BatchController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Database\Eloquent\Collection|static[]
      */
     public function index()
     {
-        return view('batch.index', ["batches" => Batch::all()]);
+        return Batch::all();
     }
 
     /**

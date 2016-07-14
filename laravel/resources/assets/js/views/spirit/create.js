@@ -9,15 +9,22 @@ var template = require('templates/spirit/create');
 module.exports = Marionette.View.extend({
     id: 'spirit-create',
 
-    template: template,
+    template: function (data) {
+        console.log(data);
+        return template;
+    },
 
     events: {
         'submit form': 'create'
     },
 
+    onRender: function() {
+      console.log(this.states);
+    },
+
     create: function (e) {
         e.preventDefault();
-        
+
         var spirit = new Spirit($(e.target).serializeObject());
 
         spirit.save(null, {

@@ -2,6 +2,7 @@ var Backbone = require('backbone');
 
 var Spirit = require('models/spirit');
 var Spirits = require('collections/spirits');
+var States = require('collections/states');
 var SpiritIndexView = require('views/spirit/index');
 var SpiritCreateView = require('views/spirit/create');
 var SpiritShowView = require('views/spirit/show');
@@ -30,7 +31,14 @@ module.exports = Backbone.Router.extend({
     },
 
     create: function () {
-        this.app.rootView.showChildView('content', new SpiritCreateView());
+        var states = new States();
+
+        states.fetch().then(() => {
+            console.log(states);
+            this.app.rootView.showChildView('content', new SpiritCreateView({
+                states: states
+            }));
+        });
     },
 
     show: function (id) {
