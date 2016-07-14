@@ -1,0 +1,26 @@
+<div id="content-header">
+    <div class="headings">
+        <h2>Administration</h2>
+        <h1>Bruger</h1>
+    </div>
+
+    <div class="buttons">
+        <a href="/user/create" role="button">Opret</a>
+    </div>
+</div>
+
+<div id="content-body">
+    <table>
+        <tr>
+            <th>Navn</th>
+        </tr>
+
+        <% items.forEach((item) => { %>
+        <tr>
+            <td>
+                <a href="/user/<%= item.id %>"><%= item.name %></a>
+            </td>
+        </tr>
+        <% }) %>
+    </table>
+</div>

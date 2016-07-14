@@ -1,16 +1,4 @@
-#vagrant
 /.vagrant
 puphpet/config-custom.yaml
-
-
-#laravel
-/vendor
-/node_modules
-/public/storage
-Homestead.yaml
-Homestead.json
-.env
-
-
-#jetbrains
 /.idea
+/html

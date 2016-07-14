@@ -2,7 +2,7 @@ var Backbone = require('backbone');
 
 var User = require('models/user');
 var Users = require('collections/users');
-var UserIndexView = require('views/user/index/base');
+var UserIndexView = require('views/user/index');
 var UserCreateView = require('views/user/create');
 var UserShowView = require('views/user/show');
 var UserEditView = require('views/user/edit');
@@ -50,7 +50,7 @@ module.exports = Backbone.Router.extend({
             this.app.rootView.showChildView('content', new UserEditView({
                 model: user
             }));
-        })
+        });
     }
 });
 

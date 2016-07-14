@@ -17396,7 +17396,7 @@ var app = new App();
 
 app.start();
 
-},{"./routers/spirit":13,"./routers/user":14,"./views/root":25,"backbone":4,"backbone.marionette":2,"jquery":6}],11:[function(require,module,exports){
+},{"./routers/spirit":13,"./routers/user":14,"./views/root":24,"backbone":4,"backbone.marionette":2,"jquery":6}],11:[function(require,module,exports){
 'use strict';
 
 var Backbone = require('backbone');
@@ -17479,14 +17479,14 @@ module.exports = Backbone.Router.extend({
     }
 });
 
-},{"./../collections/spirits":8,"./../models/spirit":11,"./../views/spirit/create":26,"./../views/spirit/edit":27,"./../views/spirit/index":28,"./../views/spirit/show":29,"backbone":4}],14:[function(require,module,exports){
+},{"./../collections/spirits":8,"./../models/spirit":11,"./../views/spirit/create":25,"./../views/spirit/edit":26,"./../views/spirit/index":27,"./../views/spirit/show":28,"backbone":4}],14:[function(require,module,exports){
 'use strict';
 
 var Backbone = require('backbone');
 
 var User = require('./../models/user');
 var Users = require('./../collections/users');
-var UserIndexView = require('./../views/user/index/base');
+var UserIndexView = require('./../views/user/index');
 var UserCreateView = require('./../views/user/create');
 var UserShowView = require('./../views/user/show');
 var UserEditView = require('./../views/user/edit');
@@ -17544,7 +17544,7 @@ module.exports = Backbone.Router.extend({
     }
 });
 
-},{"./../collections/users":9,"./../models/user":12,"./../views/user/create":30,"./../views/user/edit":31,"./../views/user/index/base":32,"./../views/user/show":35,"backbone":4}],15:[function(require,module,exports){
+},{"./../collections/users":9,"./../models/user":12,"./../views/user/create":29,"./../views/user/edit":30,"./../views/user/index":31,"./../views/user/show":32,"backbone":4}],15:[function(require,module,exports){
 module.exports = (function anonymous(locals, filters, escape, rethrow
 /**/) {
 escape = escape || function (html){
@@ -17574,7 +17574,7 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<form action="">\n    <label>\n        <span>Spiritusnavn</span>\n        <input name="name" type="text">\n    </label>\n\n    <label>\n        <span>Alkoholprocent</span>\n        <input name="abv" step="0.01">\n    </label>\n\n    <label>\n        <span>Opskrift</span>\n        <textarea name="recipe"></textarea>\n    </label>\n\n    <button type="submit">Opret</button>\n</form>\n'); })();
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Spiritus</h2>\n        <h1>Opret spiritus</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Spiritusnavn</span>\n        <input name="name" type="text">\n    </label>\n\n    <label>\n        <span>Alkoholprocent</span>\n        <input name="abv" step="0.01">\n    </label>\n\n    <label>\n        <span>Opskrift</span>\n        <textarea name="recipe"></textarea>\n    </label>\n\n    <button type="submit">Opret</button>\n</form>\n'); })();
 } 
 return buf.join('');
 })
@@ -17591,7 +17591,7 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<form action="">\n    <label>\n        <span>Spiritusnavn</span>\n        <input name="name" value="', escape((4,  name )), '" type="text">\n    </label>\n\n    <label>\n        <span>Alkoholprocent</span>\n        <input name="abv" value="', escape((9,  abv )), '" type="number" step="0.01">\n    </label>\n\n    <label>\n        <span>Opskrift</span>\n        <textarea name="recipe" rows="5">', escape((14,  recipe )), '</textarea>\n    </label>\n\n    <button type="submit">Gem</button>\n</form>\n'); })();
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Spiritus</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Spiritusnavn</span>\n        <input name="name" value="', escape((11,  name )), '" type="text">\n    </label>\n\n    <label>\n        <span>Alkoholprocent</span>\n        <input name="abv" value="', escape((16,  abv )), '" type="number" step="0.01">\n    </label>\n\n    <label>\n        <span>Opskrift</span>\n        <textarea name="recipe" rows="5">', escape((21,  recipe )), '</textarea>\n    </label>\n\n    <button type="submit">Gem</button>\n</form>\n'); })();
 } 
 return buf.join('');
 })
@@ -17625,7 +17625,7 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<div class="output">\n    <span>Spiritustype</span>\n    <div>', escape((3,  name )), '</div>\n</div>\n\n<div class="output">\n    <span>Alkoholprocent</span>\n    <div>', escape((8,  abv )), '</div>\n</div>\n\n<div class="output">\n    <span>Opskrift</span>\n    <div>', escape((13,  recipe ? recipe : 'N/A' )), '</div>\n</div>\n<a href="/spirit/', escape((15,  id )), '/edit" role="button">Redigér</a>\n<button>Fjern</button>'); })();
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Spiritus</h2>\n        <h1>', escape((4,  name )), '></h1>\n    </div>\n\n    <div class="buttons button-group">\n        <a href="/spirit/', escape((8,  id )), '/edit" role="button">Redigér</a>\n        <button>Fjern</button>\n    </div>\n</div>\n\n<div class="output">\n    <span>Spiritustype</span>\n    <div>', escape((15,  name )), '</div>\n</div>\n\n<div class="output">\n    <span>Alkoholprocent</span>\n    <div>', escape((20,  abv )), '</div>\n</div>\n\n<div class="output">\n    <span>Opskrift</span>\n    <div>', escape((25,  recipe ? recipe : 'N/A' )), '</div>\n</div>\n'); })();
 } 
 return buf.join('');
 })
@@ -17642,7 +17642,7 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<form action="">\n    <label>\n        <span>Brugernavn</span>\n        <input name="name" type="text">\n    </label>\n\n    <label>\n        <span>Adgangskode</span>\n        <input name="password" step="0.01">\n    </label>\n\n    <label>\n        <span>Bekræft adgangskode</span>\n        <input name="confirm-password">\n    </label>\n\n    <button type="submit">Opret</button>\n</form>'); })();
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Bruger</h2>\n        <h1>Opret bruger</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Brugernavn</span>\n        <input name="name" type="text">\n    </label>\n\n    <label>\n        <span>Adgangskode</span>\n        <input name="password" step="0.01">\n    </label>\n\n    <label>\n        <span>Bekræft adgangskode</span>\n        <input name="confirm-password">\n    </label>\n\n    <button type="submit">Opret</button>\n</form>'); })();
 } 
 return buf.join('');
 })
@@ -17659,7 +17659,7 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<form action="">\n    <label>\n        <span>Brugernavn</span>\n        <input name="name" value="', escape((4,  name )), '" type="text">\n    </label>\n\n    <label>\n        <span>Adgangskode</span>\n        <input name="password" type="password">\n    </label>\n\n    <label>\n        <span>Bekræft adgangskode</span>\n        <input name="confirm-password" type="password">\n    </label>\n\n    <button type="submit">Gem</button>\n</form>\n'); })();
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Bruger</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Brugernavn</span>\n        <input name="name" value="', escape((11,  name )), '" type="text">\n    </label>\n\n    <label>\n        <span>Adgangskode</span>\n        <input name="password" type="password">\n    </label>\n\n    <label>\n        <span>Bekræft adgangskode</span>\n        <input name="confirm-password" type="password">\n    </label>\n\n    <button type="submit">Gem</button>\n</form>\n'); })();
 } 
 return buf.join('');
 })
@@ -17676,7 +17676,7 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<div id="content-header"></div>\n<div id="content-body"></div>\n<a href="/user/create" role="button">Opret</a>'); })();
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Administration</h2>\n        <h1>Bruger</h1>\n    </div>\n\n    <div class="buttons">\n        <a href="/user/create" role="button">Opret</a>\n    </div>\n</div>\n\n<div id="content-body">\n    <table>\n        <tr>\n            <th>Navn</th>\n        </tr>\n\n        ');18; items.forEach((item) => { ; buf.push('\n        <tr>\n            <td>\n                <a href="/user/', escape((21,  item.id )), '">', escape((21,  item.name )), '</a>\n            </td>\n        </tr>\n        ');24; }) ; buf.push('\n    </table>\n</div>'); })();
 } 
 return buf.join('');
 })
@@ -17693,28 +17693,11 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<td><a href="/user/', escape((1,  id )), '">', escape((1,  name )), '</a></td>'); })();
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Bruger</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n\n    <div class="buttons button-group">\n        <a href="/user/', escape((8,  id )), '/edit" role="button">Redigér</a>\n        <button>Fjern</button>\n    </div>\n</div>\n\n<div class="output">\n    <span>Brugernavn</span>\n    <div>', escape((15,  name )), '</div>\n</div>\n'); })();
 } 
 return buf.join('');
 })
 },{}],24:[function(require,module,exports){
-module.exports = (function anonymous(locals, filters, escape, rethrow
-/**/) {
-escape = escape || function (html){
-  return String(html)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/'/g, '&#39;')
-    .replace(/"/g, '&quot;');
-};
-var buf = [];
-with (locals || {}) { (function(){ 
- buf.push('<div class="output">\n    <span>Brugernavn</span>\n    <div>', escape((3,  name )), '</div>\n</div>\n\n<a href="/user/', escape((6,  id )), '/edit" role="button">Redigér</a>\n<button>Fjern</button>'); })();
-} 
-return buf.join('');
-})
-},{}],25:[function(require,module,exports){
 'use strict';
 
 var Marionette = require('backbone.marionette');
@@ -17730,7 +17713,7 @@ module.exports = Marionette.View.extend({
     }
 });
 
-},{"./../templates/root.ejs":15,"backbone.marionette":2}],26:[function(require,module,exports){
+},{"./../templates/root.ejs":15,"backbone.marionette":2}],25:[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -17766,7 +17749,7 @@ module.exports = Marionette.View.extend({
     }
 });
 
-},{"./../../models/spirit":11,"./../../templates/spirit/create.ejs":16,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],27:[function(require,module,exports){
+},{"./../../models/spirit":11,"./../../templates/spirit/create.ejs":16,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],26:[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -17803,7 +17786,7 @@ module.exports = Marionette.View.extend({
     }
 });
 
-},{"./../../templates/spirit/edit.ejs":17,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],28:[function(require,module,exports){
+},{"./../../templates/spirit/edit.ejs":17,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],27:[function(require,module,exports){
 'use strict';
 
 var Marionette = require('backbone.marionette');
@@ -17815,7 +17798,7 @@ module.exports = Marionette.View.extend({
     template: template
 });
 
-},{"./../../templates/spirit/index.ejs":18,"backbone.marionette":2}],29:[function(require,module,exports){
+},{"./../../templates/spirit/index.ejs":18,"backbone.marionette":2}],28:[function(require,module,exports){
 'use strict';
 
 var Backbone = require('backbone');
@@ -17843,7 +17826,7 @@ module.exports = Marionette.View.extend({
     }
 });
 
-},{"./../../templates/spirit/show.ejs":19,"backbone":4,"backbone.marionette":2}],30:[function(require,module,exports){
+},{"./../../templates/spirit/show.ejs":19,"backbone":4,"backbone.marionette":2}],29:[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -17879,7 +17862,7 @@ module.exports = Marionette.View.extend({
     }
 });
 
-},{"./../../models/user":12,"./../../templates/user/create.ejs":20,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],31:[function(require,module,exports){
+},{"./../../models/user":12,"./../../templates/user/create.ejs":20,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],30:[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -17916,53 +17899,19 @@ module.exports = Marionette.View.extend({
     }
 });
 
-},{"./../../templates/user/edit.ejs":21,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],32:[function(require,module,exports){
+},{"./../../templates/user/edit.ejs":21,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],31:[function(require,module,exports){
 'use strict';
 
 var Marionette = require('backbone.marionette');
-var TableView = require('./table');
-var template = require('./../../../templates/user/index/base.ejs');
+var template = require('./../../templates/user/index.ejs');
 
 module.exports = Marionette.View.extend({
     id: 'user-index',
 
-    template: template,
-
-    regions: {
-        header: '#content-header',
-        body: '#content-body'
-    },
-
-    onRender: function onRender() {
-        this.showChildView('body', new TableView({ collection: this.collection }));
-    }
-});
-
-},{"./../../../templates/user/index/base.ejs":22,"./table":34,"backbone.marionette":2}],33:[function(require,module,exports){
-'use strict';
-
-var Marionette = require('backbone.marionette');
-var template = require('./../../../templates/user/index/row.ejs');
-
-module.exports = Marionette.View.extend({
-    tagName: 'tr',
-
     template: template
 });
 
-},{"./../../../templates/user/index/row.ejs":23,"backbone.marionette":2}],34:[function(require,module,exports){
-'use strict';
-
-var Marionette = require('backbone.marionette');
-var TableRowView = require('./row');
-
-module.exports = Marionette.CollectionView.extend({
-    tagName: 'table',
-
-    childView: TableRowView
-});
-
-},{"./row":33,"backbone.marionette":2}],35:[function(require,module,exports){
+},{"./../../templates/user/index.ejs":22,"backbone.marionette":2}],32:[function(require,module,exports){
 'use strict';
 
 var Backbone = require('backbone');
@@ -17987,6 +17936,6 @@ module.exports = Marionette.View.extend({
     }
 });
 
-},{"./../../templates/user/show.ejs":24,"backbone":4,"backbone.marionette":2}]},{},[10]);
+},{"./../../templates/user/show.ejs":23,"backbone":4,"backbone.marionette":2}]},{},[10]);
 
 //# sourceMappingURL=main.js.map

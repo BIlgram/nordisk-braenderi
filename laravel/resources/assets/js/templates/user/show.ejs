@@ -1,7 +1,16 @@
+<div id="content-header">
+    <div class="headings">
+        <h2>Bruger</h2>
+        <h1><%= name %></h1>
+    </div>
+
+    <div class="buttons button-group">
+        <a href="/user/<%= id %>/edit" role="button">Redigér</a>
+        <button>Fjern</button>
+    </div>
+</div>
+
 <div class="output">
     <span>Brugernavn</span>
     <div><%= name %></div>
 </div>
-
-<a href="/user/<%= id %>/edit" role="button">Redigér</a>
-<button>Fjern</button>

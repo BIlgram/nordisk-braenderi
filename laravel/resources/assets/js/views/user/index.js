@@ -1,8 +1,8 @@
 var Marionette = require('backbone.marionette');
-var template = require('templates/user/index/row');
+var template = require('templates/user/index');
 
 module.exports = Marionette.View.extend({
-    tagName: 'tr',
+    id: 'user-index',
 
     template: template
 });

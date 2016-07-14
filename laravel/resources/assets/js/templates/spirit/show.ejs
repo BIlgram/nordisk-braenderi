@@ -1,3 +1,15 @@
+<div id="content-header">
+    <div class="headings">
+        <h2>Spiritus</h2>
+        <h1><%= name %></h1>
+    </div>
+
+    <div class="buttons button-group">
+        <a href="/spirit/<%= id %>/edit" role="button">Redigér</a>
+        <button>Fjern</button>
+    </div>
+</div>
+
 <div class="output">
     <span>Spiritustype</span>
     <div><%= name %></div>
@@ -12,5 +24,3 @@
     <span>Opskrift</span>
     <div><%= recipe ? recipe : 'N/A' %></div>
 </div>
-<a href="/spirit/<%= id %>/edit" role="button">Redigér</a>
-<button>Fjern</button>
