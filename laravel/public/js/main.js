@@ -17625,7 +17625,7 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Spiritus</h2>\n        <h1>', escape((4,  name )), '></h1>\n    </div>\n\n    <div class="buttons button-group">\n        <a href="/spirit/', escape((8,  id )), '/edit" role="button">Redigér</a>\n        <button>Fjern</button>\n    </div>\n</div>\n\n<div class="output">\n    <span>Spiritustype</span>\n    <div>', escape((15,  name )), '</div>\n</div>\n\n<div class="output">\n    <span>Alkoholprocent</span>\n    <div>', escape((20,  abv )), '</div>\n</div>\n\n<div class="output">\n    <span>Opskrift</span>\n    <div>', escape((25,  recipe ? recipe : 'N/A' )), '</div>\n</div>\n'); })();
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Spiritus</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n\n    <div class="buttons button-group">\n        <a href="/spirit/', escape((8,  id )), '/edit" role="button">Redigér</a>\n        <button>Fjern</button>\n    </div>\n</div>\n\n<div class="output">\n    <span>Spiritustype</span>\n    <div>', escape((15,  name )), '</div>\n</div>\n\n<div class="output">\n    <span>Alkoholprocent</span>\n    <div>', escape((20,  abv )), '</div>\n</div>\n\n<div class="output">\n    <span>Opskrift</span>\n    <div>', escape((25,  recipe ? recipe : 'N/A' )), '</div>\n</div>\n'); })();
 } 
 return buf.join('');
 })
