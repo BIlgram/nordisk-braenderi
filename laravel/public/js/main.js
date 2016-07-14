@@ -17420,7 +17420,7 @@ var app = new App();
 
 app.start();
 
-},{"./routers/batch":17,"./routers/spirit":18,"./routers/user":19,"./views/root":31,"backbone":4,"backbone.marionette":2,"jquery":6}],13:[function(require,module,exports){
+},{"./routers/batch":17,"./routers/spirit":18,"./routers/user":19,"./views/root":37,"backbone":4,"backbone.marionette":2,"jquery":6}],13:[function(require,module,exports){
 'use strict';
 
 var Backbone = require('backbone');
@@ -17461,13 +17461,20 @@ module.exports = Backbone.Model.extend({
 
 var Backbone = require('backbone');
 
-var Batches = require('./../collections/batches');
 var Batch = require('./../models/batch');
+var Batches = require('./../collections/batches');
+var Spirits = require('./../collections/spirits');
 var BatchIndexView = require('./../views/batch/index');
+var BatchCreateView = require('./../views/batch/create');
+var BatchShowView = require('./../views/batch/show');
+var BatchEditView = require('./../views/batch/edit');
 
 module.exports = Backbone.Router.extend({
     routes: {
-        'batch': 'index'
+        'batch': 'index',
+        'batch/create': 'create',
+        'batch/:id': 'show',
+        'batch/:id/edit': 'edit'
     },
 
     initialize: function initialize(options) {
@@ -17483,10 +17490,42 @@ module.exports = Backbone.Router.extend({
                 collection: batches
             }));
         });
+    },
+    create: function create() {
+        var _this2 = this;
+
+        var spirits = new Spirits();
+
+        spirits.fetch().then(function () {
+            _this2.app.rootView.showChildView('content', new BatchCreateView({
+                states: spirits
+            }));
+        });
+    },
+    show: function show(id) {
+        var _this3 = this;
+
+        var batch = new Batch({ id: id });
+        batch.fetch().then(function () {
+            _this3.app.rootView.showChildView('content', new BatchShowView({
+                model: batch
+            }));
+        });
+    },
+    edit: function edit(id) {
+        var _this4 = this;
+
+        var batch = new Batch({ id: id });
+
+        batch.fetch().then(function () {
+            _this4.app.rootView.showChildView('content', new BatchEditView({
+                model: batch
+            }));
+        });
     }
 });
 
-},{"./../collections/batches":8,"./../models/batch":13,"./../views/batch/index":30,"backbone":4}],18:[function(require,module,exports){
+},{"./../collections/batches":8,"./../collections/spirits":9,"./../models/batch":13,"./../views/batch/create":33,"./../views/batch/edit":34,"./../views/batch/index":35,"./../views/batch/show":36,"backbone":4}],18:[function(require,module,exports){
 'use strict';
 
 var Backbone = require('backbone');
@@ -17561,7 +17600,7 @@ module.exports = Backbone.Router.extend({
     }
 });
 
-},{"./../collections/spirits":9,"./../collections/states":10,"./../models/spirit":14,"./../views/spirit/create":32,"./../views/spirit/edit":33,"./../views/spirit/index":34,"./../views/spirit/show":35,"backbone":4}],19:[function(require,module,exports){
+},{"./../collections/spirits":9,"./../collections/states":10,"./../models/spirit":14,"./../views/spirit/create":38,"./../views/spirit/edit":39,"./../views/spirit/index":40,"./../views/spirit/show":41,"backbone":4}],19:[function(require,module,exports){
 'use strict';
 
 var Backbone = require('backbone');
@@ -17626,7 +17665,7 @@ module.exports = Backbone.Router.extend({
     }
 });
 
-},{"./../collections/users":11,"./../models/user":16,"./../views/user/create":36,"./../views/user/edit":37,"./../views/user/index":38,"./../views/user/show":39,"backbone":4}],20:[function(require,module,exports){
+},{"./../collections/users":11,"./../models/user":16,"./../views/user/create":42,"./../views/user/edit":43,"./../views/user/index":44,"./../views/user/show":45,"backbone":4}],20:[function(require,module,exports){
 module.exports = (function anonymous(locals, filters, escape, rethrow
 /**/) {
 escape = escape || function (html){
@@ -17639,7 +17678,7 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Produktion</h2>\n        <h1>Batches</h1>\n    </div>\n\n    <div class="buttons">\n        <a href="/batch/create" role="button">Opret</a>\n    </div>\n</div>\n\n<div id="content-body">\n    <table>\n        <tr>\n            <th>Navn</th>\n        </tr>\n        ');17; items.forEach((item) => { ; buf.push('\n        <tr>\n            <td>\n                <a href="/batch/', escape((20,  item.id )), '">', escape((20,  item.name )), '</a>\n            </td>\n            <td class="output">\n                ', escape((23,  item.spirit_id )), '\n            </td>\n            <td>\n                ', escape((26,  item.created_at )), '\n            </td>\n        </tr>\n        ');29; }) ; buf.push('\n    </table>\n</div>'); })();
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Batch</h2>\n        <h1>Opret batch</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Batchnavn</span>\n        <input name="name" type="text">\n    </label>\n\n    <div>\n        Spiritustype\n        <select name="" id="">\n            <option value="">Test1</option>\n            <option value="">Test2</option>\n        </select>\n    </div>\n\n    <button class="button-final" type="submit">Opret</button>\n</form>\n'); })();
 } 
 return buf.join('');
 })
@@ -17656,7 +17695,7 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<div id="navigation">\n    <h1>Nordisk Brænderi</h1>\n    <ul>\n        <li class="category">Produktion</li>\n        <li><a href="/batch">Oversigt</a></li>\n        <li><a href="/batch/create">Opret</a></li>\n\n        <li class="category">Opgørelser</li>\n        <li><a href="#">Årsopgørelse</a></li>\n        <li><a href="#">Kvartalsopgørelse</a></li>\n        <li><a href="#">Månedsopgørelse</a></li>\n\n        <li class="category">Administration</li>\n        <li><a href="/user">Brugere</a></li>\n        <li><a href="/spirit">Spiritus</a></li>\n\n        <li class="logoff"><a href="#">Log af</a></li>\n    </ul>\n</div>\n<div id="content"></div>'); })();
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Batch</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Batchnavn</span>\n        <input name="name" value="', escape((11,  name )), '" type="text">\n    </label>\n\n    <div>\n        Spiritustype\n        <select name="" id="">\n            <option value="">Test1</option>\n            <option value="">Test2</option>\n        </select>\n    </div>\n\n    <button class="button-final" type="submit">Gem</button>\n</form>\n'); })();
 } 
 return buf.join('');
 })
@@ -17673,7 +17712,7 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Spiritus</h2>\n        <h1>Opret spiritus</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Spiritusnavn</span>\n        <input name="name" type="text">\n    </label>\n\n    <label>\n        <span>Alkoholprocent</span>\n        <input name="abv" step="0.01">\n    </label>\n\n    <label>\n        <span>Opskrift</span>\n        <textarea name="recipe"></textarea>\n    </label>\n\n    <div>\n        Produktionsprocess\n        <table>\n            <tr>\n                <td>\n                    <select name="" id="">\n                        <option value="">Mæskning</option>\n                        <option value="">Destillering</option>\n                    </select>\n\n                    <button>Tilføj</button>\n                </td>\n            </tr>\n        </table>\n    </div>\n\n    <button class="button-final" type="submit">Opret</button>\n</form>\n'); })();
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Produktion</h2>\n        <h1>Batches</h1>\n    </div>\n    <div class="buttons">\n        <a href="/batch/create" role="button">Opret</a>\n    </div>\n</div>\n\n<div id="content-body">\n    <table>\n        <tr>\n            <th>Navn</th>\n        </tr>\n        ');16; items.forEach((item) => { ; buf.push('\n        <tr>\n            <td>\n                <a href="/batch/', escape((19,  item.id )), '">', escape((19,  item.name )), '</a>\n            </td>\n            <td class="output">\n                ', escape((22,  item.spirit_id )), '\n            </td>\n            <td>\n                ', escape((25,  item.created_at )), '\n            </td>\n        </tr>\n        ');28; }) ; buf.push('\n    </table>\n</div>'); })();
 } 
 return buf.join('');
 })
@@ -17690,7 +17729,7 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Spiritus</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Spiritusnavn</span>\n        <input name="name" value="', escape((11,  name )), '" type="text">\n    </label>\n\n    <label>\n        <span>Alkoholprocent</span>\n        <input name="abv" value="', escape((16,  abv )), '" type="number" step="0.01">\n    </label>\n\n    <label>\n        <span>Opskrift</span>\n        <textarea name="recipe" rows="5">', escape((21,  recipe )), '</textarea>\n    </label>\n\n    <button class="button-final" type="submit">Gem</button>\n</form>\n'); })();
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Batch</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n\n    <div class="buttons button-group">\n        <a href="/batch/', escape((8,  id )), '/edit" role="button">Redigér</a>\n        <button>Fjern</button>\n    </div>\n</div>\n\n<div class="output">\n    <span>Batchnavn</span>\n    <div>', escape((15,  name )), '</div>\n</div>\n\n<div class="output">\n    <span>Spiritustype</span>\n    <div>', escape((20,  spirit_id )), '</div>\n</div>\n\n'); })();
 } 
 return buf.join('');
 })
@@ -17707,7 +17746,7 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Administration</h2>\n        <h1>Spiritus</h1>\n    </div>\n\n    <div class="buttons">\n        <a href="/spirit/create" role="button">Opret</a>\n    </div>\n</div>\n\n<div id="content-body">\n    <table>\n        <tr>\n            <th>Navn</th>\n        </tr>\n\n        ');18; items.forEach((item) => { ; buf.push('\n            <tr>\n                <td>\n                    <a href="/spirit/', escape((21,  item.id )), '">', escape((21,  item.name )), '</a>\n                </td>\n            </tr>\n        ');24; }) ; buf.push('\n    </table>\n</div>\n'); })();
+ buf.push('<div id="navigation">\n    <h1>Nordisk Brænderi</h1>\n    <ul>\n        <li class="category">Produktion</li>\n        <li><a href="/batch">Oversigt</a></li>\n        <li><a href="/batch/create">Opret</a></li>\n\n        <li class="category">Opgørelser</li>\n        <li><a href="#">Årsopgørelse</a></li>\n        <li><a href="#">Kvartalsopgørelse</a></li>\n        <li><a href="#">Månedsopgørelse</a></li>\n\n        <li class="category">Administration</li>\n        <li><a href="/user">Brugere</a></li>\n        <li><a href="/spirit">Spiritus</a></li>\n\n        <li class="logoff"><a href="#">Log af</a></li>\n    </ul>\n</div>\n<div id="content"></div>'); })();
 } 
 return buf.join('');
 })
@@ -17724,7 +17763,7 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Spiritus</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n\n    <div class="buttons button-group">\n        <a href="/spirit/', escape((8,  id )), '/edit" role="button">Redigér</a>\n        <button>Fjern</button>\n    </div>\n</div>\n\n<div class="output">\n    <span>Spiritustype</span>\n    <div>', escape((15,  name )), '</div>\n</div>\n\n<div class="output">\n    <span>Alkoholprocent</span>\n    <div>', escape((20,  abv )), '</div>\n</div>\n\n<div class="output">\n    <span>Opskrift</span>\n    <div>', escape((25,  recipe ? recipe : 'N/A' )), '</div>\n</div>\n\n'); })();
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Spiritus</h2>\n        <h1>Opret spiritus</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Spiritusnavn</span>\n        <input name="name" type="text">\n    </label>\n\n    <label>\n        <span>Alkoholprocent</span>\n        <input name="abv" step="0.01">\n    </label>\n\n    <label>\n        <span>Opskrift</span>\n        <textarea name="recipe"></textarea>\n    </label>\n\n    <div>\n        Produktionsprocess\n        <table>\n            <tr>\n                <td>\n                    <select name="" id="">\n                        <option value="">Mæskning</option>\n                        <option value="">Destillering</option>\n                    </select>\n\n                    <button>Tilføj</button>\n                </td>\n            </tr>\n        </table>\n    </div>\n\n    <button class="button-final" type="submit">Opret</button>\n</form>\n'); })();
 } 
 return buf.join('');
 })
@@ -17741,7 +17780,7 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Bruger</h2>\n        <h1>Opret bruger</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Brugernavn</span>\n        <input name="name" type="text">\n    </label>\n\n    <label>\n        <span>Adgangskode</span>\n        <input name="password" step="0.01">\n    </label>\n\n    <label>\n        <span>Bekræft adgangskode</span>\n        <input name="confirm-password">\n    </label>\n\n    <button class="button-final" type="submit">Opret</button>\n</form>'); })();
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Spiritus</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Spiritusnavn</span>\n        <input name="name" value="', escape((11,  name )), '" type="text">\n    </label>\n\n    <label>\n        <span>Alkoholprocent</span>\n        <input name="abv" value="', escape((16,  abv )), '" type="number" step="0.01">\n    </label>\n\n    <label>\n        <span>Opskrift</span>\n        <textarea name="recipe" rows="5">', escape((21,  recipe )), '</textarea>\n    </label>\n\n    <button class="button-final" type="submit">Gem</button>\n</form>\n'); })();
 } 
 return buf.join('');
 })
@@ -17758,7 +17797,7 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Bruger</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Brugernavn</span>\n        <input name="name" value="', escape((11,  name )), '" type="text">\n    </label>\n\n    <label>\n        <span>Adgangskode</span>\n        <input name="password" type="password">\n    </label>\n\n    <label>\n        <span>Bekræft adgangskode</span>\n        <input name="confirm-password" type="password">\n    </label>\n\n    <button class="button-final" type="submit">Gem</button>\n</form>\n'); })();
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Administration</h2>\n        <h1>Spiritus</h1>\n    </div>\n\n    <div class="buttons">\n        <a href="/spirit/create" role="button">Opret</a>\n    </div>\n</div>\n\n<div id="content-body">\n    <table>\n        <tr>\n            <th>Navn</th>\n        </tr>\n\n        ');18; items.forEach((item) => { ; buf.push('\n            <tr>\n                <td>\n                    <a href="/spirit/', escape((21,  item.id )), '">', escape((21,  item.name )), '</a>\n                </td>\n            </tr>\n        ');24; }) ; buf.push('\n    </table>\n</div>\n'); })();
 } 
 return buf.join('');
 })
@@ -17775,7 +17814,7 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Administration</h2>\n        <h1>Bruger</h1>\n    </div>\n\n    <div class="buttons">\n        <a href="/user/create" role="button">Opret</a>\n    </div>\n</div>\n\n<div id="content-body">\n    <table>\n        <tr>\n            <th>Navn</th>\n        </tr>\n\n        ');18; items.forEach((item) => { ; buf.push('\n        <tr>\n            <td>\n                <a href="/user/', escape((21,  item.id )), '">', escape((21,  item.name )), '</a>\n            </td>\n        </tr>\n        ');24; }) ; buf.push('\n    </table>\n</div>'); })();
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Spiritus</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n\n    <div class="buttons button-group">\n        <a href="/spirit/', escape((8,  id )), '/edit" role="button">Redigér</a>\n        <button>Fjern</button>\n    </div>\n</div>\n\n<div class="output">\n    <span>Spiritustype</span>\n    <div>', escape((15,  name )), '</div>\n</div>\n\n<div class="output">\n    <span>Alkoholprocent</span>\n    <div>', escape((20,  abv )), '</div>\n</div>\n\n<div class="output">\n    <span>Opskrift</span>\n    <div>', escape((25,  recipe ? recipe : 'N/A' )), '</div>\n</div>\n\n'); })();
 } 
 return buf.join('');
 })
@@ -17792,11 +17831,137 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Bruger</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n\n    <div class="buttons button-group">\n        <a href="/user/', escape((8,  id )), '/edit" role="button">Redigér</a>\n        <button>Fjern</button>\n    </div>\n</div>\n\n<div class="output">\n    <span>Brugernavn</span>\n    <div>', escape((15,  name )), '</div>\n</div>\n'); })();
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Bruger</h2>\n        <h1>Opret bruger</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Brugernavn</span>\n        <input name="name" type="text">\n    </label>\n\n    <label>\n        <span>Adgangskode</span>\n        <input name="password" step="0.01">\n    </label>\n\n    <label>\n        <span>Bekræft adgangskode</span>\n        <input name="confirm-password">\n    </label>\n\n    <button class="button-final" type="submit">Opret</button>\n</form>'); })();
 } 
 return buf.join('');
 })
 },{}],30:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Bruger</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Brugernavn</span>\n        <input name="name" value="', escape((11,  name )), '" type="text">\n    </label>\n\n    <label>\n        <span>Adgangskode</span>\n        <input name="password" type="password">\n    </label>\n\n    <label>\n        <span>Bekræft adgangskode</span>\n        <input name="confirm-password" type="password">\n    </label>\n\n    <button class="button-final" type="submit">Gem</button>\n</form>\n'); })();
+} 
+return buf.join('');
+})
+},{}],31:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Administration</h2>\n        <h1>Bruger</h1>\n    </div>\n\n    <div class="buttons">\n        <a href="/user/create" role="button">Opret</a>\n    </div>\n</div>\n\n<div id="content-body">\n    <table>\n        <tr>\n            <th>Navn</th>\n        </tr>\n\n        ');18; items.forEach((item) => { ; buf.push('\n        <tr>\n            <td>\n                <a href="/user/', escape((21,  item.id )), '">', escape((21,  item.name )), '</a>\n            </td>\n        </tr>\n        ');24; }) ; buf.push('\n    </table>\n</div>'); })();
+} 
+return buf.join('');
+})
+},{}],32:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Bruger</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n\n    <div class="buttons button-group">\n        <a href="/user/', escape((8,  id )), '/edit" role="button">Redigér</a>\n        <button>Fjern</button>\n    </div>\n</div>\n\n<div class="output">\n    <span>Brugernavn</span>\n    <div>', escape((15,  name )), '</div>\n</div>\n'); })();
+} 
+return buf.join('');
+})
+},{}],33:[function(require,module,exports){
+'use strict';
+
+var $ = require('jquery');
+var Backbone = require('backbone');
+var Marionette = require('backbone.marionette');
+require('form-serializer');
+
+var Batch = require('./../../models/batch');
+var _template = require('./../../templates/batch/create.ejs');
+
+module.exports = Marionette.View.extend({
+    id: 'batch-create',
+
+    template: function template() {
+        return _template;
+    },
+
+    events: {
+        'submit form': 'create'
+    },
+
+    create: function create(e) {
+        e.preventDefault();
+
+        var batch = new Batch($(e.target).serializeObject());
+
+        batch.save(null, {
+            success: function success() {
+                Backbone.history.navigate('spirit/' + batch.get('id'), true);
+            },
+            error: function error() {
+                console.log("error", arguments);
+            }
+        });
+    }
+});
+
+},{"./../../models/batch":13,"./../../templates/batch/create.ejs":20,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],34:[function(require,module,exports){
+'use strict';
+
+var $ = require('jquery');
+var Backbone = require('backbone');
+var Marionette = require('backbone.marionette');
+require('form-serializer');
+
+var template = require('./../../templates/batch/edit.ejs');
+
+module.exports = Marionette.View.extend({
+    id: 'batch-edit',
+
+    template: template,
+
+    events: {
+        'submit form': 'edit'
+    },
+
+    edit: function edit(e) {
+        var that = this;
+
+        e.preventDefault();
+
+        this.model.set($(e.target).serializeObject());
+
+        this.model.save(null, {
+            success: function success() {
+                Backbone.history.navigate('batch/' + that.model.get('id'), true);
+            },
+            error: function error() {
+                console.log("error", arguments);
+            }
+        });
+    }
+});
+
+},{"./../../templates/batch/edit.ejs":21,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],35:[function(require,module,exports){
 'use strict';
 
 var Marionette = require('backbone.marionette');
@@ -17808,7 +17973,35 @@ module.exports = Marionette.View.extend({
     template: template
 });
 
-},{"./../../templates/batch/index.ejs":20,"backbone.marionette":2}],31:[function(require,module,exports){
+},{"./../../templates/batch/index.ejs":22,"backbone.marionette":2}],36:[function(require,module,exports){
+'use strict';
+
+var Backbone = require('backbone');
+var Marionette = require('backbone.marionette');
+var template = require('./../../templates/batch/show.ejs');
+
+module.exports = Marionette.View.extend({
+    id: 'batch-show',
+
+    template: template,
+
+    events: {
+        'click button': 'delete'
+    },
+
+    delete: function _delete() {
+        this.model.destroy({
+            success: function success() {
+                Backbone.history.navigate('/batch', true);
+            },
+            error: function error() {
+                console.log("error");
+            }
+        });
+    }
+});
+
+},{"./../../templates/batch/show.ejs":23,"backbone":4,"backbone.marionette":2}],37:[function(require,module,exports){
 'use strict';
 
 var Marionette = require('backbone.marionette');
@@ -17824,7 +18017,7 @@ module.exports = Marionette.View.extend({
     }
 });
 
-},{"./../templates/root.ejs":21,"backbone.marionette":2}],32:[function(require,module,exports){
+},{"./../templates/root.ejs":24,"backbone.marionette":2}],38:[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -17867,7 +18060,7 @@ module.exports = Marionette.View.extend({
     }
 });
 
-},{"./../../models/spirit":14,"./../../templates/spirit/create.ejs":22,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],33:[function(require,module,exports){
+},{"./../../models/spirit":14,"./../../templates/spirit/create.ejs":25,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],39:[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -17904,7 +18097,7 @@ module.exports = Marionette.View.extend({
     }
 });
 
-},{"./../../templates/spirit/edit.ejs":23,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],34:[function(require,module,exports){
+},{"./../../templates/spirit/edit.ejs":26,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],40:[function(require,module,exports){
 'use strict';
 
 var Marionette = require('backbone.marionette');
@@ -17916,7 +18109,7 @@ module.exports = Marionette.View.extend({
     template: template
 });
 
-},{"./../../templates/spirit/index.ejs":24,"backbone.marionette":2}],35:[function(require,module,exports){
+},{"./../../templates/spirit/index.ejs":27,"backbone.marionette":2}],41:[function(require,module,exports){
 'use strict';
 
 var Backbone = require('backbone');
@@ -17944,7 +18137,7 @@ module.exports = Marionette.View.extend({
     }
 });
 
-},{"./../../templates/spirit/show.ejs":25,"backbone":4,"backbone.marionette":2}],36:[function(require,module,exports){
+},{"./../../templates/spirit/show.ejs":28,"backbone":4,"backbone.marionette":2}],42:[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -17980,7 +18173,7 @@ module.exports = Marionette.View.extend({
     }
 });
 
-},{"./../../models/user":16,"./../../templates/user/create.ejs":26,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],37:[function(require,module,exports){
+},{"./../../models/user":16,"./../../templates/user/create.ejs":29,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],43:[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -18017,7 +18210,7 @@ module.exports = Marionette.View.extend({
     }
 });
 
-},{"./../../templates/user/edit.ejs":27,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],38:[function(require,module,exports){
+},{"./../../templates/user/edit.ejs":30,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],44:[function(require,module,exports){
 'use strict';
 
 var Marionette = require('backbone.marionette');
@@ -18029,7 +18222,7 @@ module.exports = Marionette.View.extend({
     template: template
 });
 
-},{"./../../templates/user/index.ejs":28,"backbone.marionette":2}],39:[function(require,module,exports){
+},{"./../../templates/user/index.ejs":31,"backbone.marionette":2}],45:[function(require,module,exports){
 'use strict';
 
 var Backbone = require('backbone');
@@ -18054,6 +18247,6 @@ module.exports = Marionette.View.extend({
     }
 });
 
-},{"./../../templates/user/show.ejs":29,"backbone":4,"backbone.marionette":2}]},{},[12]);
+},{"./../../templates/user/show.ejs":32,"backbone":4,"backbone.marionette":2}]},{},[12]);
 
 //# sourceMappingURL=main.js.map

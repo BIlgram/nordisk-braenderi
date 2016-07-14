@@ -21,22 +21,6 @@ class BatchController extends Controller
         return Batch::all();
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        return view('batch.create', ["spirits" => Spirit::all()]);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $this->validate($request, Batch::rules());
@@ -44,25 +28,18 @@ class BatchController extends Controller
 
         $batch->name = $request->name;
         $batch->spirit_id = $request->spirit_id;
-        $batch->created_at = Carbon::parse($request->created_at);
+        $batch->created_at = $request->created_at;
 
         $batch->save();
 
-        flash('Batch was successfully created!', 'success');
+//        flash('Batch was successfully created!', 'success');
 
-        return redirect()->route('batch.show', $batch->id);
+        return $batch;
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param Batch $batch
-     * @return \Illuminate\Http\Response
-     * @internal param int $id
-     */
     public function show(Batch $batch)
     {
-        return view('batch.show', ["batch" => $batch]);
+        return $batch;
     }
 
     /**
