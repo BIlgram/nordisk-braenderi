@@ -11,19 +11,16 @@
 <div id="content-body">
     <table>
         <tr>
-            <th>Navn</th>
+            <th class="span">Navn</th>
+            <th class="shrink">Tilstand</th>
+            <th class="shrink">Oprettelsesdato</th>
         </tr>
+
         <% items.forEach((item) => { %>
         <tr>
-            <td>
-                <a href="/batch/<%= item.id %>"><%= item.name %></a>
-            </td>
-            <td class="output">
-                <%= item.spirit_id %>
-            </td>
-            <td>
-                <%= item.created_at %>
-            </td>
+            <td><a href="/batch/<%= item.id %>"><%= item.name %></a></td>
+            <td>Mæskning</td>
+            <td><%= item.created_at %></td>
         </tr>
         <% }) %>
     </table>

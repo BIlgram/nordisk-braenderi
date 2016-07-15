@@ -17712,7 +17712,7 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Produktion</h2>\n        <h1>Batches</h1>\n    </div>\n    <div class="buttons">\n        <a href="/batch/create" role="button">Opret</a>\n    </div>\n</div>\n\n<div id="content-body">\n    <table>\n        <tr>\n            <th>Navn</th>\n        </tr>\n        ');16; items.forEach((item) => { ; buf.push('\n        <tr>\n            <td>\n                <a href="/batch/', escape((19,  item.id )), '">', escape((19,  item.name )), '</a>\n            </td>\n            <td class="output">\n                ', escape((22,  item.spirit_id )), '\n            </td>\n            <td>\n                ', escape((25,  item.created_at )), '\n            </td>\n        </tr>\n        ');28; }) ; buf.push('\n    </table>\n</div>'); })();
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Produktion</h2>\n        <h1>Batches</h1>\n    </div>\n    <div class="buttons">\n        <a href="/batch/create" role="button">Opret</a>\n    </div>\n</div>\n\n<div id="content-body">\n    <table>\n        <tr>\n            <th class="span">Navn</th>\n            <th class="shrink">Tilstand</th>\n            <th class="shrink">Oprettelsesdato</th>\n        </tr>\n\n        ');19; items.forEach((item) => { ; buf.push('\n        <tr>\n            <td><a href="/batch/', escape((21,  item.id )), '">', escape((21,  item.name )), '</a></td>\n            <td>Mæskning</td>\n            <td>', escape((23,  item.created_at )), '</td>\n        </tr>\n        ');25; }) ; buf.push('\n    </table>\n</div>'); })();
 } 
 return buf.join('');
 })
@@ -17729,7 +17729,7 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Batch</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n\n    <div class="buttons button-group">\n        <a href="/batch/', escape((8,  id )), '/edit" role="button">Redigér</a>\n        <button>Fjern</button>\n    </div>\n</div>\n\n<div class="output">\n    <span>Batchnavn</span>\n    <div>', escape((15,  name )), '</div>\n</div>\n\n<div class="output">\n    <span>Spiritustype</span>\n    <div>', escape((20,  spirit_id )), '</div>\n</div>\n\n'); })();
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Batch</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n\n    <div class="buttons button-group">\n        <a href="/batch/', escape((8,  id )), '/edit" role="button">Redigér</a>\n        <button>Fjern</button>\n    </div>\n</div>\n\n<div class="output">\n    <span>Batchnavn</span>\n    <div>', escape((15,  name )), '</div>\n</div>\n\n<div class="output">\n    <span>Tilstand</span>\n    <div>Mæskning</div>\n</div>\n\n'); })();
 } 
 return buf.join('');
 })
