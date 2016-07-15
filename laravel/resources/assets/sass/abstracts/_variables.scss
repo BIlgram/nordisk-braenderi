@@ -7,15 +7,20 @@ $colors: (
   ),
   'green': (
     'base': rgb(30, 200, 140),
+    'dark': rgb(30, 180, 120),
   ),
   'red': (
     'base': rgb(230, 70, 90),
+    'dark': rgb(210, 70, 90),
+    'darker': rgb(190, 70, 90),
+    'darkest': rgb(170, 70, 90),
   ),
   'yellow': (
     'base': rgb(230, 215, 55),
   ),
   'gray': (
-    'light': rgb(240, 240, 240),
+    'lighter': rgb(240, 240, 240),
+    'light': rgb(215, 215, 215),
     'base': rgb(150, 150, 150),
     'dark': rgb(85, 85, 85)
   ),

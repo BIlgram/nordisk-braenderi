@@ -24,6 +24,12 @@ class Spirit extends Model
     }
 
     public function getProcessAttribute($value) {
-        return State::find(json_decode($value));
+        $result = [];
+
+        foreach(json_decode($value) as $item) {
+            $result[] = State::find($item);
+        }
+
+        return $result;
     }
 }

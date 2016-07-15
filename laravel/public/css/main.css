@@ -202,8 +202,6 @@ samp {
  */
 button,
 input,
-textarea,
-select,
 optgroup,
 select,
 textarea {
@@ -239,14 +237,8 @@ select {
  */
 button,
 html input[type="button"],
-html textarea[type="button"],
-html select[type="button"],
 input[type="reset"],
-textarea[type="reset"],
-select[type="reset"],
-input[type="submit"],
-textarea[type="submit"],
-select[type="submit"] {
+input[type="submit"] {
   -webkit-appearance: button;
   /* 2 */
   cursor: pointer;
@@ -256,18 +248,14 @@ select[type="submit"] {
  * Re-set default cursor for disabled elements.
  */
 button[disabled],
-html input[disabled],
-html textarea[disabled],
-html select[disabled] {
+html input[disabled] {
   cursor: default; }
 
 /**
  * Remove inner padding and border in Firefox 4+.
  */
 button::-moz-focus-inner,
-input::-moz-focus-inner,
-textarea::-moz-focus-inner,
-select::-moz-focus-inner {
+input::-moz-focus-inner {
   border: 0;
   padding: 0; }
 
@@ -275,7 +263,7 @@ select::-moz-focus-inner {
  * Address Firefox 4+ setting `line-height` on `input` using `!important` in
  * the UA stylesheet.
  */
-input, textarea, select {
+input {
   line-height: normal; }
 
 /**
@@ -285,10 +273,8 @@ input, textarea, select {
  * 1. Address box sizing set to `content-box` in IE 8/9/10.
  * 2. Remove excess padding in IE 8/9/10.
  */
-input[type="checkbox"], textarea[type="checkbox"], select[type="checkbox"],
-input[type="radio"],
-textarea[type="radio"],
-select[type="radio"] {
+input[type="checkbox"],
+input[type="radio"] {
   box-sizing: border-box;
   /* 1 */
   padding: 0;
@@ -299,10 +285,8 @@ select[type="radio"] {
  * `font-size` values of the `input`, it causes the cursor style of the
  * decrement button to change from `default` to `text`.
  */
-input[type="number"]::-webkit-inner-spin-button, textarea[type="number"]::-webkit-inner-spin-button, select[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button,
-textarea[type="number"]::-webkit-outer-spin-button,
-select[type="number"]::-webkit-outer-spin-button {
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
   height: auto; }
 
 /**
@@ -310,7 +294,7 @@ select[type="number"]::-webkit-outer-spin-button {
  * 2. Address `box-sizing` set to `border-box` in Safari and Chrome
  *    (include `-moz` to future-proof).
  */
-input[type="search"], textarea[type="search"], select[type="search"] {
+input[type="search"] {
   -webkit-appearance: textfield;
   /* 1 */
   /* 2 */
@@ -321,10 +305,8 @@ input[type="search"], textarea[type="search"], select[type="search"] {
  * Safari (but not Chrome) clips the cancel button when the search input has
  * padding (and `textfield` appearance).
  */
-input[type="search"]::-webkit-search-cancel-button, textarea[type="search"]::-webkit-search-cancel-button, select[type="search"]::-webkit-search-cancel-button,
-input[type="search"]::-webkit-search-decoration,
-textarea[type="search"]::-webkit-search-decoration,
-select[type="search"]::-webkit-search-decoration {
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration {
   -webkit-appearance: none; }
 
 /**
@@ -425,7 +407,7 @@ a {
   padding: 16px;
   margin-left: 16px; }
   #content #content-header {
-    border-bottom: 2px solid #f0f0f0;
+    border-bottom: 2px solid #d7d7d7;
     margin-bottom: 30px;
     padding-bottom: 16px;
     display: -webkit-box;
@@ -491,6 +473,24 @@ a {
       #navigation ul li.logoff {
         margin: 20px 0 0; }
 
+#process table {
+  margin-bottom: 16px; }
+  #process table tr td {
+    padding-left: 0;
+    padding-right: 0;
+    border: 0; }
+    #process table tr td button {
+      border: 0px solid #d7d7d7;
+      background-color: transparent;
+      color: #d7d7d7; }
+      #process table tr td button:hover {
+        color: #969696; }
+  #process table tr:first-of-type td {
+    padding-top: 0; }
+
+#process button {
+  width: 100%; }
+
 .alert {
   width: 100%;
   padding: 30px;
@@ -529,11 +529,12 @@ button, [role=button] {
   button:hover, [role=button]:hover {
     background-color: #1eaadc;
     color: white; }
-  button.button-final, [role=button].button-final {
-    background-color: #1eaadc;
+  button.green, [role=button].green {
+    border: 0;
+    background-color: #1ec88c;
     color: white; }
-    button.button-final:hover, [role=button].button-final:hover {
-      background-color: #1f9fd2; }
+    button.green:hover, [role=button].green:hover {
+      background-color: #1eb478; }
 
 .button-group {
   display: inline-block;
@@ -561,18 +562,18 @@ table {
     text-align: left;
     font-weight: 500; }
     table tr th:first-of-type {
-      padding-left: 0; }
+      padding-left: 0 !important; }
     table tr th:last-of-type {
-      padding-right: 0; }
+      padding-right: 0 !important; }
   table tr td {
     padding: 8px 25px;
     border-top: 1px solid #eeeeee;
     white-space: nowrap;
     font-weight: 300; }
     table tr td:first-of-type {
-      padding-left: 0; }
+      padding-left: 0 !important; }
     table tr td:last-of-type {
-      padding-right: 0; }
+      padding-right: 0 !important; }
   table tr:last-of-type td {
     padding-bottom: 0; }
 
@@ -581,32 +582,33 @@ form {
   display: flex;
   flex-flow: column nowrap; }
 
-label {
+label, #process {
   margin-bottom: 30px;
   font-weight: 500; }
-  label span {
+  label span, #process span {
     display: block;
     padding-bottom: 5px; }
 
-input, textarea, select {
+input, select, textarea {
   display: block;
   width: 100%;
-  height: 36px;
   padding: 0 12px;
-  line-height: 36px;
-  border: 1px solid #d5d5d5;
-  background-color: #ffffff;
+  border: 1px solid #d7d7d7;
+  background-color: white;
   border-radius: 4px;
   outline: none;
   font-weight: 300;
   -webkit-transition: border-color 100ms;
   transition: border-color 100ms; }
-  input:focus, textarea:focus, select:focus {
-    border-color: #1997c6; }
+
+input, select {
+  height: 36px;
+  line-height: 36px; }
+  input:focus, select:focus {
+    border-color: #1eaadc; }
 
 textarea {
-  width: 100% !important;
-  height: auto; }
+  padding: 6px 12px; }
 
 .output {
   margin-bottom: 30px; }

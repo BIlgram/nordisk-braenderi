@@ -4,22 +4,29 @@ var Marionette = require('backbone.marionette');
 require('form-serializer');
 
 var Spirit = require('models/spirit');
+var ProcessView = require('views/process/base');
 var template = require('templates/spirit/create');
 
 module.exports = Marionette.View.extend({
     id: 'spirit-create',
 
-    template: function (data) {
-        console.log(data);
-        return template;
+    template: template,
+
+    regions: {
+        process: {
+            el: '#process',
+            replaceElement: true
+        }
     },
 
     events: {
         'submit form': 'create'
     },
 
-    onRender: function() {
-      console.log(this.states);
+    onRender: function () {
+        this.showChildView('process', new ProcessView({
+            states: this.getOption('states'),
+        }))
     },
 
     create: function (e) {
@@ -31,8 +38,8 @@ module.exports = Marionette.View.extend({
             success: function () {
                 Backbone.history.navigate('spirit/' + spirit.get('id'), true);
             },
-            error: function () {
-                console.log("error", arguments);
+            error: function (error) {
+                console.log(error);
             }
         });
     }

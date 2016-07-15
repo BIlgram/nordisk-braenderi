@@ -1,3 +1,4 @@
+var $ = require('jquery');
 var Backbone = require('backbone');
 
 var Spirit = require('models/spirit');
@@ -34,7 +35,6 @@ module.exports = Backbone.Router.extend({
         var states = new States();
 
         states.fetch().then(() => {
-            console.log(states);
             this.app.rootView.showChildView('content', new SpiritCreateView({
                 states: states
             }));
@@ -53,10 +53,12 @@ module.exports = Backbone.Router.extend({
 
     edit: function (id) {
         var spirit = new Spirit({id: id});
+        var states = new States();
 
-        spirit.fetch().then(() => {
+        $.when(spirit.fetch(), states.fetch()).then(() => {
             this.app.rootView.showChildView('content', new SpiritEditView({
-                model: spirit
+                model: spirit,
+                states: states
             }));
         })
     }

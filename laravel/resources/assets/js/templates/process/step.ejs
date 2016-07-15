@@ -1,0 +1,15 @@
+<td class="span">
+    <select name="process[]">
+        <% states.forEach((state) => { %>
+            <% if (step && state.id == step.id) { %>
+            <option value="<%= state.id %>" selected><%= state.name %></option>
+            <% } else { %>
+            <option value="<%= state.id %>"><%= state.name %></option>
+            <% } %>
+        <% }) %>
+    </select>
+</td>
+
+<td class="shrink">
+    <button type="button" class="icon-cross"></button>
+</td>

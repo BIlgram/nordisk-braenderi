@@ -43,6 +43,7 @@ class SpiritController extends Controller
         $spirit->name = $request->name;
         $spirit->abv = $request->abv;
         $spirit->recipe = $request->recipe;
+        $spirit->process = $request->process;
         $spirit->save();
 
         return $spirit;

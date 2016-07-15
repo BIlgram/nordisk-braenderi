@@ -1,0 +1,38 @@
+#process {
+  @extend label;
+
+  table {
+    margin-bottom: 16px;
+
+    tr {
+      td {
+        padding-left: 0;
+        padding-right: 0;
+        border: 0;
+
+        button {
+          //border: 1px solid color('red');
+          border: 0px solid color('gray', 'light');
+          background-color: transparent;
+          color: color('gray', 'light');
+          //color: color('red');
+
+          &:hover {
+            //border: 0px solid color('red');
+            color: color('gray');
+          }
+        }
+      }
+
+      &:first-of-type {
+        td {
+          padding-top: 0;
+        }
+      }
+    }
+  }
+
+  button {
+    width: 100%;
+  }
+}

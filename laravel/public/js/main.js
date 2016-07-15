@@ -190,7 +190,7 @@
 
 }));
 
-},{"backbone":4,"underscore":7}],2:[function(require,module,exports){
+},{"backbone":4,"underscore":8}],2:[function(require,module,exports){
 // MarionetteJS (Backbone.Marionette)
 // ----------------------------------
 // v3.0.0-pre.4
@@ -3281,7 +3281,7 @@
 
 
 
-},{"backbone":4,"backbone.babysitter":1,"backbone.radio":3,"underscore":7}],3:[function(require,module,exports){
+},{"backbone":4,"backbone.babysitter":1,"backbone.radio":3,"underscore":8}],3:[function(require,module,exports){
 // Backbone.Radio v2.0.0-pre.1
 
 (function (global, factory) {
@@ -3632,7 +3632,7 @@
 
 }));
 
-},{"backbone":4,"underscore":7}],4:[function(require,module,exports){
+},{"backbone":4,"underscore":8}],4:[function(require,module,exports){
 (function (global){
 //     Backbone.js 1.3.3
 
@@ -5556,7 +5556,7 @@
 });
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"jquery":6,"underscore":7}],5:[function(require,module,exports){
+},{"jquery":6,"underscore":8}],5:[function(require,module,exports){
 /**
  * jQuery serializeObject
  * @copyright 2014, macek <paulmacek@gmail.com>
@@ -15781,6 +15781,127 @@ return jQuery;
 } );
 
 },{}],7:[function(require,module,exports){
+// shim for using process in browser
+
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+(function () {
+  try {
+    cachedSetTimeout = setTimeout;
+  } catch (e) {
+    cachedSetTimeout = function () {
+      throw new Error('setTimeout is not defined');
+    }
+  }
+  try {
+    cachedClearTimeout = clearTimeout;
+  } catch (e) {
+    cachedClearTimeout = function () {
+      throw new Error('clearTimeout is not defined');
+    }
+  }
+} ())
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = cachedSetTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    cachedClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        cachedSetTimeout(drainQueue, 0);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+},{}],8:[function(require,module,exports){
 //     Underscore.js 1.8.3
 //     http://underscorejs.org
 //     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -17330,7 +17451,7 @@ return jQuery;
   }
 }.call(this));
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 'use strict';
 
 var Backbone = require('backbone');
@@ -17341,7 +17462,7 @@ module.exports = Backbone.Collection.extend({
     model: Batch
 });
 
-},{"./../models/batch":13,"backbone":4}],9:[function(require,module,exports){
+},{"./../models/batch":14,"backbone":4}],10:[function(require,module,exports){
 'use strict';
 
 var Backbone = require('backbone');
@@ -17352,7 +17473,7 @@ module.exports = Backbone.Collection.extend({
     model: Spirit
 });
 
-},{"./../models/spirit":14,"backbone":4}],10:[function(require,module,exports){
+},{"./../models/spirit":15,"backbone":4}],11:[function(require,module,exports){
 'use strict';
 
 var Backbone = require('backbone');
@@ -17363,7 +17484,7 @@ module.exports = Backbone.Collection.extend({
     model: State
 });
 
-},{"./../models/state":15,"backbone":4}],11:[function(require,module,exports){
+},{"./../models/state":16,"backbone":4}],12:[function(require,module,exports){
 'use strict';
 
 var Backbone = require('backbone');
@@ -17374,7 +17495,7 @@ module.exports = Backbone.Collection.extend({
     model: User
 });
 
-},{"./../models/user":16,"backbone":4}],12:[function(require,module,exports){
+},{"./../models/user":17,"backbone":4}],13:[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -17420,7 +17541,7 @@ var app = new App();
 
 app.start();
 
-},{"./routers/batch":17,"./routers/spirit":18,"./routers/user":19,"./views/root":37,"backbone":4,"backbone.marionette":2,"jquery":6}],13:[function(require,module,exports){
+},{"./routers/batch":18,"./routers/spirit":19,"./routers/user":20,"./views/root":42,"backbone":4,"backbone.marionette":2,"jquery":6}],14:[function(require,module,exports){
 'use strict';
 
 var Backbone = require('backbone');
@@ -17429,7 +17550,7 @@ module.exports = Backbone.Model.extend({
     urlRoot: '/api/batch'
 });
 
-},{"backbone":4}],14:[function(require,module,exports){
+},{"backbone":4}],15:[function(require,module,exports){
 'use strict';
 
 var Backbone = require('backbone');
@@ -17438,7 +17559,7 @@ module.exports = Backbone.Model.extend({
     urlRoot: '/api/spirit'
 });
 
-},{"backbone":4}],15:[function(require,module,exports){
+},{"backbone":4}],16:[function(require,module,exports){
 'use strict';
 
 var Backbone = require('backbone');
@@ -17447,7 +17568,7 @@ module.exports = Backbone.Model.extend({
     urlRoot: '/api/state'
 });
 
-},{"backbone":4}],16:[function(require,module,exports){
+},{"backbone":4}],17:[function(require,module,exports){
 'use strict';
 
 var Backbone = require('backbone');
@@ -17456,7 +17577,7 @@ module.exports = Backbone.Model.extend({
     urlRoot: '/api/user'
 });
 
-},{"backbone":4}],17:[function(require,module,exports){
+},{"backbone":4}],18:[function(require,module,exports){
 'use strict';
 
 var Backbone = require('backbone');
@@ -17525,9 +17646,10 @@ module.exports = Backbone.Router.extend({
     }
 });
 
-},{"./../collections/batches":8,"./../collections/spirits":9,"./../models/batch":13,"./../views/batch/create":33,"./../views/batch/edit":34,"./../views/batch/index":35,"./../views/batch/show":36,"backbone":4}],18:[function(require,module,exports){
+},{"./../collections/batches":9,"./../collections/spirits":10,"./../models/batch":14,"./../views/batch/create":36,"./../views/batch/edit":37,"./../views/batch/index":38,"./../views/batch/show":39,"backbone":4}],19:[function(require,module,exports){
 'use strict';
 
+var $ = require('jquery');
 var Backbone = require('backbone');
 
 var Spirit = require('./../models/spirit');
@@ -17568,7 +17690,6 @@ module.exports = Backbone.Router.extend({
         var states = new States();
 
         states.fetch().then(function () {
-            console.log(states);
             _this2.app.rootView.showChildView('content', new SpiritCreateView({
                 states: states
             }));
@@ -17591,16 +17712,18 @@ module.exports = Backbone.Router.extend({
         var _this4 = this;
 
         var spirit = new Spirit({ id: id });
+        var states = new States();
 
-        spirit.fetch().then(function () {
+        $.when(spirit.fetch(), states.fetch()).then(function () {
             _this4.app.rootView.showChildView('content', new SpiritEditView({
-                model: spirit
+                model: spirit,
+                states: states
             }));
         });
     }
 });
 
-},{"./../collections/spirits":9,"./../collections/states":10,"./../models/spirit":14,"./../views/spirit/create":38,"./../views/spirit/edit":39,"./../views/spirit/index":40,"./../views/spirit/show":41,"backbone":4}],19:[function(require,module,exports){
+},{"./../collections/spirits":10,"./../collections/states":11,"./../models/spirit":15,"./../views/spirit/create":43,"./../views/spirit/edit":44,"./../views/spirit/index":45,"./../views/spirit/show":46,"backbone":4,"jquery":6}],20:[function(require,module,exports){
 'use strict';
 
 var Backbone = require('backbone');
@@ -17665,7 +17788,7 @@ module.exports = Backbone.Router.extend({
     }
 });
 
-},{"./../collections/users":11,"./../models/user":16,"./../views/user/create":42,"./../views/user/edit":43,"./../views/user/index":44,"./../views/user/show":45,"backbone":4}],20:[function(require,module,exports){
+},{"./../collections/users":12,"./../models/user":17,"./../views/user/create":47,"./../views/user/edit":48,"./../views/user/index":49,"./../views/user/show":50,"backbone":4}],21:[function(require,module,exports){
 module.exports = (function anonymous(locals, filters, escape, rethrow
 /**/) {
 escape = escape || function (html){
@@ -17682,7 +17805,7 @@ with (locals || {}) { (function(){
 } 
 return buf.join('');
 })
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 module.exports = (function anonymous(locals, filters, escape, rethrow
 /**/) {
 escape = escape || function (html){
@@ -17699,7 +17822,7 @@ with (locals || {}) { (function(){
 } 
 return buf.join('');
 })
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 module.exports = (function anonymous(locals, filters, escape, rethrow
 /**/) {
 escape = escape || function (html){
@@ -17716,7 +17839,7 @@ with (locals || {}) { (function(){
 } 
 return buf.join('');
 })
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 module.exports = (function anonymous(locals, filters, escape, rethrow
 /**/) {
 escape = escape || function (html){
@@ -17733,23 +17856,6 @@ with (locals || {}) { (function(){
 } 
 return buf.join('');
 })
-},{}],24:[function(require,module,exports){
-module.exports = (function anonymous(locals, filters, escape, rethrow
-/**/) {
-escape = escape || function (html){
-  return String(html)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/'/g, '&#39;')
-    .replace(/"/g, '&quot;');
-};
-var buf = [];
-with (locals || {}) { (function(){ 
- buf.push('<div id="navigation">\n    <h1>Nordisk Brænderi</h1>\n    <ul>\n        <li class="category">Produktion</li>\n        <li><a href="/batch">Oversigt</a></li>\n        <li><a href="/batch/create">Opret</a></li>\n\n        <li class="category">Opgørelser</li>\n        <li><a href="#">Årsopgørelse</a></li>\n        <li><a href="#">Kvartalsopgørelse</a></li>\n        <li><a href="#">Månedsopgørelse</a></li>\n\n        <li class="category">Administration</li>\n        <li><a href="/user">Brugere</a></li>\n        <li><a href="/spirit">Spiritus</a></li>\n\n        <li class="logoff"><a href="#">Log af</a></li>\n    </ul>\n</div>\n<div id="content"></div>'); })();
-} 
-return buf.join('');
-})
 },{}],25:[function(require,module,exports){
 module.exports = (function anonymous(locals, filters, escape, rethrow
 /**/) {
@@ -17763,7 +17869,7 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Spiritus</h2>\n        <h1>Opret spiritus</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Spiritusnavn</span>\n        <input name="name" type="text">\n    </label>\n\n    <label>\n        <span>Alkoholprocent</span>\n        <input name="abv" step="0.01">\n    </label>\n\n    <label>\n        <span>Opskrift</span>\n        <textarea name="recipe"></textarea>\n    </label>\n\n    <div>\n        Produktionsprocess\n        <table>\n            <tr>\n                <td>\n                    <select name="" id="">\n                        <option value="">Mæskning</option>\n                        <option value="">Destillering</option>\n                    </select>\n\n                    <button>Tilføj</button>\n                </td>\n            </tr>\n        </table>\n    </div>\n\n    <button class="button-final" type="submit">Opret</button>\n</form>\n'); })();
+ buf.push('<span>Produktionsprocess</span>\n<table></table>\n<button type="button">Tilføj</button>'); })();
 } 
 return buf.join('');
 })
@@ -17780,7 +17886,7 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Spiritus</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Spiritusnavn</span>\n        <input name="name" value="', escape((11,  name )), '" type="text">\n    </label>\n\n    <label>\n        <span>Alkoholprocent</span>\n        <input name="abv" value="', escape((16,  abv )), '" type="number" step="0.01">\n    </label>\n\n    <label>\n        <span>Opskrift</span>\n        <textarea name="recipe" rows="5">', escape((21,  recipe )), '</textarea>\n    </label>\n\n    <button class="button-final" type="submit">Gem</button>\n</form>\n'); })();
+ buf.push('<td class="span">\n    <select name="process[]">\n        ');3; states.forEach((state) => { ; buf.push('\n            ');4; if (step && state.id == step.id) { ; buf.push('\n            <option value="', escape((5,  state.id )), '" selected>', escape((5,  state.name )), '</option>\n            ');6; } else { ; buf.push('\n            <option value="', escape((7,  state.id )), '">', escape((7,  state.name )), '</option>\n            ');8; } ; buf.push('\n        ');9; }) ; buf.push('\n    </select>\n</td>\n\n<td class="shrink">\n    <button type="button" class="icon-cross"></button>\n</td>'); })();
 } 
 return buf.join('');
 })
@@ -17797,7 +17903,7 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Administration</h2>\n        <h1>Spiritus</h1>\n    </div>\n\n    <div class="buttons">\n        <a href="/spirit/create" role="button">Opret</a>\n    </div>\n</div>\n\n<div id="content-body">\n    <table>\n        <tr>\n            <th>Navn</th>\n        </tr>\n\n        ');18; items.forEach((item) => { ; buf.push('\n            <tr>\n                <td>\n                    <a href="/spirit/', escape((21,  item.id )), '">', escape((21,  item.name )), '</a>\n                </td>\n            </tr>\n        ');24; }) ; buf.push('\n    </table>\n</div>\n'); })();
+ buf.push('<div id="navigation">\n    <h1>Nordisk Brænderi</h1>\n    <ul>\n        <li class="category">Produktion</li>\n        <li><a href="/batch">Oversigt</a></li>\n        <li><a href="/batch/create">Opret</a></li>\n\n        <li class="category">Opgørelser</li>\n        <li><a href="#">Årsopgørelse</a></li>\n        <li><a href="#">Kvartalsopgørelse</a></li>\n        <li><a href="#">Månedsopgørelse</a></li>\n\n        <li class="category">Administration</li>\n        <li><a href="/user">Brugere</a></li>\n        <li><a href="/spirit">Spiritus</a></li>\n\n        <li class="logoff"><a href="#">Log af</a></li>\n    </ul>\n</div>\n<div id="content"></div>'); })();
 } 
 return buf.join('');
 })
@@ -17814,7 +17920,7 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Spiritus</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n\n    <div class="buttons button-group">\n        <a href="/spirit/', escape((8,  id )), '/edit" role="button">Redigér</a>\n        <button>Fjern</button>\n    </div>\n</div>\n\n<div class="output">\n    <span>Spiritustype</span>\n    <div>', escape((15,  name )), '</div>\n</div>\n\n<div class="output">\n    <span>Alkoholprocent</span>\n    <div>', escape((20,  abv )), '</div>\n</div>\n\n<div class="output">\n    <span>Opskrift</span>\n    <div>', escape((25,  recipe ? recipe : 'N/A' )), '</div>\n</div>\n\n'); })();
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Spiritus</h2>\n        <h1>Opret spiritus</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Spiritusnavn</span>\n        <input name="name" type="text">\n    </label>\n\n    <label>\n        <span>Alkoholprocent</span>\n        <input name="abv" step="0.01">\n    </label>\n\n    <label>\n        <span>Opskrift</span>\n        <textarea name="recipe" rows="5"></textarea>\n    </label>\n\n    <div id="process">\n\n    </div>\n\n    <button class="green" type="submit">Opret</button>\n</form>\n'); })();
 } 
 return buf.join('');
 })
@@ -17831,7 +17937,7 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Bruger</h2>\n        <h1>Opret bruger</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Brugernavn</span>\n        <input name="name" type="text">\n    </label>\n\n    <label>\n        <span>Adgangskode</span>\n        <input name="password" step="0.01">\n    </label>\n\n    <label>\n        <span>Bekræft adgangskode</span>\n        <input name="confirm-password">\n    </label>\n\n    <button class="button-final" type="submit">Opret</button>\n</form>'); })();
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Spiritus</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Spiritusnavn</span>\n        <input name="name" value="', escape((11,  name )), '" type="text">\n    </label>\n\n    <label>\n        <span>Alkoholprocent</span>\n        <input name="abv" value="', escape((16,  abv )), '" type="number" step="0.01">\n    </label>\n\n    <label>\n        <span>Opskrift</span>\n        <textarea name="recipe" rows="5">', escape((21,  recipe )), '</textarea>\n    </label>\n\n    <div id="process">\n\n    </div>\n\n    <button class="green" type="submit">Gem</button>\n</form>\n'); })();
 } 
 return buf.join('');
 })
@@ -17848,11 +17954,64 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Bruger</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Brugernavn</span>\n        <input name="name" value="', escape((11,  name )), '" type="text">\n    </label>\n\n    <label>\n        <span>Adgangskode</span>\n        <input name="password" type="password">\n    </label>\n\n    <label>\n        <span>Bekræft adgangskode</span>\n        <input name="confirm-password" type="password">\n    </label>\n\n    <button class="button-final" type="submit">Gem</button>\n</form>\n'); })();
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Administration</h2>\n        <h1>Spiritus</h1>\n    </div>\n\n    <div class="buttons">\n        <a href="/spirit/create" role="button">Opret</a>\n    </div>\n</div>\n\n<div id="content-body">\n    <table>\n        <tr>\n            <th>Navn</th>\n        </tr>\n\n        ');18; items.forEach((item) => { ; buf.push('\n            <tr>\n                <td>\n                    <a href="/spirit/', escape((21,  item.id )), '">', escape((21,  item.name )), '</a>\n                </td>\n            </tr>\n        ');24; }) ; buf.push('\n    </table>\n</div>\n'); })();
 } 
 return buf.join('');
 })
 },{}],31:[function(require,module,exports){
+(function (process){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Spiritus</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n\n    <div class="buttons button-group">\n        <a href="/spirit/', escape((8,  id )), '/edit" role="button">Redigér</a>\n        <button>Fjern</button>\n    </div>\n</div>\n\n<div class="output">\n    <span>Spiritustype</span>\n    <div>', escape((15,  name )), '</div>\n</div>\n\n<div class="output">\n    <span>Alkoholprocent</span>\n    <div>', escape((20,  abv )), '</div>\n</div>\n\n<div class="output">\n    <span>Opskrift</span>\n    <div>', escape((25,  recipe ? recipe : 'N/A' )), '</div>\n</div>\n\n<div class="output">\n    <span>Produktionsprocess</span>\n    <ol>\n        ');31; process.forEach((step) => { ; buf.push('\n           <li>', escape((32,  step.name )), '</li>\n        ');33; }) ; buf.push('\n    </ol>\n</div>\n\n'); })();
+} 
+return buf.join('');
+})
+}).call(this,require('_process'))
+},{"_process":7}],32:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Bruger</h2>\n        <h1>Opret bruger</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Brugernavn</span>\n        <input name="name" type="text">\n    </label>\n\n    <label>\n        <span>Adgangskode</span>\n        <input name="password" step="0.01">\n    </label>\n\n    <label>\n        <span>Bekræft adgangskode</span>\n        <input name="confirm-password">\n    </label>\n\n    <button class="green" type="submit">Opret</button>\n</form>'); })();
+} 
+return buf.join('');
+})
+},{}],33:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Bruger</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Brugernavn</span>\n        <input name="name" value="', escape((11,  name )), '" type="text">\n    </label>\n\n    <label>\n        <span>Adgangskode</span>\n        <input name="password" type="password">\n    </label>\n\n    <label>\n        <span>Bekræft adgangskode</span>\n        <input name="confirm-password" type="password">\n    </label>\n\n    <button class="green" type="submit">Gem</button>\n</form>\n'); })();
+} 
+return buf.join('');
+})
+},{}],34:[function(require,module,exports){
 module.exports = (function anonymous(locals, filters, escape, rethrow
 /**/) {
 escape = escape || function (html){
@@ -17869,7 +18028,7 @@ with (locals || {}) { (function(){
 } 
 return buf.join('');
 })
-},{}],32:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 module.exports = (function anonymous(locals, filters, escape, rethrow
 /**/) {
 escape = escape || function (html){
@@ -17886,7 +18045,7 @@ with (locals || {}) { (function(){
 } 
 return buf.join('');
 })
-},{}],33:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -17924,7 +18083,7 @@ module.exports = Marionette.View.extend({
     }
 });
 
-},{"./../../models/batch":13,"./../../templates/batch/create.ejs":20,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],34:[function(require,module,exports){
+},{"./../../models/batch":14,"./../../templates/batch/create.ejs":21,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],37:[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -17961,7 +18120,7 @@ module.exports = Marionette.View.extend({
     }
 });
 
-},{"./../../templates/batch/edit.ejs":21,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],35:[function(require,module,exports){
+},{"./../../templates/batch/edit.ejs":22,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],38:[function(require,module,exports){
 'use strict';
 
 var Marionette = require('backbone.marionette');
@@ -17973,7 +18132,7 @@ module.exports = Marionette.View.extend({
     template: template
 });
 
-},{"./../../templates/batch/index.ejs":22,"backbone.marionette":2}],36:[function(require,module,exports){
+},{"./../../templates/batch/index.ejs":23,"backbone.marionette":2}],39:[function(require,module,exports){
 'use strict';
 
 var Backbone = require('backbone');
@@ -18001,7 +18160,88 @@ module.exports = Marionette.View.extend({
     }
 });
 
-},{"./../../templates/batch/show.ejs":23,"backbone":4,"backbone.marionette":2}],37:[function(require,module,exports){
+},{"./../../templates/batch/show.ejs":24,"backbone":4,"backbone.marionette":2}],40:[function(require,module,exports){
+'use strict';
+
+// optional collection med process
+// required collection med states
+var $ = require('jquery');
+var Backbone = require('backbone');
+var Marionette = require('backbone.marionette');
+
+var StepView = require('./step');
+var template = require('./../../templates/process/base.ejs');
+
+module.exports = Marionette.View.extend({
+    id: 'process',
+
+    template: template,
+
+    ui: {
+        table: 'table'
+    },
+
+    events: {
+        'click button': 'add'
+    },
+
+    onRender: function onRender() {
+        var _this = this;
+
+        var process = this.getOption('process');
+
+        if (process) {
+            process.forEach(function (step) {
+                _this.ui.table.append(new StepView({
+                    step: step,
+                    states: _this.getOption('states')
+                }).render().el);
+            });
+        } else {
+            this.add();
+        }
+    },
+
+    add: function add() {
+        this.ui.table.append(new StepView({
+            states: this.getOption('states')
+        }).render().el);
+    }
+});
+
+},{"./../../templates/process/base.ejs":25,"./step":41,"backbone":4,"backbone.marionette":2,"jquery":6}],41:[function(require,module,exports){
+'use strict';
+
+var $ = require('jquery');
+var Backbone = require('backbone');
+var Marionette = require('backbone.marionette');
+
+var template = require('./../../templates/process/step.ejs');
+
+module.exports = Marionette.View.extend({
+    tagName: 'tr',
+
+    template: template,
+
+    events: {
+        'click button': 'delete'
+    },
+
+    templateContext: function templateContext() {
+        return {
+            step: this.getOption('step') ? this.getOption('step') : null,
+            states: this.getOption('states').toJSON()
+        };
+    },
+
+    delete: function _delete() {
+        // var model = this.getOption('step');
+        // model.trigger('destroy', model, model.collection);
+        this.remove();
+    }
+});
+
+},{"./../../templates/process/step.ejs":26,"backbone":4,"backbone.marionette":2,"jquery":6}],42:[function(require,module,exports){
 'use strict';
 
 var Marionette = require('backbone.marionette');
@@ -18017,7 +18257,7 @@ module.exports = Marionette.View.extend({
     }
 });
 
-},{"./../templates/root.ejs":24,"backbone.marionette":2}],38:[function(require,module,exports){
+},{"./../templates/root.ejs":27,"backbone.marionette":2}],43:[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -18026,14 +18266,19 @@ var Marionette = require('backbone.marionette');
 require('form-serializer');
 
 var Spirit = require('./../../models/spirit');
-var _template = require('./../../templates/spirit/create.ejs');
+var ProcessView = require('./../process/base');
+var template = require('./../../templates/spirit/create.ejs');
 
 module.exports = Marionette.View.extend({
     id: 'spirit-create',
 
-    template: function template(data) {
-        console.log(data);
-        return _template;
+    template: template,
+
+    regions: {
+        process: {
+            el: '#process',
+            replaceElement: true
+        }
     },
 
     events: {
@@ -18041,7 +18286,9 @@ module.exports = Marionette.View.extend({
     },
 
     onRender: function onRender() {
-        console.log(this.states);
+        this.showChildView('process', new ProcessView({
+            states: this.getOption('states')
+        }));
     },
 
     create: function create(e) {
@@ -18053,14 +18300,14 @@ module.exports = Marionette.View.extend({
             success: function success() {
                 Backbone.history.navigate('spirit/' + spirit.get('id'), true);
             },
-            error: function error() {
-                console.log("error", arguments);
+            error: function error(_error) {
+                console.log(_error);
             }
         });
     }
 });
 
-},{"./../../models/spirit":14,"./../../templates/spirit/create.ejs":25,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],39:[function(require,module,exports){
+},{"./../../models/spirit":15,"./../../templates/spirit/create.ejs":28,"./../process/base":40,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],44:[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -18068,6 +18315,7 @@ var Backbone = require('backbone');
 var Marionette = require('backbone.marionette');
 require('form-serializer');
 
+var ProcessView = require('./../process/base');
 var template = require('./../../templates/spirit/edit.ejs');
 
 module.exports = Marionette.View.extend({
@@ -18077,6 +18325,21 @@ module.exports = Marionette.View.extend({
 
     events: {
         'submit form': 'edit'
+    },
+
+    regions: {
+        process: {
+            el: '#process',
+            replaceElement: true
+        }
+    },
+
+    onRender: function onRender() {
+        console.log(this.model);
+        this.showChildView('process', new ProcessView({
+            states: this.getOption('states'),
+            process: this.model.get('process')
+        }));
     },
 
     edit: function edit(e) {
@@ -18097,7 +18360,7 @@ module.exports = Marionette.View.extend({
     }
 });
 
-},{"./../../templates/spirit/edit.ejs":26,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],40:[function(require,module,exports){
+},{"./../../templates/spirit/edit.ejs":29,"./../process/base":40,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],45:[function(require,module,exports){
 'use strict';
 
 var Marionette = require('backbone.marionette');
@@ -18109,7 +18372,7 @@ module.exports = Marionette.View.extend({
     template: template
 });
 
-},{"./../../templates/spirit/index.ejs":27,"backbone.marionette":2}],41:[function(require,module,exports){
+},{"./../../templates/spirit/index.ejs":30,"backbone.marionette":2}],46:[function(require,module,exports){
 'use strict';
 
 var Backbone = require('backbone');
@@ -18137,7 +18400,7 @@ module.exports = Marionette.View.extend({
     }
 });
 
-},{"./../../templates/spirit/show.ejs":28,"backbone":4,"backbone.marionette":2}],42:[function(require,module,exports){
+},{"./../../templates/spirit/show.ejs":31,"backbone":4,"backbone.marionette":2}],47:[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -18173,7 +18436,7 @@ module.exports = Marionette.View.extend({
     }
 });
 
-},{"./../../models/user":16,"./../../templates/user/create.ejs":29,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],43:[function(require,module,exports){
+},{"./../../models/user":17,"./../../templates/user/create.ejs":32,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],48:[function(require,module,exports){
 'use strict';
 
 var $ = require('jquery');
@@ -18210,7 +18473,7 @@ module.exports = Marionette.View.extend({
     }
 });
 
-},{"./../../templates/user/edit.ejs":30,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],44:[function(require,module,exports){
+},{"./../../templates/user/edit.ejs":33,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],49:[function(require,module,exports){
 'use strict';
 
 var Marionette = require('backbone.marionette');
@@ -18222,7 +18485,7 @@ module.exports = Marionette.View.extend({
     template: template
 });
 
-},{"./../../templates/user/index.ejs":31,"backbone.marionette":2}],45:[function(require,module,exports){
+},{"./../../templates/user/index.ejs":34,"backbone.marionette":2}],50:[function(require,module,exports){
 'use strict';
 
 var Backbone = require('backbone');
@@ -18247,6 +18510,6 @@ module.exports = Marionette.View.extend({
     }
 });
 
-},{"./../../templates/user/show.ejs":32,"backbone":4,"backbone.marionette":2}]},{},[12]);
+},{"./../../templates/user/show.ejs":35,"backbone":4,"backbone.marionette":2}]},{},[13]);
 
 //# sourceMappingURL=main.js.map

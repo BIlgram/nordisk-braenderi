@@ -25,3 +25,12 @@
     <div><%= recipe ? recipe : 'N/A' %></div>
 </div>
 
+<div class="output">
+    <span>Produktionsprocess</span>
+    <ol>
+        <% process.forEach((step) => { %>
+           <li><%= step.name %></li>
+        <% }) %>
+    </ol>
+</div>
+
