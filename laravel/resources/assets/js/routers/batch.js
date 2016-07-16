@@ -33,7 +33,7 @@ module.exports = Backbone.Router.extend({
 
         spirits.fetch().then(() => {
             this.app.rootView.showChildView('content', new BatchCreateView({
-                states: spirits
+                spirits: spirits
             }));
         });
     },

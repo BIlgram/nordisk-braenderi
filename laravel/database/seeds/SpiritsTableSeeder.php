@@ -15,6 +15,13 @@ class SpiritsTableSeeder extends Seeder
         Spirit::truncate();
 
         Spirit::create([
+            "name" => "Test",
+            "abv" => 100,
+            "recipe" => "Lorem Ipsum",
+            "process" => ["1", "2", "3", "4", "5", "6", "7"]
+        ]);
+
+        Spirit::create([
             "name" => "Nordisk Gin",
             "abv" => 40,
             "recipe" => "Blade og hør",
@@ -25,7 +32,7 @@ class SpiritsTableSeeder extends Seeder
             "name" => "Rom white",
             "abv" => 44.8,
             "recipe" => "Ost og edike",
-            "process" => ["0", "1", "2", "3", "5", "6"]
+            "process" => ["1", "2", "3", "5", "6"]
         ]);
     }
 }

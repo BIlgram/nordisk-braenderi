@@ -16,11 +16,7 @@ class CreateBatchesTable extends Migration
             $table->increments('id');
             $table->string('name')->unique();
             $table->integer('spirit_id');
-//            $table->string('recipe');
-//            $table->integer('batch_state_id');
-//            $table->decimal('weight');
-//            $table->decimal('volume');
-//            $table->decimal('alcohol_percentage');
+            $table->integer('step');
             $table->timestamps();
         });
     }

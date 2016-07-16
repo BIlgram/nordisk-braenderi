@@ -1,22 +1,13 @@
 <div id="content-header">
     <div class="headings">
-        <h2>Batch</h2>
+        <h2>Batch: <%= state.current.name %></h2>
         <h1><%= name %></h1>
     </div>
 
     <div class="buttons button-group">
         <a href="/batch/<%= id %>/edit" role="button">Redigér</a>
-        <button>Fjern</button>
+        <button id="delete">Fjern</button>
     </div>
 </div>
 
-<div class="output">
-    <span>Batchnavn</span>
-    <div><%= name %></div>
-</div>
-
-<div class="output">
-    <span>Tilstand</span>
-    <div>Mæskning</div>
-</div>
-
+<div id="step"></div>

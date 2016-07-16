@@ -7,17 +7,23 @@
 
 <form>
     <label>
+        <span>Spiritustype</span>
+        <select name="spirit_id">
+            <% spirits.forEach((spirit) => { %>
+            <option value="<%= spirit.id %>"><%= spirit.name %></option>
+            <% }) %>
+        </select>
+    </label>
+
+    <label>
+        <span>Oprettelsesdato</span>
+        <input name="created_at" value="<%= moment().format('YYYY-MM-DD') %>" type="text">
+    </label>
+
+    <label>
         <span>Batchnavn</span>
         <input name="name" type="text">
     </label>
-
-    <div>
-        Spiritustype
-        <select name="" id="">
-            <option value="">Test1</option>
-            <option value="">Test2</option>
-        </select>
-    </div>
 
     <button class="button-final" type="submit">Opret</button>
 </form>

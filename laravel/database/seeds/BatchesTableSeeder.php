@@ -16,12 +16,14 @@ class BatchesTableSeeder extends Seeder
 
         Batch::create([
             "name" => "Rom white.160416.A",
-            "spirit_id" => 2
+            "spirit_id" => 2,
+            "step" => 0,
         ]);
 
         Batch::create([
             "name" => "Nordisk gin.160416.A",
-            "spirit_id" => 1
+            "spirit_id" => 1,
+            "step" => 2,
         ]);
     }
 }
