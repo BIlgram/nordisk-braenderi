@@ -17,6 +17,7 @@
     "backbone.marionette": "^3.0.0-pre.4",
     "form-serializer": "^2.5.0",
     "jquery": "^3.0.0",
+    "moment": "^2.14.1",
     "normalize.scss": "^0.1.0",
     "underscore": "^1.8.3"
   }
