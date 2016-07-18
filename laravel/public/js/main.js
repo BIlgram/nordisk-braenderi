@@ -190,7 +190,7 @@
 
 }));
 
-},{"backbone":4,"underscore":8}],2:[function(require,module,exports){
+},{"backbone":4,"underscore":9}],2:[function(require,module,exports){
 // MarionetteJS (Backbone.Marionette)
 // ----------------------------------
 // v3.0.0-pre.4
@@ -3281,7 +3281,7 @@
 
 
 
-},{"backbone":4,"backbone.babysitter":1,"backbone.radio":3,"underscore":8}],3:[function(require,module,exports){
+},{"backbone":4,"backbone.babysitter":1,"backbone.radio":3,"underscore":9}],3:[function(require,module,exports){
 // Backbone.Radio v2.0.0-pre.1
 
 (function (global, factory) {
@@ -3632,7 +3632,7 @@
 
 }));
 
-},{"backbone":4,"underscore":8}],4:[function(require,module,exports){
+},{"backbone":4,"underscore":9}],4:[function(require,module,exports){
 (function (global){
 //     Backbone.js 1.3.3
 
@@ -5556,7 +5556,7 @@
 });
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"jquery":6,"underscore":8}],5:[function(require,module,exports){
+},{"jquery":6,"underscore":9}],5:[function(require,module,exports){
 /**
  * jQuery serializeObject
  * @copyright 2014, macek <paulmacek@gmail.com>
@@ -15781,3016 +15781,6 @@ return jQuery;
 } );
 
 },{}],7:[function(require,module,exports){
-// shim for using process in browser
-
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-(function () {
-  try {
-    cachedSetTimeout = setTimeout;
-  } catch (e) {
-    cachedSetTimeout = function () {
-      throw new Error('setTimeout is not defined');
-    }
-  }
-  try {
-    cachedClearTimeout = clearTimeout;
-  } catch (e) {
-    cachedClearTimeout = function () {
-      throw new Error('clearTimeout is not defined');
-    }
-  }
-} ())
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = cachedSetTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    cachedClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        cachedSetTimeout(drainQueue, 0);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-},{}],8:[function(require,module,exports){
-//     Underscore.js 1.8.3
-//     http://underscorejs.org
-//     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-//     Underscore may be freely distributed under the MIT license.
-
-(function() {
-
-  // Baseline setup
-  // --------------
-
-  // Establish the root object, `window` in the browser, or `exports` on the server.
-  var root = this;
-
-  // Save the previous value of the `_` variable.
-  var previousUnderscore = root._;
-
-  // Save bytes in the minified (but not gzipped) version:
-  var ArrayProto = Array.prototype, ObjProto = Object.prototype, FuncProto = Function.prototype;
-
-  // Create quick reference variables for speed access to core prototypes.
-  var
-    push             = ArrayProto.push,
-    slice            = ArrayProto.slice,
-    toString         = ObjProto.toString,
-    hasOwnProperty   = ObjProto.hasOwnProperty;
-
-  // All **ECMAScript 5** native function implementations that we hope to use
-  // are declared here.
-  var
-    nativeIsArray      = Array.isArray,
-    nativeKeys         = Object.keys,
-    nativeBind         = FuncProto.bind,
-    nativeCreate       = Object.create;
-
-  // Naked function reference for surrogate-prototype-swapping.
-  var Ctor = function(){};
-
-  // Create a safe reference to the Underscore object for use below.
-  var _ = function(obj) {
-    if (obj instanceof _) return obj;
-    if (!(this instanceof _)) return new _(obj);
-    this._wrapped = obj;
-  };
-
-  // Export the Underscore object for **Node.js**, with
-  // backwards-compatibility for the old `require()` API. If we're in
-  // the browser, add `_` as a global object.
-  if (typeof exports !== 'undefined') {
-    if (typeof module !== 'undefined' && module.exports) {
-      exports = module.exports = _;
-    }
-    exports._ = _;
-  } else {
-    root._ = _;
-  }
-
-  // Current version.
-  _.VERSION = '1.8.3';
-
-  // Internal function that returns an efficient (for current engines) version
-  // of the passed-in callback, to be repeatedly applied in other Underscore
-  // functions.
-  var optimizeCb = function(func, context, argCount) {
-    if (context === void 0) return func;
-    switch (argCount == null ? 3 : argCount) {
-      case 1: return function(value) {
-        return func.call(context, value);
-      };
-      case 2: return function(value, other) {
-        return func.call(context, value, other);
-      };
-      case 3: return function(value, index, collection) {
-        return func.call(context, value, index, collection);
-      };
-      case 4: return function(accumulator, value, index, collection) {
-        return func.call(context, accumulator, value, index, collection);
-      };
-    }
-    return function() {
-      return func.apply(context, arguments);
-    };
-  };
-
-  // A mostly-internal function to generate callbacks that can be applied
-  // to each element in a collection, returning the desired result — either
-  // identity, an arbitrary callback, a property matcher, or a property accessor.
-  var cb = function(value, context, argCount) {
-    if (value == null) return _.identity;
-    if (_.isFunction(value)) return optimizeCb(value, context, argCount);
-    if (_.isObject(value)) return _.matcher(value);
-    return _.property(value);
-  };
-  _.iteratee = function(value, context) {
-    return cb(value, context, Infinity);
-  };
-
-  // An internal function for creating assigner functions.
-  var createAssigner = function(keysFunc, undefinedOnly) {
-    return function(obj) {
-      var length = arguments.length;
-      if (length < 2 || obj == null) return obj;
-      for (var index = 1; index < length; index++) {
-        var source = arguments[index],
-            keys = keysFunc(source),
-            l = keys.length;
-        for (var i = 0; i < l; i++) {
-          var key = keys[i];
-          if (!undefinedOnly || obj[key] === void 0) obj[key] = source[key];
-        }
-      }
-      return obj;
-    };
-  };
-
-  // An internal function for creating a new object that inherits from another.
-  var baseCreate = function(prototype) {
-    if (!_.isObject(prototype)) return {};
-    if (nativeCreate) return nativeCreate(prototype);
-    Ctor.prototype = prototype;
-    var result = new Ctor;
-    Ctor.prototype = null;
-    return result;
-  };
-
-  var property = function(key) {
-    return function(obj) {
-      return obj == null ? void 0 : obj[key];
-    };
-  };
-
-  // Helper for collection methods to determine whether a collection
-  // should be iterated as an array or as an object
-  // Related: http://people.mozilla.org/~jorendorff/es6-draft.html#sec-tolength
-  // Avoids a very nasty iOS 8 JIT bug on ARM-64. #2094
-  var MAX_ARRAY_INDEX = Math.pow(2, 53) - 1;
-  var getLength = property('length');
-  var isArrayLike = function(collection) {
-    var length = getLength(collection);
-    return typeof length == 'number' && length >= 0 && length <= MAX_ARRAY_INDEX;
-  };
-
-  // Collection Functions
-  // --------------------
-
-  // The cornerstone, an `each` implementation, aka `forEach`.
-  // Handles raw objects in addition to array-likes. Treats all
-  // sparse array-likes as if they were dense.
-  _.each = _.forEach = function(obj, iteratee, context) {
-    iteratee = optimizeCb(iteratee, context);
-    var i, length;
-    if (isArrayLike(obj)) {
-      for (i = 0, length = obj.length; i < length; i++) {
-        iteratee(obj[i], i, obj);
-      }
-    } else {
-      var keys = _.keys(obj);
-      for (i = 0, length = keys.length; i < length; i++) {
-        iteratee(obj[keys[i]], keys[i], obj);
-      }
-    }
-    return obj;
-  };
-
-  // Return the results of applying the iteratee to each element.
-  _.map = _.collect = function(obj, iteratee, context) {
-    iteratee = cb(iteratee, context);
-    var keys = !isArrayLike(obj) && _.keys(obj),
-        length = (keys || obj).length,
-        results = Array(length);
-    for (var index = 0; index < length; index++) {
-      var currentKey = keys ? keys[index] : index;
-      results[index] = iteratee(obj[currentKey], currentKey, obj);
-    }
-    return results;
-  };
-
-  // Create a reducing function iterating left or right.
-  function createReduce(dir) {
-    // Optimized iterator function as using arguments.length
-    // in the main function will deoptimize the, see #1991.
-    function iterator(obj, iteratee, memo, keys, index, length) {
-      for (; index >= 0 && index < length; index += dir) {
-        var currentKey = keys ? keys[index] : index;
-        memo = iteratee(memo, obj[currentKey], currentKey, obj);
-      }
-      return memo;
-    }
-
-    return function(obj, iteratee, memo, context) {
-      iteratee = optimizeCb(iteratee, context, 4);
-      var keys = !isArrayLike(obj) && _.keys(obj),
-          length = (keys || obj).length,
-          index = dir > 0 ? 0 : length - 1;
-      // Determine the initial value if none is provided.
-      if (arguments.length < 3) {
-        memo = obj[keys ? keys[index] : index];
-        index += dir;
-      }
-      return iterator(obj, iteratee, memo, keys, index, length);
-    };
-  }
-
-  // **Reduce** builds up a single result from a list of values, aka `inject`,
-  // or `foldl`.
-  _.reduce = _.foldl = _.inject = createReduce(1);
-
-  // The right-associative version of reduce, also known as `foldr`.
-  _.reduceRight = _.foldr = createReduce(-1);
-
-  // Return the first value which passes a truth test. Aliased as `detect`.
-  _.find = _.detect = function(obj, predicate, context) {
-    var key;
-    if (isArrayLike(obj)) {
-      key = _.findIndex(obj, predicate, context);
-    } else {
-      key = _.findKey(obj, predicate, context);
-    }
-    if (key !== void 0 && key !== -1) return obj[key];
-  };
-
-  // Return all the elements that pass a truth test.
-  // Aliased as `select`.
-  _.filter = _.select = function(obj, predicate, context) {
-    var results = [];
-    predicate = cb(predicate, context);
-    _.each(obj, function(value, index, list) {
-      if (predicate(value, index, list)) results.push(value);
-    });
-    return results;
-  };
-
-  // Return all the elements for which a truth test fails.
-  _.reject = function(obj, predicate, context) {
-    return _.filter(obj, _.negate(cb(predicate)), context);
-  };
-
-  // Determine whether all of the elements match a truth test.
-  // Aliased as `all`.
-  _.every = _.all = function(obj, predicate, context) {
-    predicate = cb(predicate, context);
-    var keys = !isArrayLike(obj) && _.keys(obj),
-        length = (keys || obj).length;
-    for (var index = 0; index < length; index++) {
-      var currentKey = keys ? keys[index] : index;
-      if (!predicate(obj[currentKey], currentKey, obj)) return false;
-    }
-    return true;
-  };
-
-  // Determine if at least one element in the object matches a truth test.
-  // Aliased as `any`.
-  _.some = _.any = function(obj, predicate, context) {
-    predicate = cb(predicate, context);
-    var keys = !isArrayLike(obj) && _.keys(obj),
-        length = (keys || obj).length;
-    for (var index = 0; index < length; index++) {
-      var currentKey = keys ? keys[index] : index;
-      if (predicate(obj[currentKey], currentKey, obj)) return true;
-    }
-    return false;
-  };
-
-  // Determine if the array or object contains a given item (using `===`).
-  // Aliased as `includes` and `include`.
-  _.contains = _.includes = _.include = function(obj, item, fromIndex, guard) {
-    if (!isArrayLike(obj)) obj = _.values(obj);
-    if (typeof fromIndex != 'number' || guard) fromIndex = 0;
-    return _.indexOf(obj, item, fromIndex) >= 0;
-  };
-
-  // Invoke a method (with arguments) on every item in a collection.
-  _.invoke = function(obj, method) {
-    var args = slice.call(arguments, 2);
-    var isFunc = _.isFunction(method);
-    return _.map(obj, function(value) {
-      var func = isFunc ? method : value[method];
-      return func == null ? func : func.apply(value, args);
-    });
-  };
-
-  // Convenience version of a common use case of `map`: fetching a property.
-  _.pluck = function(obj, key) {
-    return _.map(obj, _.property(key));
-  };
-
-  // Convenience version of a common use case of `filter`: selecting only objects
-  // containing specific `key:value` pairs.
-  _.where = function(obj, attrs) {
-    return _.filter(obj, _.matcher(attrs));
-  };
-
-  // Convenience version of a common use case of `find`: getting the first object
-  // containing specific `key:value` pairs.
-  _.findWhere = function(obj, attrs) {
-    return _.find(obj, _.matcher(attrs));
-  };
-
-  // Return the maximum element (or element-based computation).
-  _.max = function(obj, iteratee, context) {
-    var result = -Infinity, lastComputed = -Infinity,
-        value, computed;
-    if (iteratee == null && obj != null) {
-      obj = isArrayLike(obj) ? obj : _.values(obj);
-      for (var i = 0, length = obj.length; i < length; i++) {
-        value = obj[i];
-        if (value > result) {
-          result = value;
-        }
-      }
-    } else {
-      iteratee = cb(iteratee, context);
-      _.each(obj, function(value, index, list) {
-        computed = iteratee(value, index, list);
-        if (computed > lastComputed || computed === -Infinity && result === -Infinity) {
-          result = value;
-          lastComputed = computed;
-        }
-      });
-    }
-    return result;
-  };
-
-  // Return the minimum element (or element-based computation).
-  _.min = function(obj, iteratee, context) {
-    var result = Infinity, lastComputed = Infinity,
-        value, computed;
-    if (iteratee == null && obj != null) {
-      obj = isArrayLike(obj) ? obj : _.values(obj);
-      for (var i = 0, length = obj.length; i < length; i++) {
-        value = obj[i];
-        if (value < result) {
-          result = value;
-        }
-      }
-    } else {
-      iteratee = cb(iteratee, context);
-      _.each(obj, function(value, index, list) {
-        computed = iteratee(value, index, list);
-        if (computed < lastComputed || computed === Infinity && result === Infinity) {
-          result = value;
-          lastComputed = computed;
-        }
-      });
-    }
-    return result;
-  };
-
-  // Shuffle a collection, using the modern version of the
-  // [Fisher-Yates shuffle](http://en.wikipedia.org/wiki/Fisher–Yates_shuffle).
-  _.shuffle = function(obj) {
-    var set = isArrayLike(obj) ? obj : _.values(obj);
-    var length = set.length;
-    var shuffled = Array(length);
-    for (var index = 0, rand; index < length; index++) {
-      rand = _.random(0, index);
-      if (rand !== index) shuffled[index] = shuffled[rand];
-      shuffled[rand] = set[index];
-    }
-    return shuffled;
-  };
-
-  // Sample **n** random values from a collection.
-  // If **n** is not specified, returns a single random element.
-  // The internal `guard` argument allows it to work with `map`.
-  _.sample = function(obj, n, guard) {
-    if (n == null || guard) {
-      if (!isArrayLike(obj)) obj = _.values(obj);
-      return obj[_.random(obj.length - 1)];
-    }
-    return _.shuffle(obj).slice(0, Math.max(0, n));
-  };
-
-  // Sort the object's values by a criterion produced by an iteratee.
-  _.sortBy = function(obj, iteratee, context) {
-    iteratee = cb(iteratee, context);
-    return _.pluck(_.map(obj, function(value, index, list) {
-      return {
-        value: value,
-        index: index,
-        criteria: iteratee(value, index, list)
-      };
-    }).sort(function(left, right) {
-      var a = left.criteria;
-      var b = right.criteria;
-      if (a !== b) {
-        if (a > b || a === void 0) return 1;
-        if (a < b || b === void 0) return -1;
-      }
-      return left.index - right.index;
-    }), 'value');
-  };
-
-  // An internal function used for aggregate "group by" operations.
-  var group = function(behavior) {
-    return function(obj, iteratee, context) {
-      var result = {};
-      iteratee = cb(iteratee, context);
-      _.each(obj, function(value, index) {
-        var key = iteratee(value, index, obj);
-        behavior(result, value, key);
-      });
-      return result;
-    };
-  };
-
-  // Groups the object's values by a criterion. Pass either a string attribute
-  // to group by, or a function that returns the criterion.
-  _.groupBy = group(function(result, value, key) {
-    if (_.has(result, key)) result[key].push(value); else result[key] = [value];
-  });
-
-  // Indexes the object's values by a criterion, similar to `groupBy`, but for
-  // when you know that your index values will be unique.
-  _.indexBy = group(function(result, value, key) {
-    result[key] = value;
-  });
-
-  // Counts instances of an object that group by a certain criterion. Pass
-  // either a string attribute to count by, or a function that returns the
-  // criterion.
-  _.countBy = group(function(result, value, key) {
-    if (_.has(result, key)) result[key]++; else result[key] = 1;
-  });
-
-  // Safely create a real, live array from anything iterable.
-  _.toArray = function(obj) {
-    if (!obj) return [];
-    if (_.isArray(obj)) return slice.call(obj);
-    if (isArrayLike(obj)) return _.map(obj, _.identity);
-    return _.values(obj);
-  };
-
-  // Return the number of elements in an object.
-  _.size = function(obj) {
-    if (obj == null) return 0;
-    return isArrayLike(obj) ? obj.length : _.keys(obj).length;
-  };
-
-  // Split a collection into two arrays: one whose elements all satisfy the given
-  // predicate, and one whose elements all do not satisfy the predicate.
-  _.partition = function(obj, predicate, context) {
-    predicate = cb(predicate, context);
-    var pass = [], fail = [];
-    _.each(obj, function(value, key, obj) {
-      (predicate(value, key, obj) ? pass : fail).push(value);
-    });
-    return [pass, fail];
-  };
-
-  // Array Functions
-  // ---------------
-
-  // Get the first element of an array. Passing **n** will return the first N
-  // values in the array. Aliased as `head` and `take`. The **guard** check
-  // allows it to work with `_.map`.
-  _.first = _.head = _.take = function(array, n, guard) {
-    if (array == null) return void 0;
-    if (n == null || guard) return array[0];
-    return _.initial(array, array.length - n);
-  };
-
-  // Returns everything but the last entry of the array. Especially useful on
-  // the arguments object. Passing **n** will return all the values in
-  // the array, excluding the last N.
-  _.initial = function(array, n, guard) {
-    return slice.call(array, 0, Math.max(0, array.length - (n == null || guard ? 1 : n)));
-  };
-
-  // Get the last element of an array. Passing **n** will return the last N
-  // values in the array.
-  _.last = function(array, n, guard) {
-    if (array == null) return void 0;
-    if (n == null || guard) return array[array.length - 1];
-    return _.rest(array, Math.max(0, array.length - n));
-  };
-
-  // Returns everything but the first entry of the array. Aliased as `tail` and `drop`.
-  // Especially useful on the arguments object. Passing an **n** will return
-  // the rest N values in the array.
-  _.rest = _.tail = _.drop = function(array, n, guard) {
-    return slice.call(array, n == null || guard ? 1 : n);
-  };
-
-  // Trim out all falsy values from an array.
-  _.compact = function(array) {
-    return _.filter(array, _.identity);
-  };
-
-  // Internal implementation of a recursive `flatten` function.
-  var flatten = function(input, shallow, strict, startIndex) {
-    var output = [], idx = 0;
-    for (var i = startIndex || 0, length = getLength(input); i < length; i++) {
-      var value = input[i];
-      if (isArrayLike(value) && (_.isArray(value) || _.isArguments(value))) {
-        //flatten current level of array or arguments object
-        if (!shallow) value = flatten(value, shallow, strict);
-        var j = 0, len = value.length;
-        output.length += len;
-        while (j < len) {
-          output[idx++] = value[j++];
-        }
-      } else if (!strict) {
-        output[idx++] = value;
-      }
-    }
-    return output;
-  };
-
-  // Flatten out an array, either recursively (by default), or just one level.
-  _.flatten = function(array, shallow) {
-    return flatten(array, shallow, false);
-  };
-
-  // Return a version of the array that does not contain the specified value(s).
-  _.without = function(array) {
-    return _.difference(array, slice.call(arguments, 1));
-  };
-
-  // Produce a duplicate-free version of the array. If the array has already
-  // been sorted, you have the option of using a faster algorithm.
-  // Aliased as `unique`.
-  _.uniq = _.unique = function(array, isSorted, iteratee, context) {
-    if (!_.isBoolean(isSorted)) {
-      context = iteratee;
-      iteratee = isSorted;
-      isSorted = false;
-    }
-    if (iteratee != null) iteratee = cb(iteratee, context);
-    var result = [];
-    var seen = [];
-    for (var i = 0, length = getLength(array); i < length; i++) {
-      var value = array[i],
-          computed = iteratee ? iteratee(value, i, array) : value;
-      if (isSorted) {
-        if (!i || seen !== computed) result.push(value);
-        seen = computed;
-      } else if (iteratee) {
-        if (!_.contains(seen, computed)) {
-          seen.push(computed);
-          result.push(value);
-        }
-      } else if (!_.contains(result, value)) {
-        result.push(value);
-      }
-    }
-    return result;
-  };
-
-  // Produce an array that contains the union: each distinct element from all of
-  // the passed-in arrays.
-  _.union = function() {
-    return _.uniq(flatten(arguments, true, true));
-  };
-
-  // Produce an array that contains every item shared between all the
-  // passed-in arrays.
-  _.intersection = function(array) {
-    var result = [];
-    var argsLength = arguments.length;
-    for (var i = 0, length = getLength(array); i < length; i++) {
-      var item = array[i];
-      if (_.contains(result, item)) continue;
-      for (var j = 1; j < argsLength; j++) {
-        if (!_.contains(arguments[j], item)) break;
-      }
-      if (j === argsLength) result.push(item);
-    }
-    return result;
-  };
-
-  // Take the difference between one array and a number of other arrays.
-  // Only the elements present in just the first array will remain.
-  _.difference = function(array) {
-    var rest = flatten(arguments, true, true, 1);
-    return _.filter(array, function(value){
-      return !_.contains(rest, value);
-    });
-  };
-
-  // Zip together multiple lists into a single array -- elements that share
-  // an index go together.
-  _.zip = function() {
-    return _.unzip(arguments);
-  };
-
-  // Complement of _.zip. Unzip accepts an array of arrays and groups
-  // each array's elements on shared indices
-  _.unzip = function(array) {
-    var length = array && _.max(array, getLength).length || 0;
-    var result = Array(length);
-
-    for (var index = 0; index < length; index++) {
-      result[index] = _.pluck(array, index);
-    }
-    return result;
-  };
-
-  // Converts lists into objects. Pass either a single array of `[key, value]`
-  // pairs, or two parallel arrays of the same length -- one of keys, and one of
-  // the corresponding values.
-  _.object = function(list, values) {
-    var result = {};
-    for (var i = 0, length = getLength(list); i < length; i++) {
-      if (values) {
-        result[list[i]] = values[i];
-      } else {
-        result[list[i][0]] = list[i][1];
-      }
-    }
-    return result;
-  };
-
-  // Generator function to create the findIndex and findLastIndex functions
-  function createPredicateIndexFinder(dir) {
-    return function(array, predicate, context) {
-      predicate = cb(predicate, context);
-      var length = getLength(array);
-      var index = dir > 0 ? 0 : length - 1;
-      for (; index >= 0 && index < length; index += dir) {
-        if (predicate(array[index], index, array)) return index;
-      }
-      return -1;
-    };
-  }
-
-  // Returns the first index on an array-like that passes a predicate test
-  _.findIndex = createPredicateIndexFinder(1);
-  _.findLastIndex = createPredicateIndexFinder(-1);
-
-  // Use a comparator function to figure out the smallest index at which
-  // an object should be inserted so as to maintain order. Uses binary search.
-  _.sortedIndex = function(array, obj, iteratee, context) {
-    iteratee = cb(iteratee, context, 1);
-    var value = iteratee(obj);
-    var low = 0, high = getLength(array);
-    while (low < high) {
-      var mid = Math.floor((low + high) / 2);
-      if (iteratee(array[mid]) < value) low = mid + 1; else high = mid;
-    }
-    return low;
-  };
-
-  // Generator function to create the indexOf and lastIndexOf functions
-  function createIndexFinder(dir, predicateFind, sortedIndex) {
-    return function(array, item, idx) {
-      var i = 0, length = getLength(array);
-      if (typeof idx == 'number') {
-        if (dir > 0) {
-            i = idx >= 0 ? idx : Math.max(idx + length, i);
-        } else {
-            length = idx >= 0 ? Math.min(idx + 1, length) : idx + length + 1;
-        }
-      } else if (sortedIndex && idx && length) {
-        idx = sortedIndex(array, item);
-        return array[idx] === item ? idx : -1;
-      }
-      if (item !== item) {
-        idx = predicateFind(slice.call(array, i, length), _.isNaN);
-        return idx >= 0 ? idx + i : -1;
-      }
-      for (idx = dir > 0 ? i : length - 1; idx >= 0 && idx < length; idx += dir) {
-        if (array[idx] === item) return idx;
-      }
-      return -1;
-    };
-  }
-
-  // Return the position of the first occurrence of an item in an array,
-  // or -1 if the item is not included in the array.
-  // If the array is large and already in sort order, pass `true`
-  // for **isSorted** to use binary search.
-  _.indexOf = createIndexFinder(1, _.findIndex, _.sortedIndex);
-  _.lastIndexOf = createIndexFinder(-1, _.findLastIndex);
-
-  // Generate an integer Array containing an arithmetic progression. A port of
-  // the native Python `range()` function. See
-  // [the Python documentation](http://docs.python.org/library/functions.html#range).
-  _.range = function(start, stop, step) {
-    if (stop == null) {
-      stop = start || 0;
-      start = 0;
-    }
-    step = step || 1;
-
-    var length = Math.max(Math.ceil((stop - start) / step), 0);
-    var range = Array(length);
-
-    for (var idx = 0; idx < length; idx++, start += step) {
-      range[idx] = start;
-    }
-
-    return range;
-  };
-
-  // Function (ahem) Functions
-  // ------------------
-
-  // Determines whether to execute a function as a constructor
-  // or a normal function with the provided arguments
-  var executeBound = function(sourceFunc, boundFunc, context, callingContext, args) {
-    if (!(callingContext instanceof boundFunc)) return sourceFunc.apply(context, args);
-    var self = baseCreate(sourceFunc.prototype);
-    var result = sourceFunc.apply(self, args);
-    if (_.isObject(result)) return result;
-    return self;
-  };
-
-  // Create a function bound to a given object (assigning `this`, and arguments,
-  // optionally). Delegates to **ECMAScript 5**'s native `Function.bind` if
-  // available.
-  _.bind = function(func, context) {
-    if (nativeBind && func.bind === nativeBind) return nativeBind.apply(func, slice.call(arguments, 1));
-    if (!_.isFunction(func)) throw new TypeError('Bind must be called on a function');
-    var args = slice.call(arguments, 2);
-    var bound = function() {
-      return executeBound(func, bound, context, this, args.concat(slice.call(arguments)));
-    };
-    return bound;
-  };
-
-  // Partially apply a function by creating a version that has had some of its
-  // arguments pre-filled, without changing its dynamic `this` context. _ acts
-  // as a placeholder, allowing any combination of arguments to be pre-filled.
-  _.partial = function(func) {
-    var boundArgs = slice.call(arguments, 1);
-    var bound = function() {
-      var position = 0, length = boundArgs.length;
-      var args = Array(length);
-      for (var i = 0; i < length; i++) {
-        args[i] = boundArgs[i] === _ ? arguments[position++] : boundArgs[i];
-      }
-      while (position < arguments.length) args.push(arguments[position++]);
-      return executeBound(func, bound, this, this, args);
-    };
-    return bound;
-  };
-
-  // Bind a number of an object's methods to that object. Remaining arguments
-  // are the method names to be bound. Useful for ensuring that all callbacks
-  // defined on an object belong to it.
-  _.bindAll = function(obj) {
-    var i, length = arguments.length, key;
-    if (length <= 1) throw new Error('bindAll must be passed function names');
-    for (i = 1; i < length; i++) {
-      key = arguments[i];
-      obj[key] = _.bind(obj[key], obj);
-    }
-    return obj;
-  };
-
-  // Memoize an expensive function by storing its results.
-  _.memoize = function(func, hasher) {
-    var memoize = function(key) {
-      var cache = memoize.cache;
-      var address = '' + (hasher ? hasher.apply(this, arguments) : key);
-      if (!_.has(cache, address)) cache[address] = func.apply(this, arguments);
-      return cache[address];
-    };
-    memoize.cache = {};
-    return memoize;
-  };
-
-  // Delays a function for the given number of milliseconds, and then calls
-  // it with the arguments supplied.
-  _.delay = function(func, wait) {
-    var args = slice.call(arguments, 2);
-    return setTimeout(function(){
-      return func.apply(null, args);
-    }, wait);
-  };
-
-  // Defers a function, scheduling it to run after the current call stack has
-  // cleared.
-  _.defer = _.partial(_.delay, _, 1);
-
-  // Returns a function, that, when invoked, will only be triggered at most once
-  // during a given window of time. Normally, the throttled function will run
-  // as much as it can, without ever going more than once per `wait` duration;
-  // but if you'd like to disable the execution on the leading edge, pass
-  // `{leading: false}`. To disable execution on the trailing edge, ditto.
-  _.throttle = function(func, wait, options) {
-    var context, args, result;
-    var timeout = null;
-    var previous = 0;
-    if (!options) options = {};
-    var later = function() {
-      previous = options.leading === false ? 0 : _.now();
-      timeout = null;
-      result = func.apply(context, args);
-      if (!timeout) context = args = null;
-    };
-    return function() {
-      var now = _.now();
-      if (!previous && options.leading === false) previous = now;
-      var remaining = wait - (now - previous);
-      context = this;
-      args = arguments;
-      if (remaining <= 0 || remaining > wait) {
-        if (timeout) {
-          clearTimeout(timeout);
-          timeout = null;
-        }
-        previous = now;
-        result = func.apply(context, args);
-        if (!timeout) context = args = null;
-      } else if (!timeout && options.trailing !== false) {
-        timeout = setTimeout(later, remaining);
-      }
-      return result;
-    };
-  };
-
-  // Returns a function, that, as long as it continues to be invoked, will not
-  // be triggered. The function will be called after it stops being called for
-  // N milliseconds. If `immediate` is passed, trigger the function on the
-  // leading edge, instead of the trailing.
-  _.debounce = function(func, wait, immediate) {
-    var timeout, args, context, timestamp, result;
-
-    var later = function() {
-      var last = _.now() - timestamp;
-
-      if (last < wait && last >= 0) {
-        timeout = setTimeout(later, wait - last);
-      } else {
-        timeout = null;
-        if (!immediate) {
-          result = func.apply(context, args);
-          if (!timeout) context = args = null;
-        }
-      }
-    };
-
-    return function() {
-      context = this;
-      args = arguments;
-      timestamp = _.now();
-      var callNow = immediate && !timeout;
-      if (!timeout) timeout = setTimeout(later, wait);
-      if (callNow) {
-        result = func.apply(context, args);
-        context = args = null;
-      }
-
-      return result;
-    };
-  };
-
-  // Returns the first function passed as an argument to the second,
-  // allowing you to adjust arguments, run code before and after, and
-  // conditionally execute the original function.
-  _.wrap = function(func, wrapper) {
-    return _.partial(wrapper, func);
-  };
-
-  // Returns a negated version of the passed-in predicate.
-  _.negate = function(predicate) {
-    return function() {
-      return !predicate.apply(this, arguments);
-    };
-  };
-
-  // Returns a function that is the composition of a list of functions, each
-  // consuming the return value of the function that follows.
-  _.compose = function() {
-    var args = arguments;
-    var start = args.length - 1;
-    return function() {
-      var i = start;
-      var result = args[start].apply(this, arguments);
-      while (i--) result = args[i].call(this, result);
-      return result;
-    };
-  };
-
-  // Returns a function that will only be executed on and after the Nth call.
-  _.after = function(times, func) {
-    return function() {
-      if (--times < 1) {
-        return func.apply(this, arguments);
-      }
-    };
-  };
-
-  // Returns a function that will only be executed up to (but not including) the Nth call.
-  _.before = function(times, func) {
-    var memo;
-    return function() {
-      if (--times > 0) {
-        memo = func.apply(this, arguments);
-      }
-      if (times <= 1) func = null;
-      return memo;
-    };
-  };
-
-  // Returns a function that will be executed at most one time, no matter how
-  // often you call it. Useful for lazy initialization.
-  _.once = _.partial(_.before, 2);
-
-  // Object Functions
-  // ----------------
-
-  // Keys in IE < 9 that won't be iterated by `for key in ...` and thus missed.
-  var hasEnumBug = !{toString: null}.propertyIsEnumerable('toString');
-  var nonEnumerableProps = ['valueOf', 'isPrototypeOf', 'toString',
-                      'propertyIsEnumerable', 'hasOwnProperty', 'toLocaleString'];
-
-  function collectNonEnumProps(obj, keys) {
-    var nonEnumIdx = nonEnumerableProps.length;
-    var constructor = obj.constructor;
-    var proto = (_.isFunction(constructor) && constructor.prototype) || ObjProto;
-
-    // Constructor is a special case.
-    var prop = 'constructor';
-    if (_.has(obj, prop) && !_.contains(keys, prop)) keys.push(prop);
-
-    while (nonEnumIdx--) {
-      prop = nonEnumerableProps[nonEnumIdx];
-      if (prop in obj && obj[prop] !== proto[prop] && !_.contains(keys, prop)) {
-        keys.push(prop);
-      }
-    }
-  }
-
-  // Retrieve the names of an object's own properties.
-  // Delegates to **ECMAScript 5**'s native `Object.keys`
-  _.keys = function(obj) {
-    if (!_.isObject(obj)) return [];
-    if (nativeKeys) return nativeKeys(obj);
-    var keys = [];
-    for (var key in obj) if (_.has(obj, key)) keys.push(key);
-    // Ahem, IE < 9.
-    if (hasEnumBug) collectNonEnumProps(obj, keys);
-    return keys;
-  };
-
-  // Retrieve all the property names of an object.
-  _.allKeys = function(obj) {
-    if (!_.isObject(obj)) return [];
-    var keys = [];
-    for (var key in obj) keys.push(key);
-    // Ahem, IE < 9.
-    if (hasEnumBug) collectNonEnumProps(obj, keys);
-    return keys;
-  };
-
-  // Retrieve the values of an object's properties.
-  _.values = function(obj) {
-    var keys = _.keys(obj);
-    var length = keys.length;
-    var values = Array(length);
-    for (var i = 0; i < length; i++) {
-      values[i] = obj[keys[i]];
-    }
-    return values;
-  };
-
-  // Returns the results of applying the iteratee to each element of the object
-  // In contrast to _.map it returns an object
-  _.mapObject = function(obj, iteratee, context) {
-    iteratee = cb(iteratee, context);
-    var keys =  _.keys(obj),
-          length = keys.length,
-          results = {},
-          currentKey;
-      for (var index = 0; index < length; index++) {
-        currentKey = keys[index];
-        results[currentKey] = iteratee(obj[currentKey], currentKey, obj);
-      }
-      return results;
-  };
-
-  // Convert an object into a list of `[key, value]` pairs.
-  _.pairs = function(obj) {
-    var keys = _.keys(obj);
-    var length = keys.length;
-    var pairs = Array(length);
-    for (var i = 0; i < length; i++) {
-      pairs[i] = [keys[i], obj[keys[i]]];
-    }
-    return pairs;
-  };
-
-  // Invert the keys and values of an object. The values must be serializable.
-  _.invert = function(obj) {
-    var result = {};
-    var keys = _.keys(obj);
-    for (var i = 0, length = keys.length; i < length; i++) {
-      result[obj[keys[i]]] = keys[i];
-    }
-    return result;
-  };
-
-  // Return a sorted list of the function names available on the object.
-  // Aliased as `methods`
-  _.functions = _.methods = function(obj) {
-    var names = [];
-    for (var key in obj) {
-      if (_.isFunction(obj[key])) names.push(key);
-    }
-    return names.sort();
-  };
-
-  // Extend a given object with all the properties in passed-in object(s).
-  _.extend = createAssigner(_.allKeys);
-
-  // Assigns a given object with all the own properties in the passed-in object(s)
-  // (https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object/assign)
-  _.extendOwn = _.assign = createAssigner(_.keys);
-
-  // Returns the first key on an object that passes a predicate test
-  _.findKey = function(obj, predicate, context) {
-    predicate = cb(predicate, context);
-    var keys = _.keys(obj), key;
-    for (var i = 0, length = keys.length; i < length; i++) {
-      key = keys[i];
-      if (predicate(obj[key], key, obj)) return key;
-    }
-  };
-
-  // Return a copy of the object only containing the whitelisted properties.
-  _.pick = function(object, oiteratee, context) {
-    var result = {}, obj = object, iteratee, keys;
-    if (obj == null) return result;
-    if (_.isFunction(oiteratee)) {
-      keys = _.allKeys(obj);
-      iteratee = optimizeCb(oiteratee, context);
-    } else {
-      keys = flatten(arguments, false, false, 1);
-      iteratee = function(value, key, obj) { return key in obj; };
-      obj = Object(obj);
-    }
-    for (var i = 0, length = keys.length; i < length; i++) {
-      var key = keys[i];
-      var value = obj[key];
-      if (iteratee(value, key, obj)) result[key] = value;
-    }
-    return result;
-  };
-
-   // Return a copy of the object without the blacklisted properties.
-  _.omit = function(obj, iteratee, context) {
-    if (_.isFunction(iteratee)) {
-      iteratee = _.negate(iteratee);
-    } else {
-      var keys = _.map(flatten(arguments, false, false, 1), String);
-      iteratee = function(value, key) {
-        return !_.contains(keys, key);
-      };
-    }
-    return _.pick(obj, iteratee, context);
-  };
-
-  // Fill in a given object with default properties.
-  _.defaults = createAssigner(_.allKeys, true);
-
-  // Creates an object that inherits from the given prototype object.
-  // If additional properties are provided then they will be added to the
-  // created object.
-  _.create = function(prototype, props) {
-    var result = baseCreate(prototype);
-    if (props) _.extendOwn(result, props);
-    return result;
-  };
-
-  // Create a (shallow-cloned) duplicate of an object.
-  _.clone = function(obj) {
-    if (!_.isObject(obj)) return obj;
-    return _.isArray(obj) ? obj.slice() : _.extend({}, obj);
-  };
-
-  // Invokes interceptor with the obj, and then returns obj.
-  // The primary purpose of this method is to "tap into" a method chain, in
-  // order to perform operations on intermediate results within the chain.
-  _.tap = function(obj, interceptor) {
-    interceptor(obj);
-    return obj;
-  };
-
-  // Returns whether an object has a given set of `key:value` pairs.
-  _.isMatch = function(object, attrs) {
-    var keys = _.keys(attrs), length = keys.length;
-    if (object == null) return !length;
-    var obj = Object(object);
-    for (var i = 0; i < length; i++) {
-      var key = keys[i];
-      if (attrs[key] !== obj[key] || !(key in obj)) return false;
-    }
-    return true;
-  };
-
-
-  // Internal recursive comparison function for `isEqual`.
-  var eq = function(a, b, aStack, bStack) {
-    // Identical objects are equal. `0 === -0`, but they aren't identical.
-    // See the [Harmony `egal` proposal](http://wiki.ecmascript.org/doku.php?id=harmony:egal).
-    if (a === b) return a !== 0 || 1 / a === 1 / b;
-    // A strict comparison is necessary because `null == undefined`.
-    if (a == null || b == null) return a === b;
-    // Unwrap any wrapped objects.
-    if (a instanceof _) a = a._wrapped;
-    if (b instanceof _) b = b._wrapped;
-    // Compare `[[Class]]` names.
-    var className = toString.call(a);
-    if (className !== toString.call(b)) return false;
-    switch (className) {
-      // Strings, numbers, regular expressions, dates, and booleans are compared by value.
-      case '[object RegExp]':
-      // RegExps are coerced to strings for comparison (Note: '' + /a/i === '/a/i')
-      case '[object String]':
-        // Primitives and their corresponding object wrappers are equivalent; thus, `"5"` is
-        // equivalent to `new String("5")`.
-        return '' + a === '' + b;
-      case '[object Number]':
-        // `NaN`s are equivalent, but non-reflexive.
-        // Object(NaN) is equivalent to NaN
-        if (+a !== +a) return +b !== +b;
-        // An `egal` comparison is performed for other numeric values.
-        return +a === 0 ? 1 / +a === 1 / b : +a === +b;
-      case '[object Date]':
-      case '[object Boolean]':
-        // Coerce dates and booleans to numeric primitive values. Dates are compared by their
-        // millisecond representations. Note that invalid dates with millisecond representations
-        // of `NaN` are not equivalent.
-        return +a === +b;
-    }
-
-    var areArrays = className === '[object Array]';
-    if (!areArrays) {
-      if (typeof a != 'object' || typeof b != 'object') return false;
-
-      // Objects with different constructors are not equivalent, but `Object`s or `Array`s
-      // from different frames are.
-      var aCtor = a.constructor, bCtor = b.constructor;
-      if (aCtor !== bCtor && !(_.isFunction(aCtor) && aCtor instanceof aCtor &&
-                               _.isFunction(bCtor) && bCtor instanceof bCtor)
-                          && ('constructor' in a && 'constructor' in b)) {
-        return false;
-      }
-    }
-    // Assume equality for cyclic structures. The algorithm for detecting cyclic
-    // structures is adapted from ES 5.1 section 15.12.3, abstract operation `JO`.
-
-    // Initializing stack of traversed objects.
-    // It's done here since we only need them for objects and arrays comparison.
-    aStack = aStack || [];
-    bStack = bStack || [];
-    var length = aStack.length;
-    while (length--) {
-      // Linear search. Performance is inversely proportional to the number of
-      // unique nested structures.
-      if (aStack[length] === a) return bStack[length] === b;
-    }
-
-    // Add the first object to the stack of traversed objects.
-    aStack.push(a);
-    bStack.push(b);
-
-    // Recursively compare objects and arrays.
-    if (areArrays) {
-      // Compare array lengths to determine if a deep comparison is necessary.
-      length = a.length;
-      if (length !== b.length) return false;
-      // Deep compare the contents, ignoring non-numeric properties.
-      while (length--) {
-        if (!eq(a[length], b[length], aStack, bStack)) return false;
-      }
-    } else {
-      // Deep compare objects.
-      var keys = _.keys(a), key;
-      length = keys.length;
-      // Ensure that both objects contain the same number of properties before comparing deep equality.
-      if (_.keys(b).length !== length) return false;
-      while (length--) {
-        // Deep compare each member
-        key = keys[length];
-        if (!(_.has(b, key) && eq(a[key], b[key], aStack, bStack))) return false;
-      }
-    }
-    // Remove the first object from the stack of traversed objects.
-    aStack.pop();
-    bStack.pop();
-    return true;
-  };
-
-  // Perform a deep comparison to check if two objects are equal.
-  _.isEqual = function(a, b) {
-    return eq(a, b);
-  };
-
-  // Is a given array, string, or object empty?
-  // An "empty" object has no enumerable own-properties.
-  _.isEmpty = function(obj) {
-    if (obj == null) return true;
-    if (isArrayLike(obj) && (_.isArray(obj) || _.isString(obj) || _.isArguments(obj))) return obj.length === 0;
-    return _.keys(obj).length === 0;
-  };
-
-  // Is a given value a DOM element?
-  _.isElement = function(obj) {
-    return !!(obj && obj.nodeType === 1);
-  };
-
-  // Is a given value an array?
-  // Delegates to ECMA5's native Array.isArray
-  _.isArray = nativeIsArray || function(obj) {
-    return toString.call(obj) === '[object Array]';
-  };
-
-  // Is a given variable an object?
-  _.isObject = function(obj) {
-    var type = typeof obj;
-    return type === 'function' || type === 'object' && !!obj;
-  };
-
-  // Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp, isError.
-  _.each(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp', 'Error'], function(name) {
-    _['is' + name] = function(obj) {
-      return toString.call(obj) === '[object ' + name + ']';
-    };
-  });
-
-  // Define a fallback version of the method in browsers (ahem, IE < 9), where
-  // there isn't any inspectable "Arguments" type.
-  if (!_.isArguments(arguments)) {
-    _.isArguments = function(obj) {
-      return _.has(obj, 'callee');
-    };
-  }
-
-  // Optimize `isFunction` if appropriate. Work around some typeof bugs in old v8,
-  // IE 11 (#1621), and in Safari 8 (#1929).
-  if (typeof /./ != 'function' && typeof Int8Array != 'object') {
-    _.isFunction = function(obj) {
-      return typeof obj == 'function' || false;
-    };
-  }
-
-  // Is a given object a finite number?
-  _.isFinite = function(obj) {
-    return isFinite(obj) && !isNaN(parseFloat(obj));
-  };
-
-  // Is the given value `NaN`? (NaN is the only number which does not equal itself).
-  _.isNaN = function(obj) {
-    return _.isNumber(obj) && obj !== +obj;
-  };
-
-  // Is a given value a boolean?
-  _.isBoolean = function(obj) {
-    return obj === true || obj === false || toString.call(obj) === '[object Boolean]';
-  };
-
-  // Is a given value equal to null?
-  _.isNull = function(obj) {
-    return obj === null;
-  };
-
-  // Is a given variable undefined?
-  _.isUndefined = function(obj) {
-    return obj === void 0;
-  };
-
-  // Shortcut function for checking if an object has a given property directly
-  // on itself (in other words, not on a prototype).
-  _.has = function(obj, key) {
-    return obj != null && hasOwnProperty.call(obj, key);
-  };
-
-  // Utility Functions
-  // -----------------
-
-  // Run Underscore.js in *noConflict* mode, returning the `_` variable to its
-  // previous owner. Returns a reference to the Underscore object.
-  _.noConflict = function() {
-    root._ = previousUnderscore;
-    return this;
-  };
-
-  // Keep the identity function around for default iteratees.
-  _.identity = function(value) {
-    return value;
-  };
-
-  // Predicate-generating functions. Often useful outside of Underscore.
-  _.constant = function(value) {
-    return function() {
-      return value;
-    };
-  };
-
-  _.noop = function(){};
-
-  _.property = property;
-
-  // Generates a function for a given object that returns a given property.
-  _.propertyOf = function(obj) {
-    return obj == null ? function(){} : function(key) {
-      return obj[key];
-    };
-  };
-
-  // Returns a predicate for checking whether an object has a given set of
-  // `key:value` pairs.
-  _.matcher = _.matches = function(attrs) {
-    attrs = _.extendOwn({}, attrs);
-    return function(obj) {
-      return _.isMatch(obj, attrs);
-    };
-  };
-
-  // Run a function **n** times.
-  _.times = function(n, iteratee, context) {
-    var accum = Array(Math.max(0, n));
-    iteratee = optimizeCb(iteratee, context, 1);
-    for (var i = 0; i < n; i++) accum[i] = iteratee(i);
-    return accum;
-  };
-
-  // Return a random integer between min and max (inclusive).
-  _.random = function(min, max) {
-    if (max == null) {
-      max = min;
-      min = 0;
-    }
-    return min + Math.floor(Math.random() * (max - min + 1));
-  };
-
-  // A (possibly faster) way to get the current timestamp as an integer.
-  _.now = Date.now || function() {
-    return new Date().getTime();
-  };
-
-   // List of HTML entities for escaping.
-  var escapeMap = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#x27;',
-    '`': '&#x60;'
-  };
-  var unescapeMap = _.invert(escapeMap);
-
-  // Functions for escaping and unescaping strings to/from HTML interpolation.
-  var createEscaper = function(map) {
-    var escaper = function(match) {
-      return map[match];
-    };
-    // Regexes for identifying a key that needs to be escaped
-    var source = '(?:' + _.keys(map).join('|') + ')';
-    var testRegexp = RegExp(source);
-    var replaceRegexp = RegExp(source, 'g');
-    return function(string) {
-      string = string == null ? '' : '' + string;
-      return testRegexp.test(string) ? string.replace(replaceRegexp, escaper) : string;
-    };
-  };
-  _.escape = createEscaper(escapeMap);
-  _.unescape = createEscaper(unescapeMap);
-
-  // If the value of the named `property` is a function then invoke it with the
-  // `object` as context; otherwise, return it.
-  _.result = function(object, property, fallback) {
-    var value = object == null ? void 0 : object[property];
-    if (value === void 0) {
-      value = fallback;
-    }
-    return _.isFunction(value) ? value.call(object) : value;
-  };
-
-  // Generate a unique integer id (unique within the entire client session).
-  // Useful for temporary DOM ids.
-  var idCounter = 0;
-  _.uniqueId = function(prefix) {
-    var id = ++idCounter + '';
-    return prefix ? prefix + id : id;
-  };
-
-  // By default, Underscore uses ERB-style template delimiters, change the
-  // following template settings to use alternative delimiters.
-  _.templateSettings = {
-    evaluate    : /<%([\s\S]+?)%>/g,
-    interpolate : /<%=([\s\S]+?)%>/g,
-    escape      : /<%-([\s\S]+?)%>/g
-  };
-
-  // When customizing `templateSettings`, if you don't want to define an
-  // interpolation, evaluation or escaping regex, we need one that is
-  // guaranteed not to match.
-  var noMatch = /(.)^/;
-
-  // Certain characters need to be escaped so that they can be put into a
-  // string literal.
-  var escapes = {
-    "'":      "'",
-    '\\':     '\\',
-    '\r':     'r',
-    '\n':     'n',
-    '\u2028': 'u2028',
-    '\u2029': 'u2029'
-  };
-
-  var escaper = /\\|'|\r|\n|\u2028|\u2029/g;
-
-  var escapeChar = function(match) {
-    return '\\' + escapes[match];
-  };
-
-  // JavaScript micro-templating, similar to John Resig's implementation.
-  // Underscore templating handles arbitrary delimiters, preserves whitespace,
-  // and correctly escapes quotes within interpolated code.
-  // NB: `oldSettings` only exists for backwards compatibility.
-  _.template = function(text, settings, oldSettings) {
-    if (!settings && oldSettings) settings = oldSettings;
-    settings = _.defaults({}, settings, _.templateSettings);
-
-    // Combine delimiters into one regular expression via alternation.
-    var matcher = RegExp([
-      (settings.escape || noMatch).source,
-      (settings.interpolate || noMatch).source,
-      (settings.evaluate || noMatch).source
-    ].join('|') + '|$', 'g');
-
-    // Compile the template source, escaping string literals appropriately.
-    var index = 0;
-    var source = "__p+='";
-    text.replace(matcher, function(match, escape, interpolate, evaluate, offset) {
-      source += text.slice(index, offset).replace(escaper, escapeChar);
-      index = offset + match.length;
-
-      if (escape) {
-        source += "'+\n((__t=(" + escape + "))==null?'':_.escape(__t))+\n'";
-      } else if (interpolate) {
-        source += "'+\n((__t=(" + interpolate + "))==null?'':__t)+\n'";
-      } else if (evaluate) {
-        source += "';\n" + evaluate + "\n__p+='";
-      }
-
-      // Adobe VMs need the match returned to produce the correct offest.
-      return match;
-    });
-    source += "';\n";
-
-    // If a variable is not specified, place data values in local scope.
-    if (!settings.variable) source = 'with(obj||{}){\n' + source + '}\n';
-
-    source = "var __t,__p='',__j=Array.prototype.join," +
-      "print=function(){__p+=__j.call(arguments,'');};\n" +
-      source + 'return __p;\n';
-
-    try {
-      var render = new Function(settings.variable || 'obj', '_', source);
-    } catch (e) {
-      e.source = source;
-      throw e;
-    }
-
-    var template = function(data) {
-      return render.call(this, data, _);
-    };
-
-    // Provide the compiled source as a convenience for precompilation.
-    var argument = settings.variable || 'obj';
-    template.source = 'function(' + argument + '){\n' + source + '}';
-
-    return template;
-  };
-
-  // Add a "chain" function. Start chaining a wrapped Underscore object.
-  _.chain = function(obj) {
-    var instance = _(obj);
-    instance._chain = true;
-    return instance;
-  };
-
-  // OOP
-  // ---------------
-  // If Underscore is called as a function, it returns a wrapped object that
-  // can be used OO-style. This wrapper holds altered versions of all the
-  // underscore functions. Wrapped objects may be chained.
-
-  // Helper function to continue chaining intermediate results.
-  var result = function(instance, obj) {
-    return instance._chain ? _(obj).chain() : obj;
-  };
-
-  // Add your own custom functions to the Underscore object.
-  _.mixin = function(obj) {
-    _.each(_.functions(obj), function(name) {
-      var func = _[name] = obj[name];
-      _.prototype[name] = function() {
-        var args = [this._wrapped];
-        push.apply(args, arguments);
-        return result(this, func.apply(_, args));
-      };
-    });
-  };
-
-  // Add all of the Underscore functions to the wrapper object.
-  _.mixin(_);
-
-  // Add all mutator Array functions to the wrapper.
-  _.each(['pop', 'push', 'reverse', 'shift', 'sort', 'splice', 'unshift'], function(name) {
-    var method = ArrayProto[name];
-    _.prototype[name] = function() {
-      var obj = this._wrapped;
-      method.apply(obj, arguments);
-      if ((name === 'shift' || name === 'splice') && obj.length === 0) delete obj[0];
-      return result(this, obj);
-    };
-  });
-
-  // Add all accessor Array functions to the wrapper.
-  _.each(['concat', 'join', 'slice'], function(name) {
-    var method = ArrayProto[name];
-    _.prototype[name] = function() {
-      return result(this, method.apply(this._wrapped, arguments));
-    };
-  });
-
-  // Extracts the result from a wrapped and chained object.
-  _.prototype.value = function() {
-    return this._wrapped;
-  };
-
-  // Provide unwrapping proxy for some methods used in engine operations
-  // such as arithmetic and JSON stringification.
-  _.prototype.valueOf = _.prototype.toJSON = _.prototype.value;
-
-  _.prototype.toString = function() {
-    return '' + this._wrapped;
-  };
-
-  // AMD registration happens at the end for compatibility with AMD loaders
-  // that may not enforce next-turn semantics on modules. Even though general
-  // practice for AMD registration is to be anonymous, underscore registers
-  // as a named module because, like jQuery, it is a base library that is
-  // popular enough to be bundled in a third party lib, but not be part of
-  // an AMD load request. Those cases could generate an error when an
-  // anonymous define() is called outside of a loader request.
-  if (typeof define === 'function' && define.amd) {
-    define('underscore', [], function() {
-      return _;
-    });
-  }
-}.call(this));
-
-},{}],9:[function(require,module,exports){
-'use strict';
-
-var Backbone = require('backbone');
-var Batch = require('./../models/batch');
-
-module.exports = Backbone.Collection.extend({
-    url: '/api/batch',
-    model: Batch
-});
-
-},{"./../models/batch":14,"backbone":4}],10:[function(require,module,exports){
-'use strict';
-
-var Backbone = require('backbone');
-var Spirit = require('./../models/spirit');
-
-module.exports = Backbone.Collection.extend({
-    url: '/api/spirit',
-    model: Spirit
-});
-
-},{"./../models/spirit":15,"backbone":4}],11:[function(require,module,exports){
-'use strict';
-
-var Backbone = require('backbone');
-var State = require('./../models/state');
-
-module.exports = Backbone.Collection.extend({
-    url: '/api/state',
-    model: State
-});
-
-},{"./../models/state":16,"backbone":4}],12:[function(require,module,exports){
-'use strict';
-
-var Backbone = require('backbone');
-var User = require('./../models/user');
-
-module.exports = Backbone.Collection.extend({
-    url: '/api/user',
-    model: User
-});
-
-},{"./../models/user":17,"backbone":4}],13:[function(require,module,exports){
-'use strict';
-
-var $ = require('jquery');
-var Backbone = require('backbone');
-var Marionette = require('backbone.marionette');
-
-var SpiritRouter = require('./routers/spirit');
-var UserRouter = require('./routers/user');
-var BatchRouter = require('./routers/batch');
-var RootView = require('./views/root');
-
-$.ajaxSetup({
-    headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    }
-});
-
-var App = Marionette.Application.extend({
-    region: '#application',
-
-    onStart: function onStart() {
-        this.rootView = new RootView();
-        this.showView(this.rootView);
-
-        new SpiritRouter({ app: this });
-        new UserRouter({ app: this });
-        new BatchRouter({ app: this });
-
-        Backbone.history.start({ pushState: true });
-
-        $(document).on('click', 'a[href]:not([data-bypass])', function (e) {
-            var href = { prop: $(this).prop('href'), attr: $(this).attr('href') };
-            var root = location.protocol + '//' + location.host;
-            if (href.prop.slice(0, root.length) === root) {
-                e.preventDefault();
-                Backbone.history.navigate(href.attr, true);
-            }
-        });
-    }
-});
-
-var app = new App();
-
-app.start();
-
-},{"./routers/batch":18,"./routers/spirit":19,"./routers/user":20,"./views/root":56,"backbone":4,"backbone.marionette":2,"jquery":6}],14:[function(require,module,exports){
-'use strict';
-
-var Backbone = require('backbone');
-
-module.exports = Backbone.Model.extend({
-    urlRoot: '/api/batch',
-
-    state: function state() {
-        var step = this.get('step');
-        var process = this.get('spirit').process;
-
-        var states = {
-            current: process[step]
-        };
-
-        if (step < process.length) {
-            states.next = process[step + 1];
-        }
-
-        if (step > 0) {
-            states.prev = process[step - 1];
-        }
-
-        return states;
-    }
-});
-
-},{"backbone":4}],15:[function(require,module,exports){
-'use strict';
-
-var Backbone = require('backbone');
-
-module.exports = Backbone.Model.extend({
-    urlRoot: '/api/spirit'
-});
-
-},{"backbone":4}],16:[function(require,module,exports){
-'use strict';
-
-var Backbone = require('backbone');
-
-module.exports = Backbone.Model.extend({
-    urlRoot: '/api/state'
-});
-
-},{"backbone":4}],17:[function(require,module,exports){
-'use strict';
-
-var Backbone = require('backbone');
-
-module.exports = Backbone.Model.extend({
-    urlRoot: '/api/user'
-});
-
-},{"backbone":4}],18:[function(require,module,exports){
-'use strict';
-
-var Backbone = require('backbone');
-
-var Batch = require('./../models/batch');
-var Batches = require('./../collections/batches');
-var Spirits = require('./../collections/spirits');
-var BatchIndexView = require('./../views/batch/index');
-var BatchCreateView = require('./../views/batch/create');
-var BatchShowView = require('./../views/batch/show');
-var BatchEditView = require('./../views/batch/edit');
-
-module.exports = Backbone.Router.extend({
-    routes: {
-        'batch': 'index',
-        'batch/create': 'create',
-        'batch/:id': 'show',
-        'batch/:id/edit': 'edit'
-    },
-
-    initialize: function initialize(options) {
-        this.app = options.app;
-    },
-
-    index: function index() {
-        var _this = this;
-
-        var batches = new Batches();
-        batches.fetch().then(function () {
-            _this.app.rootView.showChildView('content', new BatchIndexView({
-                collection: batches
-            }));
-        });
-    },
-    create: function create() {
-        var _this2 = this;
-
-        var spirits = new Spirits();
-
-        spirits.fetch().then(function () {
-            _this2.app.rootView.showChildView('content', new BatchCreateView({
-                spirits: spirits
-            }));
-        });
-    },
-    show: function show(id) {
-        var _this3 = this;
-
-        var batch = new Batch({ id: id });
-        batch.fetch().then(function () {
-            _this3.app.rootView.showChildView('content', new BatchShowView({
-                model: batch
-            }));
-        });
-    },
-    edit: function edit(id) {
-        var _this4 = this;
-
-        var batch = new Batch({ id: id });
-
-        batch.fetch().then(function () {
-            _this4.app.rootView.showChildView('content', new BatchEditView({
-                model: batch
-            }));
-        });
-    }
-});
-
-},{"./../collections/batches":9,"./../collections/spirits":10,"./../models/batch":14,"./../views/batch/create":43,"./../views/batch/edit":44,"./../views/batch/index":45,"./../views/batch/show":46,"backbone":4}],19:[function(require,module,exports){
-'use strict';
-
-var $ = require('jquery');
-var Backbone = require('backbone');
-
-var Spirit = require('./../models/spirit');
-var Spirits = require('./../collections/spirits');
-var States = require('./../collections/states');
-var SpiritIndexView = require('./../views/spirit/index');
-var SpiritCreateView = require('./../views/spirit/create');
-var SpiritShowView = require('./../views/spirit/show');
-var SpiritEditView = require('./../views/spirit/edit');
-
-module.exports = Backbone.Router.extend({
-    routes: {
-        'spirit': 'index',
-        'spirit/create': 'create',
-        'spirit/:id': 'show',
-        'spirit/:id/edit': 'edit'
-    },
-
-    initialize: function initialize(options) {
-        this.app = options.app;
-    },
-
-    index: function index() {
-        var _this = this;
-
-        var spirits = new Spirits();
-
-        spirits.fetch().then(function () {
-            _this.app.rootView.showChildView('content', new SpiritIndexView({
-                collection: spirits
-            }));
-        });
-    },
-
-    create: function create() {
-        var _this2 = this;
-
-        var states = new States();
-
-        states.fetch().then(function () {
-            _this2.app.rootView.showChildView('content', new SpiritCreateView({
-                states: states
-            }));
-        });
-    },
-
-    show: function show(id) {
-        var _this3 = this;
-
-        var spirit = new Spirit({ id: id });
-
-        spirit.fetch().then(function () {
-            _this3.app.rootView.showChildView('content', new SpiritShowView({
-                model: spirit
-            }));
-        });
-    },
-
-    edit: function edit(id) {
-        var _this4 = this;
-
-        var spirit = new Spirit({ id: id });
-        var states = new States();
-
-        $.when(spirit.fetch(), states.fetch()).then(function () {
-            _this4.app.rootView.showChildView('content', new SpiritEditView({
-                model: spirit,
-                states: states
-            }));
-        });
-    }
-});
-
-},{"./../collections/spirits":10,"./../collections/states":11,"./../models/spirit":15,"./../views/spirit/create":57,"./../views/spirit/edit":58,"./../views/spirit/index":59,"./../views/spirit/show":60,"backbone":4,"jquery":6}],20:[function(require,module,exports){
-'use strict';
-
-var Backbone = require('backbone');
-
-var User = require('./../models/user');
-var Users = require('./../collections/users');
-var UserIndexView = require('./../views/user/index');
-var UserCreateView = require('./../views/user/create');
-var UserShowView = require('./../views/user/show');
-var UserEditView = require('./../views/user/edit');
-
-module.exports = Backbone.Router.extend({
-    routes: {
-        'user': 'index',
-        'user/create': 'create',
-        'user/:id': 'show',
-        'user/:id/edit': 'edit'
-    },
-
-    initialize: function initialize(options) {
-        this.app = options.app;
-    },
-
-    index: function index() {
-        var _this = this;
-
-        var users = new Users();
-
-        users.fetch().then(function () {
-            _this.app.rootView.showChildView('content', new UserIndexView({
-                collection: users
-            }));
-        });
-    },
-
-    create: function create() {
-        this.app.rootView.showChildView('content', new UserCreateView());
-    },
-
-    show: function show(id) {
-        var _this2 = this;
-
-        var user = new User({ id: id });
-
-        user.fetch().then(function () {
-            _this2.app.rootView.showChildView('content', new UserShowView({
-                model: user
-            }));
-        });
-    },
-
-    edit: function edit(id) {
-        var _this3 = this;
-
-        var user = new User({ id: id });
-
-        user.fetch().then(function () {
-            _this3.app.rootView.showChildView('content', new UserEditView({
-                model: user
-            }));
-        });
-    }
-});
-
-},{"./../collections/users":12,"./../models/user":17,"./../views/user/create":61,"./../views/user/edit":62,"./../views/user/index":63,"./../views/user/show":64,"backbone":4}],21:[function(require,module,exports){
-module.exports = (function anonymous(locals, filters, escape, rethrow
-/**/) {
-escape = escape || function (html){
-  return String(html)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/'/g, '&#39;')
-    .replace(/"/g, '&quot;');
-};
-var buf = [];
-with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Batch</h2>\n        <h1>Opret batch</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Spiritustype</span>\n        <select name="spirit_id">\n            ');12; spirits.forEach((spirit) => { ; buf.push('\n            <option value="', escape((13,  spirit.id )), '">', escape((13,  spirit.name )), '</option>\n            ');14; }) ; buf.push('\n        </select>\n    </label>\n\n    <label>\n        <span>Oprettelsesdato</span>\n        <input name="created_at" value="', escape((20,  moment().format('YYYY-MM-DD') )), '" type="text">\n    </label>\n\n    <label>\n        <span>Batchnavn</span>\n        <input name="name" type="text">\n    </label>\n\n    <button class="button-final" type="submit">Opret</button>\n</form>\n'); })();
-} 
-return buf.join('');
-})
-},{}],22:[function(require,module,exports){
-module.exports = (function anonymous(locals, filters, escape, rethrow
-/**/) {
-escape = escape || function (html){
-  return String(html)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/'/g, '&#39;')
-    .replace(/"/g, '&quot;');
-};
-var buf = [];
-with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Batch</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Batchnavn</span>\n        <input name="name" value="', escape((11,  name )), '" type="text">\n    </label>\n\n    <div>\n        Spiritustype\n        <select name="" id="">\n            <option value="">Test1</option>\n            <option value="">Test2</option>\n        </select>\n    </div>\n\n    <button class="button-final" type="submit">Gem</button>\n</form>\n'); })();
-} 
-return buf.join('');
-})
-},{}],23:[function(require,module,exports){
-module.exports = (function anonymous(locals, filters, escape, rethrow
-/**/) {
-escape = escape || function (html){
-  return String(html)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/'/g, '&#39;')
-    .replace(/"/g, '&quot;');
-};
-var buf = [];
-with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Produktion</h2>\n        <h1>Batches</h1>\n    </div>\n    <div class="buttons">\n        <a href="/batch/create" role="button">Opret</a>\n    </div>\n</div>\n\n<div id="content-body">\n    <table>\n        <tr>\n            <th class="span">Navn</th>\n            <th class="shrink">Tilstand</th>\n            <th class="shrink">Oprettelsesdato</th>\n        </tr>\n\n        ');19; items.forEach((item) => { ; buf.push('\n        <tr>\n            <td><a href="/batch/', escape((21,  item.id )), '">', escape((21,  item.name )), '</a></td>\n            <td>Mæskning</td>\n            <td>', escape((23,  item.created_at )), '</td>\n        </tr>\n        ');25; }) ; buf.push('\n    </table>\n</div>'); })();
-} 
-return buf.join('');
-})
-},{}],24:[function(require,module,exports){
-module.exports = (function anonymous(locals, filters, escape, rethrow
-/**/) {
-escape = escape || function (html){
-  return String(html)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/'/g, '&#39;')
-    .replace(/"/g, '&quot;');
-};
-var buf = [];
-with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Batch: ', escape((3,  state.current.name )), '</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n\n    <div class="buttons button-group">\n        <a href="/batch/', escape((8,  id )), '/edit" role="button">Redigér</a>\n        <button id="delete">Fjern</button>\n    </div>\n</div>\n\n<div id="step"></div>'); })();
-} 
-return buf.join('');
-})
-},{}],25:[function(require,module,exports){
-module.exports = (function anonymous(locals, filters, escape, rethrow
-/**/) {
-escape = escape || function (html){
-  return String(html)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/'/g, '&#39;')
-    .replace(/"/g, '&quot;');
-};
-var buf = [];
-with (locals || {}) { (function(){ 
- buf.push('Blending\n'); })();
-} 
-return buf.join('');
-})
-},{}],26:[function(require,module,exports){
-module.exports = (function anonymous(locals, filters, escape, rethrow
-/**/) {
-escape = escape || function (html){
-  return String(html)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/'/g, '&#39;')
-    .replace(/"/g, '&quot;');
-};
-var buf = [];
-with (locals || {}) { (function(){ 
- buf.push('<div class="headings">\n    <h2>Tapning</h2>\n</div>\n\n<form>\n    <label>\n        <span>Tapningsdato</span>\n        <input type="date">\n    </label>\n    <label>\n        <span>Flaskevolumen(cL)</span>\n        <input type="number" step="0.01">\n    </label>\n    <label>\n        <span>Antal flasker</span>\n        <input type="number" step="0.01">\n    </label>\n    <div class="output">\n        <span>Resterende volumen</span>\n        <div>123123</div>\n    </div>\n    <label>\n        <span>Kommentarer</span>\n        <textarea rows="5"></textarea>\n    </label>\n    <button id="save-bottling">Gem tapning</button>\n</form>\n'); })();
-} 
-return buf.join('');
-})
-},{}],27:[function(require,module,exports){
-module.exports = (function anonymous(locals, filters, escape, rethrow
-/**/) {
-escape = escape || function (html){
-  return String(html)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/'/g, '&#39;')
-    .replace(/"/g, '&quot;');
-};
-var buf = [];
-with (locals || {}) { (function(){ 
- buf.push('<div class="headings">\n    <h2>Dilution</h2>\n</div>\n<form>\n    <label>\n        <span>Fortyndingsdato</span>\n        <input type="date">\n    </label>\n    <label>\n        <span>Kommentarer</span>\n        <textarea rows="5"></textarea>\n    </label>\n    <h3>Inden fortynding</h3>\n    <label>\n        <span>Totalvægt(kg)</span>\n        <input type="number" step="0.01">\n    </label>\n    <label>\n        <span>Alkohol(%)</span>\n        <input type="number" step="0.01">\n    </label>\n    <label>\n        <span>Tabelværdi for alkohol</span>\n        <input type="number" step="0.01">\n    </label>\n    <label>\n        <span>Ønsket alkohol(%)</span>\n        <input type="number" step="0.01">\n    </label>\n    <label>\n        <span>Tabelværdi for ønsket alkohol</span>\n        <input type="number" step="0.01">\n    </label>\n    <h3>Efter fortyndingen</h3>\n    <div class="output">\n        <span>100% ren alkohol(kg)</span>\n        <div>12312321</div>\n    </div>\n    <div class="output">\n        <span>Tilsætning af vand</span>\n        <div>321321123</div>\n    </div>\n    <div class="output">\n        <span>Tilsætning af vand(kg)</span>\n        <div>123123123321</div>\n    </div>\n    <button id="save-dilution">Gem fortynding</button>\n</form>\n'); })();
-} 
-return buf.join('');
-})
-},{}],28:[function(require,module,exports){
-module.exports = (function anonymous(locals, filters, escape, rethrow
-/**/) {
-escape = escape || function (html){
-  return String(html)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/'/g, '&#39;')
-    .replace(/"/g, '&quot;');
-};
-var buf = [];
-with (locals || {}) { (function(){ 
- buf.push('<div class="headings">\n    <h2>Destillation</h2>\n</div>\n\n<form>\n    <label>\n        <span>Destillationsdato</span>\n        <input type="date">\n    </label>\n    <label>\n        <span>Vægt(kg)</span>\n        <input type="number" step="0.01">\n    </label>\n    <label>\n        <span>Alkohol(%)</span>\n        <input type="number" step="0.01">\n    </label>\n    <label>\n        <span>Kommentarer</span>\n        <textarea rows="5"></textarea>\n    </label>\n    <button id="save-distillation">Gem destillation</button>\n</form>\n'); })();
-} 
-return buf.join('');
-})
-},{}],29:[function(require,module,exports){
-module.exports = (function anonymous(locals, filters, escape, rethrow
-/**/) {
-escape = escape || function (html){
-  return String(html)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/'/g, '&#39;')
-    .replace(/"/g, '&quot;');
-};
-var buf = [];
-with (locals || {}) { (function(){ 
- buf.push('<div class="headings">\n    <h2>Filtrering</h2>\n</div>\n\n<form>\n    <label>\n        <span>Filtreringsdato</span>\n        <input type="date">\n    </label>\n    <label>\n        <span>Vægt(kg)</span>\n        <input type="number" step="0.01">\n    </label>\n    <label>\n        <span>Alkohol(%)</span>\n        <input type="number" step="0.01">\n    </label>\n    <label>\n        <span>Densitet tabelværdi</span>\n        <input type="number" step="0.01">\n    </label>\n    <label>\n        <span>Volumen(L)</span>\n        <input type="number" step="0.01">\n    </label>\n    <label>\n        <span>Kommentarer</span>\n        <textarea rows="5"></textarea>\n    </label>\n    <button id="save-filtration">Gem filtrering</button>\n</form>\n\n'); })();
-} 
-return buf.join('');
-})
-},{}],30:[function(require,module,exports){
-module.exports = (function anonymous(locals, filters, escape, rethrow
-/**/) {
-escape = escape || function (html){
-  return String(html)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/'/g, '&#39;')
-    .replace(/"/g, '&quot;');
-};
-var buf = [];
-with (locals || {}) { (function(){ 
- buf.push('<form>\n    <label>\n        <span>Kvalitet</span>\n        <input name="" type="text">\n    </label>\n\n    <label>\n        <span>Sukker (<sup>o</sup>Bx)</span>\n        <input name="" type="text">\n    </label>\n\n    <label>\n        <span>Gær (g)</span>\n        <input name="" type="text">\n    </label>\n\n    <label>\n        <span>Mængde (l)</span>\n        <input name="" type="text">\n    </label>\n\n    <label>\n        <span>Kommentarer</span>\n        <textarea rows="5"></textarea>\n    </label>\n\n    <button id="begin-mashing">Begynd mæskning</button>\n</form>\n'); })();
-} 
-return buf.join('');
-})
-},{}],31:[function(require,module,exports){
-module.exports = (function anonymous(locals, filters, escape, rethrow
-/**/) {
-escape = escape || function (html){
-  return String(html)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/'/g, '&#39;')
-    .replace(/"/g, '&quot;');
-};
-var buf = [];
-with (locals || {}) { (function(){ 
- buf.push('<form>\n    <div class="headings">\n        <h2>Lagring</h2>\n    </div>\n    <label>Begyndelsesdato</label>\n    <input type="date">\n    <label>\n        <span>Kommentarer</span>\n        <textarea rows="5"></textarea>\n    </label>\n    <button id="begin-storage">Begynd lagring</button>\n</form>\n'); })();
-} 
-return buf.join('');
-})
-},{}],32:[function(require,module,exports){
-module.exports = (function anonymous(locals, filters, escape, rethrow
-/**/) {
-escape = escape || function (html){
-  return String(html)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/'/g, '&#39;')
-    .replace(/"/g, '&quot;');
-};
-var buf = [];
-with (locals || {}) { (function(){ 
- buf.push('<span>Produktionsprocess</span>\n<table></table>\n<button type="button">Tilføj</button>'); })();
-} 
-return buf.join('');
-})
-},{}],33:[function(require,module,exports){
-module.exports = (function anonymous(locals, filters, escape, rethrow
-/**/) {
-escape = escape || function (html){
-  return String(html)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/'/g, '&#39;')
-    .replace(/"/g, '&quot;');
-};
-var buf = [];
-with (locals || {}) { (function(){ 
- buf.push('<td class="span">\n    <select name="process[]">\n        ');3; states.forEach((state) => { ; buf.push('\n            ');4; if (step && state.id == step.id) { ; buf.push('\n            <option value="', escape((5,  state.id )), '" selected>', escape((5,  state.name )), '</option>\n            ');6; } else { ; buf.push('\n            <option value="', escape((7,  state.id )), '">', escape((7,  state.name )), '</option>\n            ');8; } ; buf.push('\n        ');9; }) ; buf.push('\n    </select>\n</td>\n\n<td class="shrink">\n    <button type="button" class="icon-cross"></button>\n</td>'); })();
-} 
-return buf.join('');
-})
-},{}],34:[function(require,module,exports){
-module.exports = (function anonymous(locals, filters, escape, rethrow
-/**/) {
-escape = escape || function (html){
-  return String(html)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/'/g, '&#39;')
-    .replace(/"/g, '&quot;');
-};
-var buf = [];
-with (locals || {}) { (function(){ 
- buf.push('<div id="navigation">\n    <h1>Nordisk Brænderi</h1>\n    <ul>\n        <li class="category">Produktion</li>\n        <li><a href="/batch">Oversigt</a></li>\n        <li><a href="/batch/create">Opret</a></li>\n\n        <li class="category">Opgørelser</li>\n        <li><a href="#">Årsopgørelse</a></li>\n        <li><a href="#">Kvartalsopgørelse</a></li>\n        <li><a href="#">Månedsopgørelse</a></li>\n\n        <li class="category">Administration</li>\n        <li><a href="/user">Brugere</a></li>\n        <li><a href="/spirit">Spiritus</a></li>\n\n        <li class="logoff"><a href="#">Log af</a></li>\n    </ul>\n</div>\n<div id="content"></div>'); })();
-} 
-return buf.join('');
-})
-},{}],35:[function(require,module,exports){
-module.exports = (function anonymous(locals, filters, escape, rethrow
-/**/) {
-escape = escape || function (html){
-  return String(html)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/'/g, '&#39;')
-    .replace(/"/g, '&quot;');
-};
-var buf = [];
-with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Spiritus</h2>\n        <h1>Opret spiritus</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Spiritusnavn</span>\n        <input name="name" type="text">\n    </label>\n\n    <label>\n        <span>Alkoholprocent</span>\n        <input name="abv" step="0.01">\n    </label>\n\n    <label>\n        <span>Opskrift</span>\n        <textarea name="recipe" rows="5"></textarea>\n    </label>\n\n    <div id="process">\n\n    </div>\n\n    <button class="green" type="submit">Opret</button>\n</form>\n'); })();
-} 
-return buf.join('');
-})
-},{}],36:[function(require,module,exports){
-module.exports = (function anonymous(locals, filters, escape, rethrow
-/**/) {
-escape = escape || function (html){
-  return String(html)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/'/g, '&#39;')
-    .replace(/"/g, '&quot;');
-};
-var buf = [];
-with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Spiritus</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Spiritusnavn</span>\n        <input name="name" value="', escape((11,  name )), '" type="text">\n    </label>\n\n    <label>\n        <span>Alkoholprocent</span>\n        <input name="abv" value="', escape((16,  abv )), '" type="number" step="0.01">\n    </label>\n\n    <label>\n        <span>Opskrift</span>\n        <textarea name="recipe" rows="5">', escape((21,  recipe )), '</textarea>\n    </label>\n\n    <div id="process">\n\n    </div>\n\n    <button class="green" type="submit">Gem</button>\n</form>\n'); })();
-} 
-return buf.join('');
-})
-},{}],37:[function(require,module,exports){
-module.exports = (function anonymous(locals, filters, escape, rethrow
-/**/) {
-escape = escape || function (html){
-  return String(html)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/'/g, '&#39;')
-    .replace(/"/g, '&quot;');
-};
-var buf = [];
-with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Administration</h2>\n        <h1>Spiritus</h1>\n    </div>\n\n    <div class="buttons">\n        <a href="/spirit/create" role="button">Opret</a>\n    </div>\n</div>\n\n<div id="content-body">\n    <table>\n        <tr>\n            <th>Navn</th>\n        </tr>\n\n        ');18; items.forEach((item) => { ; buf.push('\n            <tr>\n                <td>\n                    <a href="/spirit/', escape((21,  item.id )), '">', escape((21,  item.name )), '</a>\n                </td>\n            </tr>\n        ');24; }) ; buf.push('\n    </table>\n</div>\n'); })();
-} 
-return buf.join('');
-})
-},{}],38:[function(require,module,exports){
-(function (process){
-module.exports = (function anonymous(locals, filters, escape, rethrow
-/**/) {
-escape = escape || function (html){
-  return String(html)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/'/g, '&#39;')
-    .replace(/"/g, '&quot;');
-};
-var buf = [];
-with (locals || {}) { (function(){ 
- buf.push('\n<div id="content-header">\n    <div class="headings">\n        <h2>Spiritus</h2>\n        <h1>', escape((5,  name )), '</h1>\n    </div>\n\n    <div class="buttons button-group">\n        <a href="/spirit/', escape((9,  id )), '/edit" role="button">Redigér</a>\n        <button>Fjern</button>\n    </div>\n</div>\n\n<div class="output">\n    <span>Spiritustype</span>\n    <div>', escape((16,  name )), '</div>\n</div>\n\n<div class="output">\n    <span>Alkoholprocent</span>\n    <div>', escape((21,  abv )), '</div>\n</div>\n\n<div class="output">\n    <span>Opskrift</span>\n    <div>', escape((26,  recipe ? recipe : 'N/A' )), '</div>\n</div>\n\n<div class="output">\n    <span>Produktionsprocess</span>\n    <ol>\n        ');32; process.forEach((step) => { ; buf.push('\n           <li>', escape((33,  step.name )), '</li>\n        ');34; }) ; buf.push('\n    </ol>\n</div>\n\n'); })();
-} 
-return buf.join('');
-})
-}).call(this,require('_process'))
-},{"_process":7}],39:[function(require,module,exports){
-module.exports = (function anonymous(locals, filters, escape, rethrow
-/**/) {
-escape = escape || function (html){
-  return String(html)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/'/g, '&#39;')
-    .replace(/"/g, '&quot;');
-};
-var buf = [];
-with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Bruger</h2>\n        <h1>Opret bruger</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Brugernavn</span>\n        <input name="name" type="text">\n    </label>\n\n    <label>\n        <span>Adgangskode</span>\n        <input name="password" step="0.01">\n    </label>\n\n    <label>\n        <span>Bekræft adgangskode</span>\n        <input name="confirm-password">\n    </label>\n\n    <button class="green" type="submit">Opret</button>\n</form>'); })();
-} 
-return buf.join('');
-})
-},{}],40:[function(require,module,exports){
-module.exports = (function anonymous(locals, filters, escape, rethrow
-/**/) {
-escape = escape || function (html){
-  return String(html)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/'/g, '&#39;')
-    .replace(/"/g, '&quot;');
-};
-var buf = [];
-with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Bruger</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Brugernavn</span>\n        <input name="name" value="', escape((11,  name )), '" type="text">\n    </label>\n\n    <label>\n        <span>Adgangskode</span>\n        <input name="password" type="password">\n    </label>\n\n    <label>\n        <span>Bekræft adgangskode</span>\n        <input name="confirm-password" type="password">\n    </label>\n\n    <button class="green" type="submit">Gem</button>\n</form>\n'); })();
-} 
-return buf.join('');
-})
-},{}],41:[function(require,module,exports){
-module.exports = (function anonymous(locals, filters, escape, rethrow
-/**/) {
-escape = escape || function (html){
-  return String(html)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/'/g, '&#39;')
-    .replace(/"/g, '&quot;');
-};
-var buf = [];
-with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Administration</h2>\n        <h1>Bruger</h1>\n    </div>\n\n    <div class="buttons">\n        <a href="/user/create" role="button">Opret</a>\n    </div>\n</div>\n\n<div id="content-body">\n    <table>\n        <tr>\n            <th>Navn</th>\n        </tr>\n\n        ');18; items.forEach((item) => { ; buf.push('\n        <tr>\n            <td>\n                <a href="/user/', escape((21,  item.id )), '">', escape((21,  item.name )), '</a>\n            </td>\n        </tr>\n        ');24; }) ; buf.push('\n    </table>\n</div>'); })();
-} 
-return buf.join('');
-})
-},{}],42:[function(require,module,exports){
-module.exports = (function anonymous(locals, filters, escape, rethrow
-/**/) {
-escape = escape || function (html){
-  return String(html)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/'/g, '&#39;')
-    .replace(/"/g, '&quot;');
-};
-var buf = [];
-with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Bruger</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n\n    <div class="buttons button-group">\n        <a href="/user/', escape((8,  id )), '/edit" role="button">Redigér</a>\n        <button>Fjern</button>\n    </div>\n</div>\n\n<div class="output">\n    <span>Brugernavn</span>\n    <div>', escape((15,  name )), '</div>\n</div>\n'); })();
-} 
-return buf.join('');
-})
-},{}],43:[function(require,module,exports){
-'use strict';
-
-var $ = require('jquery');
-var Backbone = require('backbone');
-var Marionette = require('backbone.marionette');
-var moment = require('moment');
-require('form-serializer');
-
-var Batch = require('./../../models/batch');
-var template = require('./../../templates/batch/create.ejs');
-
-module.exports = Marionette.View.extend({
-    id: 'batch-create',
-
-    template: template,
-
-    events: {
-        'submit form': 'create'
-    },
-
-    templateContext: function templateContext() {
-        return {
-            moment: moment,
-            spirits: this.getOption('spirits').toJSON()
-        };
-    },
-
-    create: function create(e) {
-        e.preventDefault();
-
-        var batch = new Batch($(e.target).serializeObject());
-
-        batch.save(null, {
-            success: function success() {
-                Backbone.history.navigate('batch/' + batch.get('id'), true);
-            },
-            error: function error() {
-                console.log("error", arguments);
-            }
-        });
-    }
-});
-
-},{"./../../models/batch":14,"./../../templates/batch/create.ejs":21,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6,"moment":65}],44:[function(require,module,exports){
-'use strict';
-
-var $ = require('jquery');
-var Backbone = require('backbone');
-var Marionette = require('backbone.marionette');
-require('form-serializer');
-
-var template = require('./../../templates/batch/edit.ejs');
-
-module.exports = Marionette.View.extend({
-    id: 'batch-edit',
-
-    template: template,
-
-    events: {
-        'submit form': 'edit'
-    },
-
-    edit: function edit(e) {
-        var that = this;
-
-        e.preventDefault();
-
-        this.model.set($(e.target).serializeObject());
-
-        this.model.save(null, {
-            success: function success() {
-                Backbone.history.navigate('batch/' + that.model.get('id'), true);
-            },
-            error: function error() {
-                console.log("error", arguments);
-            }
-        });
-    }
-});
-
-},{"./../../templates/batch/edit.ejs":22,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],45:[function(require,module,exports){
-'use strict';
-
-var Marionette = require('backbone.marionette');
-var template = require('./../../templates/batch/index.ejs');
-
-module.exports = Marionette.View.extend({
-    id: 'batch-index',
-
-    template: template
-});
-
-},{"./../../templates/batch/index.ejs":23,"backbone.marionette":2}],46:[function(require,module,exports){
-'use strict';
-
-var Backbone = require('backbone');
-var Marionette = require('backbone.marionette');
-var _template = require('./../../templates/batch/show.ejs');
-var MashingView = require('./steps/mashing');
-var BlendingView = require('./steps/blending');
-var BottlingView = require('./steps/bottling');
-var DilutionView = require('./steps/dilution');
-var DistillationView = require('./steps/distillation');
-var FiltrationView = require('./steps/filtration');
-var StorageView = require('./steps/storage');
-
-module.exports = Marionette.View.extend({
-    id: 'batch-show',
-
-    template: function template(data) {
-        console.log(data);
-        return _template(data);
-    },
-
-    events: {
-        'click #delete': 'delete',
-        'click #next-step': 'nextStep'
-    },
-
-    regions: {
-        step: '#step'
-    },
-
-    templateContext: function templateContext() {
-        return {
-            state: this.model.state()
-        };
-    },
-
-    onRender: function onRender() {
-        switch (this.model.state().current.id) {
-            case 1:
-                this.showChildView('step', new MashingView({ model: this.model }));
-                break;
-            case 2:
-                this.showChildView('step', new DistillationView({ model: this.model }));
-                break;
-            case 3:
-                this.showChildView('step', new DilutionView({ model: this.model }));
-                break;
-            case 4:
-                this.showChildView('step', new StorageView({ model: this.model }));
-                break;
-            case 5:
-                this.showChildView('step', new FiltrationView({ model: this.model }));
-                break;
-            case 6:
-                this.showChildView('step', new BottlingView({ model: this.model }));
-                break;
-            case 7:
-                this.showChildView('step', new BlendingView({ model: this.model }));
-                break;
-        }
-    },
-
-    delete: function _delete() {
-        this.model.destroy().done(function () {
-            Backbone.history.navigate('/batch', true);
-        }).fail(function () {
-            console.log(error);
-        });
-    },
-
-    nextStep: function nextStep() {
-        var _this = this;
-
-        var step = this.model.get('step');
-        if (step < this.model.get('spirit').process.length - 1) {
-            this.model.set('step', step + 1);
-        }
-
-        this.model.save({}).done(function () {
-            _this.render();
-        }).fail(function (error) {
-            console.log(error);
-        });
-    }
-});
-
-},{"./../../templates/batch/show.ejs":24,"./steps/blending":47,"./steps/bottling":48,"./steps/dilution":49,"./steps/distillation":50,"./steps/filtration":51,"./steps/mashing":52,"./steps/storage":53,"backbone":4,"backbone.marionette":2}],47:[function(require,module,exports){
-'use strict';
-
-var Backbone = require('backbone');
-var Marionette = require('backbone.marionette');
-var template = require('./../../../templates/batch/steps/blending.ejs');
-
-module.exports = Marionette.View.extend({
-    template: template
-});
-
-},{"./../../../templates/batch/steps/blending.ejs":25,"backbone":4,"backbone.marionette":2}],48:[function(require,module,exports){
-'use strict';
-
-var Backbone = require('backbone');
-var Marionette = require('backbone.marionette');
-var template = require('./../../../templates/batch/steps/bottling.ejs');
-
-module.exports = Marionette.View.extend({
-    template: template
-});
-
-},{"./../../../templates/batch/steps/bottling.ejs":26,"backbone":4,"backbone.marionette":2}],49:[function(require,module,exports){
-'use strict';
-
-var Backbone = require('backbone');
-var Marionette = require('backbone.marionette');
-var template = require('./../../../templates/batch/steps/dilution.ejs');
-
-module.exports = Marionette.View.extend({
-    template: template
-});
-
-},{"./../../../templates/batch/steps/dilution.ejs":27,"backbone":4,"backbone.marionette":2}],50:[function(require,module,exports){
-'use strict';
-
-var Backbone = require('backbone');
-var Marionette = require('backbone.marionette');
-var template = require('./../../../templates/batch/steps/distillation.ejs');
-
-module.exports = Marionette.View.extend({
-    template: template
-});
-
-},{"./../../../templates/batch/steps/distillation.ejs":28,"backbone":4,"backbone.marionette":2}],51:[function(require,module,exports){
-'use strict';
-
-var Backbone = require('backbone');
-var Marionette = require('backbone.marionette');
-var template = require('./../../../templates/batch/steps/filtration.ejs');
-
-module.exports = Marionette.View.extend({
-    template: template
-});
-
-},{"./../../../templates/batch/steps/filtration.ejs":29,"backbone":4,"backbone.marionette":2}],52:[function(require,module,exports){
-'use strict';
-
-var Backbone = require('backbone');
-var Marionette = require('backbone.marionette');
-var template = require('./../../../templates/batch/steps/mashing.ejs');
-
-module.exports = Marionette.View.extend({
-    template: template
-});
-
-},{"./../../../templates/batch/steps/mashing.ejs":30,"backbone":4,"backbone.marionette":2}],53:[function(require,module,exports){
-'use strict';
-
-var Backbone = require('backbone');
-var Marionette = require('backbone.marionette');
-var template = require('./../../../templates/batch/steps/storage.ejs');
-
-module.exports = Marionette.View.extend({
-    template: template
-});
-
-},{"./../../../templates/batch/steps/storage.ejs":31,"backbone":4,"backbone.marionette":2}],54:[function(require,module,exports){
-'use strict';
-
-// optional collection med process
-// required collection med states
-var $ = require('jquery');
-var Backbone = require('backbone');
-var Marionette = require('backbone.marionette');
-
-var StepView = require('./step');
-var template = require('./../../templates/process/base.ejs');
-
-module.exports = Marionette.View.extend({
-    id: 'process',
-
-    template: template,
-
-    ui: {
-        table: 'table'
-    },
-
-    events: {
-        'click button': 'add'
-    },
-
-    onRender: function onRender() {
-        var _this = this;
-
-        var process = this.getOption('process');
-
-        if (process) {
-            process.forEach(function (step) {
-                _this.ui.table.append(new StepView({
-                    step: step,
-                    states: _this.getOption('states')
-                }).render().el);
-            });
-        } else {
-            this.add();
-        }
-    },
-
-    add: function add() {
-        this.ui.table.append(new StepView({
-            states: this.getOption('states')
-        }).render().el);
-    }
-});
-
-},{"./../../templates/process/base.ejs":32,"./step":55,"backbone":4,"backbone.marionette":2,"jquery":6}],55:[function(require,module,exports){
-'use strict';
-
-var $ = require('jquery');
-var Backbone = require('backbone');
-var Marionette = require('backbone.marionette');
-
-var template = require('./../../templates/process/step.ejs');
-
-module.exports = Marionette.View.extend({
-    tagName: 'tr',
-
-    template: template,
-
-    events: {
-        'click button': 'delete'
-    },
-
-    templateContext: function templateContext() {
-        return {
-            step: this.getOption('step') ? this.getOption('step') : null,
-            states: this.getOption('states').toJSON()
-        };
-    },
-
-    delete: function _delete() {
-        // var model = this.getOption('step');
-        // model.trigger('destroy', model, model.collection);
-        this.remove();
-    }
-});
-
-},{"./../../templates/process/step.ejs":33,"backbone":4,"backbone.marionette":2,"jquery":6}],56:[function(require,module,exports){
-'use strict';
-
-var Marionette = require('backbone.marionette');
-var template = require('./../templates/root.ejs');
-
-module.exports = Marionette.View.extend({
-    id: 'root',
-
-    template: template,
-
-    regions: {
-        content: '#content'
-    }
-});
-
-},{"./../templates/root.ejs":34,"backbone.marionette":2}],57:[function(require,module,exports){
-'use strict';
-
-var $ = require('jquery');
-var Backbone = require('backbone');
-var Marionette = require('backbone.marionette');
-require('form-serializer');
-
-var Spirit = require('./../../models/spirit');
-var ProcessView = require('./../process/base');
-var template = require('./../../templates/spirit/create.ejs');
-
-module.exports = Marionette.View.extend({
-    id: 'spirit-create',
-
-    template: template,
-
-    regions: {
-        process: {
-            el: '#process',
-            replaceElement: true
-        }
-    },
-
-    events: {
-        'submit form': 'create'
-    },
-
-    onRender: function onRender() {
-        this.showChildView('process', new ProcessView({
-            states: this.getOption('states')
-        }));
-    },
-
-    create: function create(e) {
-        e.preventDefault();
-
-        var spirit = new Spirit($(e.target).serializeObject());
-
-        spirit.save(null, {
-            success: function success() {
-                Backbone.history.navigate('spirit/' + spirit.get('id'), true);
-            },
-            error: function error(_error) {
-                console.log(_error);
-            }
-        });
-    }
-});
-
-},{"./../../models/spirit":15,"./../../templates/spirit/create.ejs":35,"./../process/base":54,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],58:[function(require,module,exports){
-'use strict';
-
-var $ = require('jquery');
-var Backbone = require('backbone');
-var Marionette = require('backbone.marionette');
-require('form-serializer');
-
-var ProcessView = require('./../process/base');
-var template = require('./../../templates/spirit/edit.ejs');
-
-module.exports = Marionette.View.extend({
-    id: 'spirit-edit',
-
-    template: template,
-
-    events: {
-        'submit form': 'edit'
-    },
-
-    regions: {
-        process: {
-            el: '#process',
-            replaceElement: true
-        }
-    },
-
-    onRender: function onRender() {
-        console.log(this.model);
-        this.showChildView('process', new ProcessView({
-            states: this.getOption('states'),
-            process: this.model.get('process')
-        }));
-    },
-
-    edit: function edit(e) {
-        var that = this;
-
-        e.preventDefault();
-
-        this.model.set($(e.target).serializeObject());
-
-        this.model.save(null, {
-            success: function success() {
-                Backbone.history.navigate('spirit/' + that.model.get('id'), true);
-            },
-            error: function error() {
-                console.log("error", arguments);
-            }
-        });
-    }
-});
-
-},{"./../../templates/spirit/edit.ejs":36,"./../process/base":54,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],59:[function(require,module,exports){
-'use strict';
-
-var Marionette = require('backbone.marionette');
-var template = require('./../../templates/spirit/index.ejs');
-
-module.exports = Marionette.View.extend({
-    id: 'spirit-index',
-
-    template: template
-});
-
-},{"./../../templates/spirit/index.ejs":37,"backbone.marionette":2}],60:[function(require,module,exports){
-'use strict';
-
-var Backbone = require('backbone');
-var Marionette = require('backbone.marionette');
-var template = require('./../../templates/spirit/show.ejs');
-
-module.exports = Marionette.View.extend({
-    id: 'spirit-show',
-
-    template: template,
-
-    events: {
-        'click button': 'delete'
-    },
-
-    delete: function _delete() {
-        this.model.destroy({
-            success: function success() {
-                Backbone.history.navigate('/spirit', true);
-            },
-            error: function error() {
-                console.log("error");
-            }
-        });
-    }
-});
-
-},{"./../../templates/spirit/show.ejs":38,"backbone":4,"backbone.marionette":2}],61:[function(require,module,exports){
-'use strict';
-
-var $ = require('jquery');
-var Backbone = require('backbone');
-var Marionette = require('backbone.marionette');
-require('form-serializer');
-
-var User = require('./../../models/user');
-var template = require('./../../templates/user/create.ejs');
-
-module.exports = Marionette.View.extend({
-    id: 'user-create',
-
-    template: template,
-
-    events: {
-        'submit form': 'create'
-    },
-
-    create: function create(e) {
-        e.preventDefault();
-
-        var user = new User($(e.target).serializeObject());
-
-        user.save(null, {
-            success: function success() {
-                Backbone.history.navigate('user/' + user.get('id'), true);
-            },
-            error: function error() {
-                console.log("error", arguments);
-            }
-        });
-    }
-});
-
-},{"./../../models/user":17,"./../../templates/user/create.ejs":39,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],62:[function(require,module,exports){
-'use strict';
-
-var $ = require('jquery');
-var Backbone = require('backbone');
-var Marionette = require('backbone.marionette');
-require('form-serializer');
-
-var template = require('./../../templates/user/edit.ejs');
-
-module.exports = Marionette.View.extend({
-    id: 'user-edit',
-
-    template: template,
-
-    events: {
-        'submit form': 'edit'
-    },
-
-    edit: function edit(e) {
-        var that = this;
-
-        e.preventDefault();
-
-        this.model.set($(e.target).serializeObject());
-
-        this.model.save(null, {
-            success: function success() {
-                Backbone.history.navigate('user/' + that.model.get('id'), true);
-            },
-            error: function error() {
-                console.log("error", arguments);
-            }
-        });
-    }
-});
-
-},{"./../../templates/user/edit.ejs":40,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],63:[function(require,module,exports){
-'use strict';
-
-var Marionette = require('backbone.marionette');
-var template = require('./../../templates/user/index.ejs');
-
-module.exports = Marionette.View.extend({
-    id: 'user-index',
-
-    template: template
-});
-
-},{"./../../templates/user/index.ejs":41,"backbone.marionette":2}],64:[function(require,module,exports){
-'use strict';
-
-var Backbone = require('backbone');
-var Marionette = require('backbone.marionette');
-var template = require('./../../templates/user/show.ejs');
-
-module.exports = Marionette.View.extend({
-    id: 'user-show',
-
-    template: template,
-
-    events: {
-        'click button': 'delete'
-    },
-
-    delete: function _delete() {
-        this.model.destroy().done(function () {
-            Backbone.history.navigate('/user', true);
-        }).fail(function (error) {
-            console.log(error);
-        });
-    }
-});
-
-},{"./../../templates/user/show.ejs":42,"backbone":4,"backbone.marionette":2}],65:[function(require,module,exports){
 //! moment.js
 //! version : 2.14.1
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
@@ -22986,6 +19976,3038 @@ module.exports = Marionette.View.extend({
     return _moment;
 
 }));
-},{}]},{},[13]);
+},{}],8:[function(require,module,exports){
+// shim for using process in browser
+
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+(function () {
+  try {
+    cachedSetTimeout = setTimeout;
+  } catch (e) {
+    cachedSetTimeout = function () {
+      throw new Error('setTimeout is not defined');
+    }
+  }
+  try {
+    cachedClearTimeout = clearTimeout;
+  } catch (e) {
+    cachedClearTimeout = function () {
+      throw new Error('clearTimeout is not defined');
+    }
+  }
+} ())
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = cachedSetTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    cachedClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        cachedSetTimeout(drainQueue, 0);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+},{}],9:[function(require,module,exports){
+//     Underscore.js 1.8.3
+//     http://underscorejs.org
+//     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+//     Underscore may be freely distributed under the MIT license.
+
+(function() {
+
+  // Baseline setup
+  // --------------
+
+  // Establish the root object, `window` in the browser, or `exports` on the server.
+  var root = this;
+
+  // Save the previous value of the `_` variable.
+  var previousUnderscore = root._;
+
+  // Save bytes in the minified (but not gzipped) version:
+  var ArrayProto = Array.prototype, ObjProto = Object.prototype, FuncProto = Function.prototype;
+
+  // Create quick reference variables for speed access to core prototypes.
+  var
+    push             = ArrayProto.push,
+    slice            = ArrayProto.slice,
+    toString         = ObjProto.toString,
+    hasOwnProperty   = ObjProto.hasOwnProperty;
+
+  // All **ECMAScript 5** native function implementations that we hope to use
+  // are declared here.
+  var
+    nativeIsArray      = Array.isArray,
+    nativeKeys         = Object.keys,
+    nativeBind         = FuncProto.bind,
+    nativeCreate       = Object.create;
+
+  // Naked function reference for surrogate-prototype-swapping.
+  var Ctor = function(){};
+
+  // Create a safe reference to the Underscore object for use below.
+  var _ = function(obj) {
+    if (obj instanceof _) return obj;
+    if (!(this instanceof _)) return new _(obj);
+    this._wrapped = obj;
+  };
+
+  // Export the Underscore object for **Node.js**, with
+  // backwards-compatibility for the old `require()` API. If we're in
+  // the browser, add `_` as a global object.
+  if (typeof exports !== 'undefined') {
+    if (typeof module !== 'undefined' && module.exports) {
+      exports = module.exports = _;
+    }
+    exports._ = _;
+  } else {
+    root._ = _;
+  }
+
+  // Current version.
+  _.VERSION = '1.8.3';
+
+  // Internal function that returns an efficient (for current engines) version
+  // of the passed-in callback, to be repeatedly applied in other Underscore
+  // functions.
+  var optimizeCb = function(func, context, argCount) {
+    if (context === void 0) return func;
+    switch (argCount == null ? 3 : argCount) {
+      case 1: return function(value) {
+        return func.call(context, value);
+      };
+      case 2: return function(value, other) {
+        return func.call(context, value, other);
+      };
+      case 3: return function(value, index, collection) {
+        return func.call(context, value, index, collection);
+      };
+      case 4: return function(accumulator, value, index, collection) {
+        return func.call(context, accumulator, value, index, collection);
+      };
+    }
+    return function() {
+      return func.apply(context, arguments);
+    };
+  };
+
+  // A mostly-internal function to generate callbacks that can be applied
+  // to each element in a collection, returning the desired result — either
+  // identity, an arbitrary callback, a property matcher, or a property accessor.
+  var cb = function(value, context, argCount) {
+    if (value == null) return _.identity;
+    if (_.isFunction(value)) return optimizeCb(value, context, argCount);
+    if (_.isObject(value)) return _.matcher(value);
+    return _.property(value);
+  };
+  _.iteratee = function(value, context) {
+    return cb(value, context, Infinity);
+  };
+
+  // An internal function for creating assigner functions.
+  var createAssigner = function(keysFunc, undefinedOnly) {
+    return function(obj) {
+      var length = arguments.length;
+      if (length < 2 || obj == null) return obj;
+      for (var index = 1; index < length; index++) {
+        var source = arguments[index],
+            keys = keysFunc(source),
+            l = keys.length;
+        for (var i = 0; i < l; i++) {
+          var key = keys[i];
+          if (!undefinedOnly || obj[key] === void 0) obj[key] = source[key];
+        }
+      }
+      return obj;
+    };
+  };
+
+  // An internal function for creating a new object that inherits from another.
+  var baseCreate = function(prototype) {
+    if (!_.isObject(prototype)) return {};
+    if (nativeCreate) return nativeCreate(prototype);
+    Ctor.prototype = prototype;
+    var result = new Ctor;
+    Ctor.prototype = null;
+    return result;
+  };
+
+  var property = function(key) {
+    return function(obj) {
+      return obj == null ? void 0 : obj[key];
+    };
+  };
+
+  // Helper for collection methods to determine whether a collection
+  // should be iterated as an array or as an object
+  // Related: http://people.mozilla.org/~jorendorff/es6-draft.html#sec-tolength
+  // Avoids a very nasty iOS 8 JIT bug on ARM-64. #2094
+  var MAX_ARRAY_INDEX = Math.pow(2, 53) - 1;
+  var getLength = property('length');
+  var isArrayLike = function(collection) {
+    var length = getLength(collection);
+    return typeof length == 'number' && length >= 0 && length <= MAX_ARRAY_INDEX;
+  };
+
+  // Collection Functions
+  // --------------------
+
+  // The cornerstone, an `each` implementation, aka `forEach`.
+  // Handles raw objects in addition to array-likes. Treats all
+  // sparse array-likes as if they were dense.
+  _.each = _.forEach = function(obj, iteratee, context) {
+    iteratee = optimizeCb(iteratee, context);
+    var i, length;
+    if (isArrayLike(obj)) {
+      for (i = 0, length = obj.length; i < length; i++) {
+        iteratee(obj[i], i, obj);
+      }
+    } else {
+      var keys = _.keys(obj);
+      for (i = 0, length = keys.length; i < length; i++) {
+        iteratee(obj[keys[i]], keys[i], obj);
+      }
+    }
+    return obj;
+  };
+
+  // Return the results of applying the iteratee to each element.
+  _.map = _.collect = function(obj, iteratee, context) {
+    iteratee = cb(iteratee, context);
+    var keys = !isArrayLike(obj) && _.keys(obj),
+        length = (keys || obj).length,
+        results = Array(length);
+    for (var index = 0; index < length; index++) {
+      var currentKey = keys ? keys[index] : index;
+      results[index] = iteratee(obj[currentKey], currentKey, obj);
+    }
+    return results;
+  };
+
+  // Create a reducing function iterating left or right.
+  function createReduce(dir) {
+    // Optimized iterator function as using arguments.length
+    // in the main function will deoptimize the, see #1991.
+    function iterator(obj, iteratee, memo, keys, index, length) {
+      for (; index >= 0 && index < length; index += dir) {
+        var currentKey = keys ? keys[index] : index;
+        memo = iteratee(memo, obj[currentKey], currentKey, obj);
+      }
+      return memo;
+    }
+
+    return function(obj, iteratee, memo, context) {
+      iteratee = optimizeCb(iteratee, context, 4);
+      var keys = !isArrayLike(obj) && _.keys(obj),
+          length = (keys || obj).length,
+          index = dir > 0 ? 0 : length - 1;
+      // Determine the initial value if none is provided.
+      if (arguments.length < 3) {
+        memo = obj[keys ? keys[index] : index];
+        index += dir;
+      }
+      return iterator(obj, iteratee, memo, keys, index, length);
+    };
+  }
+
+  // **Reduce** builds up a single result from a list of values, aka `inject`,
+  // or `foldl`.
+  _.reduce = _.foldl = _.inject = createReduce(1);
+
+  // The right-associative version of reduce, also known as `foldr`.
+  _.reduceRight = _.foldr = createReduce(-1);
+
+  // Return the first value which passes a truth test. Aliased as `detect`.
+  _.find = _.detect = function(obj, predicate, context) {
+    var key;
+    if (isArrayLike(obj)) {
+      key = _.findIndex(obj, predicate, context);
+    } else {
+      key = _.findKey(obj, predicate, context);
+    }
+    if (key !== void 0 && key !== -1) return obj[key];
+  };
+
+  // Return all the elements that pass a truth test.
+  // Aliased as `select`.
+  _.filter = _.select = function(obj, predicate, context) {
+    var results = [];
+    predicate = cb(predicate, context);
+    _.each(obj, function(value, index, list) {
+      if (predicate(value, index, list)) results.push(value);
+    });
+    return results;
+  };
+
+  // Return all the elements for which a truth test fails.
+  _.reject = function(obj, predicate, context) {
+    return _.filter(obj, _.negate(cb(predicate)), context);
+  };
+
+  // Determine whether all of the elements match a truth test.
+  // Aliased as `all`.
+  _.every = _.all = function(obj, predicate, context) {
+    predicate = cb(predicate, context);
+    var keys = !isArrayLike(obj) && _.keys(obj),
+        length = (keys || obj).length;
+    for (var index = 0; index < length; index++) {
+      var currentKey = keys ? keys[index] : index;
+      if (!predicate(obj[currentKey], currentKey, obj)) return false;
+    }
+    return true;
+  };
+
+  // Determine if at least one element in the object matches a truth test.
+  // Aliased as `any`.
+  _.some = _.any = function(obj, predicate, context) {
+    predicate = cb(predicate, context);
+    var keys = !isArrayLike(obj) && _.keys(obj),
+        length = (keys || obj).length;
+    for (var index = 0; index < length; index++) {
+      var currentKey = keys ? keys[index] : index;
+      if (predicate(obj[currentKey], currentKey, obj)) return true;
+    }
+    return false;
+  };
+
+  // Determine if the array or object contains a given item (using `===`).
+  // Aliased as `includes` and `include`.
+  _.contains = _.includes = _.include = function(obj, item, fromIndex, guard) {
+    if (!isArrayLike(obj)) obj = _.values(obj);
+    if (typeof fromIndex != 'number' || guard) fromIndex = 0;
+    return _.indexOf(obj, item, fromIndex) >= 0;
+  };
+
+  // Invoke a method (with arguments) on every item in a collection.
+  _.invoke = function(obj, method) {
+    var args = slice.call(arguments, 2);
+    var isFunc = _.isFunction(method);
+    return _.map(obj, function(value) {
+      var func = isFunc ? method : value[method];
+      return func == null ? func : func.apply(value, args);
+    });
+  };
+
+  // Convenience version of a common use case of `map`: fetching a property.
+  _.pluck = function(obj, key) {
+    return _.map(obj, _.property(key));
+  };
+
+  // Convenience version of a common use case of `filter`: selecting only objects
+  // containing specific `key:value` pairs.
+  _.where = function(obj, attrs) {
+    return _.filter(obj, _.matcher(attrs));
+  };
+
+  // Convenience version of a common use case of `find`: getting the first object
+  // containing specific `key:value` pairs.
+  _.findWhere = function(obj, attrs) {
+    return _.find(obj, _.matcher(attrs));
+  };
+
+  // Return the maximum element (or element-based computation).
+  _.max = function(obj, iteratee, context) {
+    var result = -Infinity, lastComputed = -Infinity,
+        value, computed;
+    if (iteratee == null && obj != null) {
+      obj = isArrayLike(obj) ? obj : _.values(obj);
+      for (var i = 0, length = obj.length; i < length; i++) {
+        value = obj[i];
+        if (value > result) {
+          result = value;
+        }
+      }
+    } else {
+      iteratee = cb(iteratee, context);
+      _.each(obj, function(value, index, list) {
+        computed = iteratee(value, index, list);
+        if (computed > lastComputed || computed === -Infinity && result === -Infinity) {
+          result = value;
+          lastComputed = computed;
+        }
+      });
+    }
+    return result;
+  };
+
+  // Return the minimum element (or element-based computation).
+  _.min = function(obj, iteratee, context) {
+    var result = Infinity, lastComputed = Infinity,
+        value, computed;
+    if (iteratee == null && obj != null) {
+      obj = isArrayLike(obj) ? obj : _.values(obj);
+      for (var i = 0, length = obj.length; i < length; i++) {
+        value = obj[i];
+        if (value < result) {
+          result = value;
+        }
+      }
+    } else {
+      iteratee = cb(iteratee, context);
+      _.each(obj, function(value, index, list) {
+        computed = iteratee(value, index, list);
+        if (computed < lastComputed || computed === Infinity && result === Infinity) {
+          result = value;
+          lastComputed = computed;
+        }
+      });
+    }
+    return result;
+  };
+
+  // Shuffle a collection, using the modern version of the
+  // [Fisher-Yates shuffle](http://en.wikipedia.org/wiki/Fisher–Yates_shuffle).
+  _.shuffle = function(obj) {
+    var set = isArrayLike(obj) ? obj : _.values(obj);
+    var length = set.length;
+    var shuffled = Array(length);
+    for (var index = 0, rand; index < length; index++) {
+      rand = _.random(0, index);
+      if (rand !== index) shuffled[index] = shuffled[rand];
+      shuffled[rand] = set[index];
+    }
+    return shuffled;
+  };
+
+  // Sample **n** random values from a collection.
+  // If **n** is not specified, returns a single random element.
+  // The internal `guard` argument allows it to work with `map`.
+  _.sample = function(obj, n, guard) {
+    if (n == null || guard) {
+      if (!isArrayLike(obj)) obj = _.values(obj);
+      return obj[_.random(obj.length - 1)];
+    }
+    return _.shuffle(obj).slice(0, Math.max(0, n));
+  };
+
+  // Sort the object's values by a criterion produced by an iteratee.
+  _.sortBy = function(obj, iteratee, context) {
+    iteratee = cb(iteratee, context);
+    return _.pluck(_.map(obj, function(value, index, list) {
+      return {
+        value: value,
+        index: index,
+        criteria: iteratee(value, index, list)
+      };
+    }).sort(function(left, right) {
+      var a = left.criteria;
+      var b = right.criteria;
+      if (a !== b) {
+        if (a > b || a === void 0) return 1;
+        if (a < b || b === void 0) return -1;
+      }
+      return left.index - right.index;
+    }), 'value');
+  };
+
+  // An internal function used for aggregate "group by" operations.
+  var group = function(behavior) {
+    return function(obj, iteratee, context) {
+      var result = {};
+      iteratee = cb(iteratee, context);
+      _.each(obj, function(value, index) {
+        var key = iteratee(value, index, obj);
+        behavior(result, value, key);
+      });
+      return result;
+    };
+  };
+
+  // Groups the object's values by a criterion. Pass either a string attribute
+  // to group by, or a function that returns the criterion.
+  _.groupBy = group(function(result, value, key) {
+    if (_.has(result, key)) result[key].push(value); else result[key] = [value];
+  });
+
+  // Indexes the object's values by a criterion, similar to `groupBy`, but for
+  // when you know that your index values will be unique.
+  _.indexBy = group(function(result, value, key) {
+    result[key] = value;
+  });
+
+  // Counts instances of an object that group by a certain criterion. Pass
+  // either a string attribute to count by, or a function that returns the
+  // criterion.
+  _.countBy = group(function(result, value, key) {
+    if (_.has(result, key)) result[key]++; else result[key] = 1;
+  });
+
+  // Safely create a real, live array from anything iterable.
+  _.toArray = function(obj) {
+    if (!obj) return [];
+    if (_.isArray(obj)) return slice.call(obj);
+    if (isArrayLike(obj)) return _.map(obj, _.identity);
+    return _.values(obj);
+  };
+
+  // Return the number of elements in an object.
+  _.size = function(obj) {
+    if (obj == null) return 0;
+    return isArrayLike(obj) ? obj.length : _.keys(obj).length;
+  };
+
+  // Split a collection into two arrays: one whose elements all satisfy the given
+  // predicate, and one whose elements all do not satisfy the predicate.
+  _.partition = function(obj, predicate, context) {
+    predicate = cb(predicate, context);
+    var pass = [], fail = [];
+    _.each(obj, function(value, key, obj) {
+      (predicate(value, key, obj) ? pass : fail).push(value);
+    });
+    return [pass, fail];
+  };
+
+  // Array Functions
+  // ---------------
+
+  // Get the first element of an array. Passing **n** will return the first N
+  // values in the array. Aliased as `head` and `take`. The **guard** check
+  // allows it to work with `_.map`.
+  _.first = _.head = _.take = function(array, n, guard) {
+    if (array == null) return void 0;
+    if (n == null || guard) return array[0];
+    return _.initial(array, array.length - n);
+  };
+
+  // Returns everything but the last entry of the array. Especially useful on
+  // the arguments object. Passing **n** will return all the values in
+  // the array, excluding the last N.
+  _.initial = function(array, n, guard) {
+    return slice.call(array, 0, Math.max(0, array.length - (n == null || guard ? 1 : n)));
+  };
+
+  // Get the last element of an array. Passing **n** will return the last N
+  // values in the array.
+  _.last = function(array, n, guard) {
+    if (array == null) return void 0;
+    if (n == null || guard) return array[array.length - 1];
+    return _.rest(array, Math.max(0, array.length - n));
+  };
+
+  // Returns everything but the first entry of the array. Aliased as `tail` and `drop`.
+  // Especially useful on the arguments object. Passing an **n** will return
+  // the rest N values in the array.
+  _.rest = _.tail = _.drop = function(array, n, guard) {
+    return slice.call(array, n == null || guard ? 1 : n);
+  };
+
+  // Trim out all falsy values from an array.
+  _.compact = function(array) {
+    return _.filter(array, _.identity);
+  };
+
+  // Internal implementation of a recursive `flatten` function.
+  var flatten = function(input, shallow, strict, startIndex) {
+    var output = [], idx = 0;
+    for (var i = startIndex || 0, length = getLength(input); i < length; i++) {
+      var value = input[i];
+      if (isArrayLike(value) && (_.isArray(value) || _.isArguments(value))) {
+        //flatten current level of array or arguments object
+        if (!shallow) value = flatten(value, shallow, strict);
+        var j = 0, len = value.length;
+        output.length += len;
+        while (j < len) {
+          output[idx++] = value[j++];
+        }
+      } else if (!strict) {
+        output[idx++] = value;
+      }
+    }
+    return output;
+  };
+
+  // Flatten out an array, either recursively (by default), or just one level.
+  _.flatten = function(array, shallow) {
+    return flatten(array, shallow, false);
+  };
+
+  // Return a version of the array that does not contain the specified value(s).
+  _.without = function(array) {
+    return _.difference(array, slice.call(arguments, 1));
+  };
+
+  // Produce a duplicate-free version of the array. If the array has already
+  // been sorted, you have the option of using a faster algorithm.
+  // Aliased as `unique`.
+  _.uniq = _.unique = function(array, isSorted, iteratee, context) {
+    if (!_.isBoolean(isSorted)) {
+      context = iteratee;
+      iteratee = isSorted;
+      isSorted = false;
+    }
+    if (iteratee != null) iteratee = cb(iteratee, context);
+    var result = [];
+    var seen = [];
+    for (var i = 0, length = getLength(array); i < length; i++) {
+      var value = array[i],
+          computed = iteratee ? iteratee(value, i, array) : value;
+      if (isSorted) {
+        if (!i || seen !== computed) result.push(value);
+        seen = computed;
+      } else if (iteratee) {
+        if (!_.contains(seen, computed)) {
+          seen.push(computed);
+          result.push(value);
+        }
+      } else if (!_.contains(result, value)) {
+        result.push(value);
+      }
+    }
+    return result;
+  };
+
+  // Produce an array that contains the union: each distinct element from all of
+  // the passed-in arrays.
+  _.union = function() {
+    return _.uniq(flatten(arguments, true, true));
+  };
+
+  // Produce an array that contains every item shared between all the
+  // passed-in arrays.
+  _.intersection = function(array) {
+    var result = [];
+    var argsLength = arguments.length;
+    for (var i = 0, length = getLength(array); i < length; i++) {
+      var item = array[i];
+      if (_.contains(result, item)) continue;
+      for (var j = 1; j < argsLength; j++) {
+        if (!_.contains(arguments[j], item)) break;
+      }
+      if (j === argsLength) result.push(item);
+    }
+    return result;
+  };
+
+  // Take the difference between one array and a number of other arrays.
+  // Only the elements present in just the first array will remain.
+  _.difference = function(array) {
+    var rest = flatten(arguments, true, true, 1);
+    return _.filter(array, function(value){
+      return !_.contains(rest, value);
+    });
+  };
+
+  // Zip together multiple lists into a single array -- elements that share
+  // an index go together.
+  _.zip = function() {
+    return _.unzip(arguments);
+  };
+
+  // Complement of _.zip. Unzip accepts an array of arrays and groups
+  // each array's elements on shared indices
+  _.unzip = function(array) {
+    var length = array && _.max(array, getLength).length || 0;
+    var result = Array(length);
+
+    for (var index = 0; index < length; index++) {
+      result[index] = _.pluck(array, index);
+    }
+    return result;
+  };
+
+  // Converts lists into objects. Pass either a single array of `[key, value]`
+  // pairs, or two parallel arrays of the same length -- one of keys, and one of
+  // the corresponding values.
+  _.object = function(list, values) {
+    var result = {};
+    for (var i = 0, length = getLength(list); i < length; i++) {
+      if (values) {
+        result[list[i]] = values[i];
+      } else {
+        result[list[i][0]] = list[i][1];
+      }
+    }
+    return result;
+  };
+
+  // Generator function to create the findIndex and findLastIndex functions
+  function createPredicateIndexFinder(dir) {
+    return function(array, predicate, context) {
+      predicate = cb(predicate, context);
+      var length = getLength(array);
+      var index = dir > 0 ? 0 : length - 1;
+      for (; index >= 0 && index < length; index += dir) {
+        if (predicate(array[index], index, array)) return index;
+      }
+      return -1;
+    };
+  }
+
+  // Returns the first index on an array-like that passes a predicate test
+  _.findIndex = createPredicateIndexFinder(1);
+  _.findLastIndex = createPredicateIndexFinder(-1);
+
+  // Use a comparator function to figure out the smallest index at which
+  // an object should be inserted so as to maintain order. Uses binary search.
+  _.sortedIndex = function(array, obj, iteratee, context) {
+    iteratee = cb(iteratee, context, 1);
+    var value = iteratee(obj);
+    var low = 0, high = getLength(array);
+    while (low < high) {
+      var mid = Math.floor((low + high) / 2);
+      if (iteratee(array[mid]) < value) low = mid + 1; else high = mid;
+    }
+    return low;
+  };
+
+  // Generator function to create the indexOf and lastIndexOf functions
+  function createIndexFinder(dir, predicateFind, sortedIndex) {
+    return function(array, item, idx) {
+      var i = 0, length = getLength(array);
+      if (typeof idx == 'number') {
+        if (dir > 0) {
+            i = idx >= 0 ? idx : Math.max(idx + length, i);
+        } else {
+            length = idx >= 0 ? Math.min(idx + 1, length) : idx + length + 1;
+        }
+      } else if (sortedIndex && idx && length) {
+        idx = sortedIndex(array, item);
+        return array[idx] === item ? idx : -1;
+      }
+      if (item !== item) {
+        idx = predicateFind(slice.call(array, i, length), _.isNaN);
+        return idx >= 0 ? idx + i : -1;
+      }
+      for (idx = dir > 0 ? i : length - 1; idx >= 0 && idx < length; idx += dir) {
+        if (array[idx] === item) return idx;
+      }
+      return -1;
+    };
+  }
+
+  // Return the position of the first occurrence of an item in an array,
+  // or -1 if the item is not included in the array.
+  // If the array is large and already in sort order, pass `true`
+  // for **isSorted** to use binary search.
+  _.indexOf = createIndexFinder(1, _.findIndex, _.sortedIndex);
+  _.lastIndexOf = createIndexFinder(-1, _.findLastIndex);
+
+  // Generate an integer Array containing an arithmetic progression. A port of
+  // the native Python `range()` function. See
+  // [the Python documentation](http://docs.python.org/library/functions.html#range).
+  _.range = function(start, stop, step) {
+    if (stop == null) {
+      stop = start || 0;
+      start = 0;
+    }
+    step = step || 1;
+
+    var length = Math.max(Math.ceil((stop - start) / step), 0);
+    var range = Array(length);
+
+    for (var idx = 0; idx < length; idx++, start += step) {
+      range[idx] = start;
+    }
+
+    return range;
+  };
+
+  // Function (ahem) Functions
+  // ------------------
+
+  // Determines whether to execute a function as a constructor
+  // or a normal function with the provided arguments
+  var executeBound = function(sourceFunc, boundFunc, context, callingContext, args) {
+    if (!(callingContext instanceof boundFunc)) return sourceFunc.apply(context, args);
+    var self = baseCreate(sourceFunc.prototype);
+    var result = sourceFunc.apply(self, args);
+    if (_.isObject(result)) return result;
+    return self;
+  };
+
+  // Create a function bound to a given object (assigning `this`, and arguments,
+  // optionally). Delegates to **ECMAScript 5**'s native `Function.bind` if
+  // available.
+  _.bind = function(func, context) {
+    if (nativeBind && func.bind === nativeBind) return nativeBind.apply(func, slice.call(arguments, 1));
+    if (!_.isFunction(func)) throw new TypeError('Bind must be called on a function');
+    var args = slice.call(arguments, 2);
+    var bound = function() {
+      return executeBound(func, bound, context, this, args.concat(slice.call(arguments)));
+    };
+    return bound;
+  };
+
+  // Partially apply a function by creating a version that has had some of its
+  // arguments pre-filled, without changing its dynamic `this` context. _ acts
+  // as a placeholder, allowing any combination of arguments to be pre-filled.
+  _.partial = function(func) {
+    var boundArgs = slice.call(arguments, 1);
+    var bound = function() {
+      var position = 0, length = boundArgs.length;
+      var args = Array(length);
+      for (var i = 0; i < length; i++) {
+        args[i] = boundArgs[i] === _ ? arguments[position++] : boundArgs[i];
+      }
+      while (position < arguments.length) args.push(arguments[position++]);
+      return executeBound(func, bound, this, this, args);
+    };
+    return bound;
+  };
+
+  // Bind a number of an object's methods to that object. Remaining arguments
+  // are the method names to be bound. Useful for ensuring that all callbacks
+  // defined on an object belong to it.
+  _.bindAll = function(obj) {
+    var i, length = arguments.length, key;
+    if (length <= 1) throw new Error('bindAll must be passed function names');
+    for (i = 1; i < length; i++) {
+      key = arguments[i];
+      obj[key] = _.bind(obj[key], obj);
+    }
+    return obj;
+  };
+
+  // Memoize an expensive function by storing its results.
+  _.memoize = function(func, hasher) {
+    var memoize = function(key) {
+      var cache = memoize.cache;
+      var address = '' + (hasher ? hasher.apply(this, arguments) : key);
+      if (!_.has(cache, address)) cache[address] = func.apply(this, arguments);
+      return cache[address];
+    };
+    memoize.cache = {};
+    return memoize;
+  };
+
+  // Delays a function for the given number of milliseconds, and then calls
+  // it with the arguments supplied.
+  _.delay = function(func, wait) {
+    var args = slice.call(arguments, 2);
+    return setTimeout(function(){
+      return func.apply(null, args);
+    }, wait);
+  };
+
+  // Defers a function, scheduling it to run after the current call stack has
+  // cleared.
+  _.defer = _.partial(_.delay, _, 1);
+
+  // Returns a function, that, when invoked, will only be triggered at most once
+  // during a given window of time. Normally, the throttled function will run
+  // as much as it can, without ever going more than once per `wait` duration;
+  // but if you'd like to disable the execution on the leading edge, pass
+  // `{leading: false}`. To disable execution on the trailing edge, ditto.
+  _.throttle = function(func, wait, options) {
+    var context, args, result;
+    var timeout = null;
+    var previous = 0;
+    if (!options) options = {};
+    var later = function() {
+      previous = options.leading === false ? 0 : _.now();
+      timeout = null;
+      result = func.apply(context, args);
+      if (!timeout) context = args = null;
+    };
+    return function() {
+      var now = _.now();
+      if (!previous && options.leading === false) previous = now;
+      var remaining = wait - (now - previous);
+      context = this;
+      args = arguments;
+      if (remaining <= 0 || remaining > wait) {
+        if (timeout) {
+          clearTimeout(timeout);
+          timeout = null;
+        }
+        previous = now;
+        result = func.apply(context, args);
+        if (!timeout) context = args = null;
+      } else if (!timeout && options.trailing !== false) {
+        timeout = setTimeout(later, remaining);
+      }
+      return result;
+    };
+  };
+
+  // Returns a function, that, as long as it continues to be invoked, will not
+  // be triggered. The function will be called after it stops being called for
+  // N milliseconds. If `immediate` is passed, trigger the function on the
+  // leading edge, instead of the trailing.
+  _.debounce = function(func, wait, immediate) {
+    var timeout, args, context, timestamp, result;
+
+    var later = function() {
+      var last = _.now() - timestamp;
+
+      if (last < wait && last >= 0) {
+        timeout = setTimeout(later, wait - last);
+      } else {
+        timeout = null;
+        if (!immediate) {
+          result = func.apply(context, args);
+          if (!timeout) context = args = null;
+        }
+      }
+    };
+
+    return function() {
+      context = this;
+      args = arguments;
+      timestamp = _.now();
+      var callNow = immediate && !timeout;
+      if (!timeout) timeout = setTimeout(later, wait);
+      if (callNow) {
+        result = func.apply(context, args);
+        context = args = null;
+      }
+
+      return result;
+    };
+  };
+
+  // Returns the first function passed as an argument to the second,
+  // allowing you to adjust arguments, run code before and after, and
+  // conditionally execute the original function.
+  _.wrap = function(func, wrapper) {
+    return _.partial(wrapper, func);
+  };
+
+  // Returns a negated version of the passed-in predicate.
+  _.negate = function(predicate) {
+    return function() {
+      return !predicate.apply(this, arguments);
+    };
+  };
+
+  // Returns a function that is the composition of a list of functions, each
+  // consuming the return value of the function that follows.
+  _.compose = function() {
+    var args = arguments;
+    var start = args.length - 1;
+    return function() {
+      var i = start;
+      var result = args[start].apply(this, arguments);
+      while (i--) result = args[i].call(this, result);
+      return result;
+    };
+  };
+
+  // Returns a function that will only be executed on and after the Nth call.
+  _.after = function(times, func) {
+    return function() {
+      if (--times < 1) {
+        return func.apply(this, arguments);
+      }
+    };
+  };
+
+  // Returns a function that will only be executed up to (but not including) the Nth call.
+  _.before = function(times, func) {
+    var memo;
+    return function() {
+      if (--times > 0) {
+        memo = func.apply(this, arguments);
+      }
+      if (times <= 1) func = null;
+      return memo;
+    };
+  };
+
+  // Returns a function that will be executed at most one time, no matter how
+  // often you call it. Useful for lazy initialization.
+  _.once = _.partial(_.before, 2);
+
+  // Object Functions
+  // ----------------
+
+  // Keys in IE < 9 that won't be iterated by `for key in ...` and thus missed.
+  var hasEnumBug = !{toString: null}.propertyIsEnumerable('toString');
+  var nonEnumerableProps = ['valueOf', 'isPrototypeOf', 'toString',
+                      'propertyIsEnumerable', 'hasOwnProperty', 'toLocaleString'];
+
+  function collectNonEnumProps(obj, keys) {
+    var nonEnumIdx = nonEnumerableProps.length;
+    var constructor = obj.constructor;
+    var proto = (_.isFunction(constructor) && constructor.prototype) || ObjProto;
+
+    // Constructor is a special case.
+    var prop = 'constructor';
+    if (_.has(obj, prop) && !_.contains(keys, prop)) keys.push(prop);
+
+    while (nonEnumIdx--) {
+      prop = nonEnumerableProps[nonEnumIdx];
+      if (prop in obj && obj[prop] !== proto[prop] && !_.contains(keys, prop)) {
+        keys.push(prop);
+      }
+    }
+  }
+
+  // Retrieve the names of an object's own properties.
+  // Delegates to **ECMAScript 5**'s native `Object.keys`
+  _.keys = function(obj) {
+    if (!_.isObject(obj)) return [];
+    if (nativeKeys) return nativeKeys(obj);
+    var keys = [];
+    for (var key in obj) if (_.has(obj, key)) keys.push(key);
+    // Ahem, IE < 9.
+    if (hasEnumBug) collectNonEnumProps(obj, keys);
+    return keys;
+  };
+
+  // Retrieve all the property names of an object.
+  _.allKeys = function(obj) {
+    if (!_.isObject(obj)) return [];
+    var keys = [];
+    for (var key in obj) keys.push(key);
+    // Ahem, IE < 9.
+    if (hasEnumBug) collectNonEnumProps(obj, keys);
+    return keys;
+  };
+
+  // Retrieve the values of an object's properties.
+  _.values = function(obj) {
+    var keys = _.keys(obj);
+    var length = keys.length;
+    var values = Array(length);
+    for (var i = 0; i < length; i++) {
+      values[i] = obj[keys[i]];
+    }
+    return values;
+  };
+
+  // Returns the results of applying the iteratee to each element of the object
+  // In contrast to _.map it returns an object
+  _.mapObject = function(obj, iteratee, context) {
+    iteratee = cb(iteratee, context);
+    var keys =  _.keys(obj),
+          length = keys.length,
+          results = {},
+          currentKey;
+      for (var index = 0; index < length; index++) {
+        currentKey = keys[index];
+        results[currentKey] = iteratee(obj[currentKey], currentKey, obj);
+      }
+      return results;
+  };
+
+  // Convert an object into a list of `[key, value]` pairs.
+  _.pairs = function(obj) {
+    var keys = _.keys(obj);
+    var length = keys.length;
+    var pairs = Array(length);
+    for (var i = 0; i < length; i++) {
+      pairs[i] = [keys[i], obj[keys[i]]];
+    }
+    return pairs;
+  };
+
+  // Invert the keys and values of an object. The values must be serializable.
+  _.invert = function(obj) {
+    var result = {};
+    var keys = _.keys(obj);
+    for (var i = 0, length = keys.length; i < length; i++) {
+      result[obj[keys[i]]] = keys[i];
+    }
+    return result;
+  };
+
+  // Return a sorted list of the function names available on the object.
+  // Aliased as `methods`
+  _.functions = _.methods = function(obj) {
+    var names = [];
+    for (var key in obj) {
+      if (_.isFunction(obj[key])) names.push(key);
+    }
+    return names.sort();
+  };
+
+  // Extend a given object with all the properties in passed-in object(s).
+  _.extend = createAssigner(_.allKeys);
+
+  // Assigns a given object with all the own properties in the passed-in object(s)
+  // (https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object/assign)
+  _.extendOwn = _.assign = createAssigner(_.keys);
+
+  // Returns the first key on an object that passes a predicate test
+  _.findKey = function(obj, predicate, context) {
+    predicate = cb(predicate, context);
+    var keys = _.keys(obj), key;
+    for (var i = 0, length = keys.length; i < length; i++) {
+      key = keys[i];
+      if (predicate(obj[key], key, obj)) return key;
+    }
+  };
+
+  // Return a copy of the object only containing the whitelisted properties.
+  _.pick = function(object, oiteratee, context) {
+    var result = {}, obj = object, iteratee, keys;
+    if (obj == null) return result;
+    if (_.isFunction(oiteratee)) {
+      keys = _.allKeys(obj);
+      iteratee = optimizeCb(oiteratee, context);
+    } else {
+      keys = flatten(arguments, false, false, 1);
+      iteratee = function(value, key, obj) { return key in obj; };
+      obj = Object(obj);
+    }
+    for (var i = 0, length = keys.length; i < length; i++) {
+      var key = keys[i];
+      var value = obj[key];
+      if (iteratee(value, key, obj)) result[key] = value;
+    }
+    return result;
+  };
+
+   // Return a copy of the object without the blacklisted properties.
+  _.omit = function(obj, iteratee, context) {
+    if (_.isFunction(iteratee)) {
+      iteratee = _.negate(iteratee);
+    } else {
+      var keys = _.map(flatten(arguments, false, false, 1), String);
+      iteratee = function(value, key) {
+        return !_.contains(keys, key);
+      };
+    }
+    return _.pick(obj, iteratee, context);
+  };
+
+  // Fill in a given object with default properties.
+  _.defaults = createAssigner(_.allKeys, true);
+
+  // Creates an object that inherits from the given prototype object.
+  // If additional properties are provided then they will be added to the
+  // created object.
+  _.create = function(prototype, props) {
+    var result = baseCreate(prototype);
+    if (props) _.extendOwn(result, props);
+    return result;
+  };
+
+  // Create a (shallow-cloned) duplicate of an object.
+  _.clone = function(obj) {
+    if (!_.isObject(obj)) return obj;
+    return _.isArray(obj) ? obj.slice() : _.extend({}, obj);
+  };
+
+  // Invokes interceptor with the obj, and then returns obj.
+  // The primary purpose of this method is to "tap into" a method chain, in
+  // order to perform operations on intermediate results within the chain.
+  _.tap = function(obj, interceptor) {
+    interceptor(obj);
+    return obj;
+  };
+
+  // Returns whether an object has a given set of `key:value` pairs.
+  _.isMatch = function(object, attrs) {
+    var keys = _.keys(attrs), length = keys.length;
+    if (object == null) return !length;
+    var obj = Object(object);
+    for (var i = 0; i < length; i++) {
+      var key = keys[i];
+      if (attrs[key] !== obj[key] || !(key in obj)) return false;
+    }
+    return true;
+  };
+
+
+  // Internal recursive comparison function for `isEqual`.
+  var eq = function(a, b, aStack, bStack) {
+    // Identical objects are equal. `0 === -0`, but they aren't identical.
+    // See the [Harmony `egal` proposal](http://wiki.ecmascript.org/doku.php?id=harmony:egal).
+    if (a === b) return a !== 0 || 1 / a === 1 / b;
+    // A strict comparison is necessary because `null == undefined`.
+    if (a == null || b == null) return a === b;
+    // Unwrap any wrapped objects.
+    if (a instanceof _) a = a._wrapped;
+    if (b instanceof _) b = b._wrapped;
+    // Compare `[[Class]]` names.
+    var className = toString.call(a);
+    if (className !== toString.call(b)) return false;
+    switch (className) {
+      // Strings, numbers, regular expressions, dates, and booleans are compared by value.
+      case '[object RegExp]':
+      // RegExps are coerced to strings for comparison (Note: '' + /a/i === '/a/i')
+      case '[object String]':
+        // Primitives and their corresponding object wrappers are equivalent; thus, `"5"` is
+        // equivalent to `new String("5")`.
+        return '' + a === '' + b;
+      case '[object Number]':
+        // `NaN`s are equivalent, but non-reflexive.
+        // Object(NaN) is equivalent to NaN
+        if (+a !== +a) return +b !== +b;
+        // An `egal` comparison is performed for other numeric values.
+        return +a === 0 ? 1 / +a === 1 / b : +a === +b;
+      case '[object Date]':
+      case '[object Boolean]':
+        // Coerce dates and booleans to numeric primitive values. Dates are compared by their
+        // millisecond representations. Note that invalid dates with millisecond representations
+        // of `NaN` are not equivalent.
+        return +a === +b;
+    }
+
+    var areArrays = className === '[object Array]';
+    if (!areArrays) {
+      if (typeof a != 'object' || typeof b != 'object') return false;
+
+      // Objects with different constructors are not equivalent, but `Object`s or `Array`s
+      // from different frames are.
+      var aCtor = a.constructor, bCtor = b.constructor;
+      if (aCtor !== bCtor && !(_.isFunction(aCtor) && aCtor instanceof aCtor &&
+                               _.isFunction(bCtor) && bCtor instanceof bCtor)
+                          && ('constructor' in a && 'constructor' in b)) {
+        return false;
+      }
+    }
+    // Assume equality for cyclic structures. The algorithm for detecting cyclic
+    // structures is adapted from ES 5.1 section 15.12.3, abstract operation `JO`.
+
+    // Initializing stack of traversed objects.
+    // It's done here since we only need them for objects and arrays comparison.
+    aStack = aStack || [];
+    bStack = bStack || [];
+    var length = aStack.length;
+    while (length--) {
+      // Linear search. Performance is inversely proportional to the number of
+      // unique nested structures.
+      if (aStack[length] === a) return bStack[length] === b;
+    }
+
+    // Add the first object to the stack of traversed objects.
+    aStack.push(a);
+    bStack.push(b);
+
+    // Recursively compare objects and arrays.
+    if (areArrays) {
+      // Compare array lengths to determine if a deep comparison is necessary.
+      length = a.length;
+      if (length !== b.length) return false;
+      // Deep compare the contents, ignoring non-numeric properties.
+      while (length--) {
+        if (!eq(a[length], b[length], aStack, bStack)) return false;
+      }
+    } else {
+      // Deep compare objects.
+      var keys = _.keys(a), key;
+      length = keys.length;
+      // Ensure that both objects contain the same number of properties before comparing deep equality.
+      if (_.keys(b).length !== length) return false;
+      while (length--) {
+        // Deep compare each member
+        key = keys[length];
+        if (!(_.has(b, key) && eq(a[key], b[key], aStack, bStack))) return false;
+      }
+    }
+    // Remove the first object from the stack of traversed objects.
+    aStack.pop();
+    bStack.pop();
+    return true;
+  };
+
+  // Perform a deep comparison to check if two objects are equal.
+  _.isEqual = function(a, b) {
+    return eq(a, b);
+  };
+
+  // Is a given array, string, or object empty?
+  // An "empty" object has no enumerable own-properties.
+  _.isEmpty = function(obj) {
+    if (obj == null) return true;
+    if (isArrayLike(obj) && (_.isArray(obj) || _.isString(obj) || _.isArguments(obj))) return obj.length === 0;
+    return _.keys(obj).length === 0;
+  };
+
+  // Is a given value a DOM element?
+  _.isElement = function(obj) {
+    return !!(obj && obj.nodeType === 1);
+  };
+
+  // Is a given value an array?
+  // Delegates to ECMA5's native Array.isArray
+  _.isArray = nativeIsArray || function(obj) {
+    return toString.call(obj) === '[object Array]';
+  };
+
+  // Is a given variable an object?
+  _.isObject = function(obj) {
+    var type = typeof obj;
+    return type === 'function' || type === 'object' && !!obj;
+  };
+
+  // Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp, isError.
+  _.each(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp', 'Error'], function(name) {
+    _['is' + name] = function(obj) {
+      return toString.call(obj) === '[object ' + name + ']';
+    };
+  });
+
+  // Define a fallback version of the method in browsers (ahem, IE < 9), where
+  // there isn't any inspectable "Arguments" type.
+  if (!_.isArguments(arguments)) {
+    _.isArguments = function(obj) {
+      return _.has(obj, 'callee');
+    };
+  }
+
+  // Optimize `isFunction` if appropriate. Work around some typeof bugs in old v8,
+  // IE 11 (#1621), and in Safari 8 (#1929).
+  if (typeof /./ != 'function' && typeof Int8Array != 'object') {
+    _.isFunction = function(obj) {
+      return typeof obj == 'function' || false;
+    };
+  }
+
+  // Is a given object a finite number?
+  _.isFinite = function(obj) {
+    return isFinite(obj) && !isNaN(parseFloat(obj));
+  };
+
+  // Is the given value `NaN`? (NaN is the only number which does not equal itself).
+  _.isNaN = function(obj) {
+    return _.isNumber(obj) && obj !== +obj;
+  };
+
+  // Is a given value a boolean?
+  _.isBoolean = function(obj) {
+    return obj === true || obj === false || toString.call(obj) === '[object Boolean]';
+  };
+
+  // Is a given value equal to null?
+  _.isNull = function(obj) {
+    return obj === null;
+  };
+
+  // Is a given variable undefined?
+  _.isUndefined = function(obj) {
+    return obj === void 0;
+  };
+
+  // Shortcut function for checking if an object has a given property directly
+  // on itself (in other words, not on a prototype).
+  _.has = function(obj, key) {
+    return obj != null && hasOwnProperty.call(obj, key);
+  };
+
+  // Utility Functions
+  // -----------------
+
+  // Run Underscore.js in *noConflict* mode, returning the `_` variable to its
+  // previous owner. Returns a reference to the Underscore object.
+  _.noConflict = function() {
+    root._ = previousUnderscore;
+    return this;
+  };
+
+  // Keep the identity function around for default iteratees.
+  _.identity = function(value) {
+    return value;
+  };
+
+  // Predicate-generating functions. Often useful outside of Underscore.
+  _.constant = function(value) {
+    return function() {
+      return value;
+    };
+  };
+
+  _.noop = function(){};
+
+  _.property = property;
+
+  // Generates a function for a given object that returns a given property.
+  _.propertyOf = function(obj) {
+    return obj == null ? function(){} : function(key) {
+      return obj[key];
+    };
+  };
+
+  // Returns a predicate for checking whether an object has a given set of
+  // `key:value` pairs.
+  _.matcher = _.matches = function(attrs) {
+    attrs = _.extendOwn({}, attrs);
+    return function(obj) {
+      return _.isMatch(obj, attrs);
+    };
+  };
+
+  // Run a function **n** times.
+  _.times = function(n, iteratee, context) {
+    var accum = Array(Math.max(0, n));
+    iteratee = optimizeCb(iteratee, context, 1);
+    for (var i = 0; i < n; i++) accum[i] = iteratee(i);
+    return accum;
+  };
+
+  // Return a random integer between min and max (inclusive).
+  _.random = function(min, max) {
+    if (max == null) {
+      max = min;
+      min = 0;
+    }
+    return min + Math.floor(Math.random() * (max - min + 1));
+  };
+
+  // A (possibly faster) way to get the current timestamp as an integer.
+  _.now = Date.now || function() {
+    return new Date().getTime();
+  };
+
+   // List of HTML entities for escaping.
+  var escapeMap = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#x27;',
+    '`': '&#x60;'
+  };
+  var unescapeMap = _.invert(escapeMap);
+
+  // Functions for escaping and unescaping strings to/from HTML interpolation.
+  var createEscaper = function(map) {
+    var escaper = function(match) {
+      return map[match];
+    };
+    // Regexes for identifying a key that needs to be escaped
+    var source = '(?:' + _.keys(map).join('|') + ')';
+    var testRegexp = RegExp(source);
+    var replaceRegexp = RegExp(source, 'g');
+    return function(string) {
+      string = string == null ? '' : '' + string;
+      return testRegexp.test(string) ? string.replace(replaceRegexp, escaper) : string;
+    };
+  };
+  _.escape = createEscaper(escapeMap);
+  _.unescape = createEscaper(unescapeMap);
+
+  // If the value of the named `property` is a function then invoke it with the
+  // `object` as context; otherwise, return it.
+  _.result = function(object, property, fallback) {
+    var value = object == null ? void 0 : object[property];
+    if (value === void 0) {
+      value = fallback;
+    }
+    return _.isFunction(value) ? value.call(object) : value;
+  };
+
+  // Generate a unique integer id (unique within the entire client session).
+  // Useful for temporary DOM ids.
+  var idCounter = 0;
+  _.uniqueId = function(prefix) {
+    var id = ++idCounter + '';
+    return prefix ? prefix + id : id;
+  };
+
+  // By default, Underscore uses ERB-style template delimiters, change the
+  // following template settings to use alternative delimiters.
+  _.templateSettings = {
+    evaluate    : /<%([\s\S]+?)%>/g,
+    interpolate : /<%=([\s\S]+?)%>/g,
+    escape      : /<%-([\s\S]+?)%>/g
+  };
+
+  // When customizing `templateSettings`, if you don't want to define an
+  // interpolation, evaluation or escaping regex, we need one that is
+  // guaranteed not to match.
+  var noMatch = /(.)^/;
+
+  // Certain characters need to be escaped so that they can be put into a
+  // string literal.
+  var escapes = {
+    "'":      "'",
+    '\\':     '\\',
+    '\r':     'r',
+    '\n':     'n',
+    '\u2028': 'u2028',
+    '\u2029': 'u2029'
+  };
+
+  var escaper = /\\|'|\r|\n|\u2028|\u2029/g;
+
+  var escapeChar = function(match) {
+    return '\\' + escapes[match];
+  };
+
+  // JavaScript micro-templating, similar to John Resig's implementation.
+  // Underscore templating handles arbitrary delimiters, preserves whitespace,
+  // and correctly escapes quotes within interpolated code.
+  // NB: `oldSettings` only exists for backwards compatibility.
+  _.template = function(text, settings, oldSettings) {
+    if (!settings && oldSettings) settings = oldSettings;
+    settings = _.defaults({}, settings, _.templateSettings);
+
+    // Combine delimiters into one regular expression via alternation.
+    var matcher = RegExp([
+      (settings.escape || noMatch).source,
+      (settings.interpolate || noMatch).source,
+      (settings.evaluate || noMatch).source
+    ].join('|') + '|$', 'g');
+
+    // Compile the template source, escaping string literals appropriately.
+    var index = 0;
+    var source = "__p+='";
+    text.replace(matcher, function(match, escape, interpolate, evaluate, offset) {
+      source += text.slice(index, offset).replace(escaper, escapeChar);
+      index = offset + match.length;
+
+      if (escape) {
+        source += "'+\n((__t=(" + escape + "))==null?'':_.escape(__t))+\n'";
+      } else if (interpolate) {
+        source += "'+\n((__t=(" + interpolate + "))==null?'':__t)+\n'";
+      } else if (evaluate) {
+        source += "';\n" + evaluate + "\n__p+='";
+      }
+
+      // Adobe VMs need the match returned to produce the correct offest.
+      return match;
+    });
+    source += "';\n";
+
+    // If a variable is not specified, place data values in local scope.
+    if (!settings.variable) source = 'with(obj||{}){\n' + source + '}\n';
+
+    source = "var __t,__p='',__j=Array.prototype.join," +
+      "print=function(){__p+=__j.call(arguments,'');};\n" +
+      source + 'return __p;\n';
+
+    try {
+      var render = new Function(settings.variable || 'obj', '_', source);
+    } catch (e) {
+      e.source = source;
+      throw e;
+    }
+
+    var template = function(data) {
+      return render.call(this, data, _);
+    };
+
+    // Provide the compiled source as a convenience for precompilation.
+    var argument = settings.variable || 'obj';
+    template.source = 'function(' + argument + '){\n' + source + '}';
+
+    return template;
+  };
+
+  // Add a "chain" function. Start chaining a wrapped Underscore object.
+  _.chain = function(obj) {
+    var instance = _(obj);
+    instance._chain = true;
+    return instance;
+  };
+
+  // OOP
+  // ---------------
+  // If Underscore is called as a function, it returns a wrapped object that
+  // can be used OO-style. This wrapper holds altered versions of all the
+  // underscore functions. Wrapped objects may be chained.
+
+  // Helper function to continue chaining intermediate results.
+  var result = function(instance, obj) {
+    return instance._chain ? _(obj).chain() : obj;
+  };
+
+  // Add your own custom functions to the Underscore object.
+  _.mixin = function(obj) {
+    _.each(_.functions(obj), function(name) {
+      var func = _[name] = obj[name];
+      _.prototype[name] = function() {
+        var args = [this._wrapped];
+        push.apply(args, arguments);
+        return result(this, func.apply(_, args));
+      };
+    });
+  };
+
+  // Add all of the Underscore functions to the wrapper object.
+  _.mixin(_);
+
+  // Add all mutator Array functions to the wrapper.
+  _.each(['pop', 'push', 'reverse', 'shift', 'sort', 'splice', 'unshift'], function(name) {
+    var method = ArrayProto[name];
+    _.prototype[name] = function() {
+      var obj = this._wrapped;
+      method.apply(obj, arguments);
+      if ((name === 'shift' || name === 'splice') && obj.length === 0) delete obj[0];
+      return result(this, obj);
+    };
+  });
+
+  // Add all accessor Array functions to the wrapper.
+  _.each(['concat', 'join', 'slice'], function(name) {
+    var method = ArrayProto[name];
+    _.prototype[name] = function() {
+      return result(this, method.apply(this._wrapped, arguments));
+    };
+  });
+
+  // Extracts the result from a wrapped and chained object.
+  _.prototype.value = function() {
+    return this._wrapped;
+  };
+
+  // Provide unwrapping proxy for some methods used in engine operations
+  // such as arithmetic and JSON stringification.
+  _.prototype.valueOf = _.prototype.toJSON = _.prototype.value;
+
+  _.prototype.toString = function() {
+    return '' + this._wrapped;
+  };
+
+  // AMD registration happens at the end for compatibility with AMD loaders
+  // that may not enforce next-turn semantics on modules. Even though general
+  // practice for AMD registration is to be anonymous, underscore registers
+  // as a named module because, like jQuery, it is a base library that is
+  // popular enough to be bundled in a third party lib, but not be part of
+  // an AMD load request. Those cases could generate an error when an
+  // anonymous define() is called outside of a loader request.
+  if (typeof define === 'function' && define.amd) {
+    define('underscore', [], function() {
+      return _;
+    });
+  }
+}.call(this));
+
+},{}],10:[function(require,module,exports){
+'use strict';
+
+var Backbone = require('backbone');
+var Batch = require('./../models/batch');
+
+module.exports = Backbone.Collection.extend({
+    url: '/api/batch',
+    model: Batch
+});
+
+},{"./../models/batch":15,"backbone":4}],11:[function(require,module,exports){
+'use strict';
+
+var Backbone = require('backbone');
+var Spirit = require('./../models/spirit');
+
+module.exports = Backbone.Collection.extend({
+    url: '/api/spirit',
+    model: Spirit
+});
+
+},{"./../models/spirit":16,"backbone":4}],12:[function(require,module,exports){
+'use strict';
+
+var Backbone = require('backbone');
+var State = require('./../models/state');
+
+module.exports = Backbone.Collection.extend({
+    url: '/api/state',
+    model: State
+});
+
+},{"./../models/state":17,"backbone":4}],13:[function(require,module,exports){
+'use strict';
+
+var Backbone = require('backbone');
+var User = require('./../models/user');
+
+module.exports = Backbone.Collection.extend({
+    url: '/api/user',
+    model: User
+});
+
+},{"./../models/user":18,"backbone":4}],14:[function(require,module,exports){
+'use strict';
+
+var $ = require('jquery');
+var Backbone = require('backbone');
+var Marionette = require('backbone.marionette');
+
+var SpiritRouter = require('./routers/spirit');
+var UserRouter = require('./routers/user');
+var BatchRouter = require('./routers/batch');
+var RootView = require('./views/root');
+
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
+
+var App = Marionette.Application.extend({
+    region: '#application',
+
+    onStart: function onStart() {
+        this.rootView = new RootView();
+        this.showView(this.rootView);
+
+        new SpiritRouter({ app: this });
+        new UserRouter({ app: this });
+        new BatchRouter({ app: this });
+
+        Backbone.history.start({ pushState: true });
+
+        $(document).on('click', 'a[href]:not([data-bypass])', function (e) {
+            var href = { prop: $(this).prop('href'), attr: $(this).attr('href') };
+            var root = location.protocol + '//' + location.host;
+            if (href.prop.slice(0, root.length) === root) {
+                e.preventDefault();
+                Backbone.history.navigate(href.attr, true);
+            }
+        });
+    }
+});
+
+var app = new App();
+
+app.start();
+
+},{"./routers/batch":19,"./routers/spirit":20,"./routers/user":21,"./views/root":57,"backbone":4,"backbone.marionette":2,"jquery":6}],15:[function(require,module,exports){
+'use strict';
+
+var Backbone = require('backbone');
+
+module.exports = Backbone.Model.extend({
+    urlRoot: '/api/batch',
+
+    state: function state() {
+        var step = this.get('step');
+        var process = this.get('spirit').process;
+
+        var states = {
+            current: process[step]
+        };
+
+        if (step < process.length) {
+            states.next = process[step + 1];
+        }
+
+        if (step > 0) {
+            states.prev = process[step - 1];
+        }
+
+        return states;
+    }
+});
+
+},{"backbone":4}],16:[function(require,module,exports){
+'use strict';
+
+var Backbone = require('backbone');
+
+module.exports = Backbone.Model.extend({
+    urlRoot: '/api/spirit'
+});
+
+},{"backbone":4}],17:[function(require,module,exports){
+'use strict';
+
+var Backbone = require('backbone');
+
+module.exports = Backbone.Model.extend({
+    urlRoot: '/api/state'
+});
+
+},{"backbone":4}],18:[function(require,module,exports){
+'use strict';
+
+var Backbone = require('backbone');
+
+module.exports = Backbone.Model.extend({
+    urlRoot: '/api/user'
+});
+
+},{"backbone":4}],19:[function(require,module,exports){
+'use strict';
+
+var Backbone = require('backbone');
+
+var Batch = require('./../models/batch');
+var Batches = require('./../collections/batches');
+var Spirits = require('./../collections/spirits');
+var BatchIndexView = require('./../views/batch/index');
+var BatchCreateView = require('./../views/batch/create');
+var BatchShowView = require('./../views/batch/show');
+var BatchEditView = require('./../views/batch/edit');
+
+module.exports = Backbone.Router.extend({
+    routes: {
+        'batch': 'index',
+        'batch/create': 'create',
+        'batch/:id': 'show',
+        'batch/:id/edit': 'edit'
+    },
+
+    initialize: function initialize(options) {
+        this.app = options.app;
+    },
+
+    index: function index() {
+        var _this = this;
+
+        var batches = new Batches();
+        batches.fetch().then(function () {
+            _this.app.rootView.showChildView('content', new BatchIndexView({
+                collection: batches
+            }));
+        });
+    },
+    create: function create() {
+        var _this2 = this;
+
+        var spirits = new Spirits();
+
+        spirits.fetch().then(function () {
+            _this2.app.rootView.showChildView('content', new BatchCreateView({
+                spirits: spirits
+            }));
+        });
+    },
+    show: function show(id) {
+        var _this3 = this;
+
+        var batch = new Batch({ id: id });
+        batch.fetch().then(function () {
+            _this3.app.rootView.showChildView('content', new BatchShowView({
+                model: batch
+            }));
+        });
+    },
+    edit: function edit(id) {
+        var _this4 = this;
+
+        var batch = new Batch({ id: id });
+
+        batch.fetch().then(function () {
+            _this4.app.rootView.showChildView('content', new BatchEditView({
+                model: batch
+            }));
+        });
+    }
+});
+
+},{"./../collections/batches":10,"./../collections/spirits":11,"./../models/batch":15,"./../views/batch/create":44,"./../views/batch/edit":45,"./../views/batch/index":46,"./../views/batch/show":47,"backbone":4}],20:[function(require,module,exports){
+'use strict';
+
+var $ = require('jquery');
+var Backbone = require('backbone');
+
+var Spirit = require('./../models/spirit');
+var Spirits = require('./../collections/spirits');
+var States = require('./../collections/states');
+var SpiritIndexView = require('./../views/spirit/index');
+var SpiritCreateView = require('./../views/spirit/create');
+var SpiritShowView = require('./../views/spirit/show');
+var SpiritEditView = require('./../views/spirit/edit');
+
+module.exports = Backbone.Router.extend({
+    routes: {
+        'spirit': 'index',
+        'spirit/create': 'create',
+        'spirit/:id': 'show',
+        'spirit/:id/edit': 'edit'
+    },
+
+    initialize: function initialize(options) {
+        this.app = options.app;
+    },
+
+    index: function index() {
+        var _this = this;
+
+        var spirits = new Spirits();
+
+        spirits.fetch().then(function () {
+            _this.app.rootView.showChildView('content', new SpiritIndexView({
+                collection: spirits
+            }));
+        });
+    },
+
+    create: function create() {
+        var _this2 = this;
+
+        var states = new States();
+
+        states.fetch().then(function () {
+            _this2.app.rootView.showChildView('content', new SpiritCreateView({
+                states: states
+            }));
+        });
+    },
+
+    show: function show(id) {
+        var _this3 = this;
+
+        var spirit = new Spirit({ id: id });
+
+        spirit.fetch().then(function () {
+            _this3.app.rootView.showChildView('content', new SpiritShowView({
+                model: spirit
+            }));
+        });
+    },
+
+    edit: function edit(id) {
+        var _this4 = this;
+
+        var spirit = new Spirit({ id: id });
+        var states = new States();
+
+        $.when(spirit.fetch(), states.fetch()).then(function () {
+            _this4.app.rootView.showChildView('content', new SpiritEditView({
+                model: spirit,
+                states: states
+            }));
+        });
+    }
+});
+
+},{"./../collections/spirits":11,"./../collections/states":12,"./../models/spirit":16,"./../views/spirit/create":58,"./../views/spirit/edit":59,"./../views/spirit/index":60,"./../views/spirit/show":61,"backbone":4,"jquery":6}],21:[function(require,module,exports){
+'use strict';
+
+var Backbone = require('backbone');
+
+var User = require('./../models/user');
+var Users = require('./../collections/users');
+var UserIndexView = require('./../views/user/index');
+var UserCreateView = require('./../views/user/create');
+var UserShowView = require('./../views/user/show');
+var UserEditView = require('./../views/user/edit');
+
+module.exports = Backbone.Router.extend({
+    routes: {
+        'user': 'index',
+        'user/create': 'create',
+        'user/:id': 'show',
+        'user/:id/edit': 'edit'
+    },
+
+    initialize: function initialize(options) {
+        this.app = options.app;
+    },
+
+    index: function index() {
+        var _this = this;
+
+        var users = new Users();
+
+        users.fetch().then(function () {
+            _this.app.rootView.showChildView('content', new UserIndexView({
+                collection: users
+            }));
+        });
+    },
+
+    create: function create() {
+        this.app.rootView.showChildView('content', new UserCreateView());
+    },
+
+    show: function show(id) {
+        var _this2 = this;
+
+        var user = new User({ id: id });
+
+        user.fetch().then(function () {
+            _this2.app.rootView.showChildView('content', new UserShowView({
+                model: user
+            }));
+        });
+    },
+
+    edit: function edit(id) {
+        var _this3 = this;
+
+        var user = new User({ id: id });
+
+        user.fetch().then(function () {
+            _this3.app.rootView.showChildView('content', new UserEditView({
+                model: user
+            }));
+        });
+    }
+});
+
+},{"./../collections/users":13,"./../models/user":18,"./../views/user/create":62,"./../views/user/edit":63,"./../views/user/index":64,"./../views/user/show":65,"backbone":4}],22:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Batch</h2>\n        <h1>Opret batch</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Spiritustype</span>\n        <select name="spirit_id">\n            ');12; spirits.forEach((spirit) => { ; buf.push('\n            <option value="', escape((13,  spirit.id )), '">', escape((13,  spirit.name )), '</option>\n            ');14; }) ; buf.push('\n        </select>\n    </label>\n\n    <label>\n        <span>Oprettelsesdato</span>\n        <input name="created_at" value="', escape((20,  moment().format('YYYY-MM-DD') )), '" type="text">\n    </label>\n\n    <label>\n        <span>Batchnavn</span>\n        <input name="name" type="text">\n    </label>\n\n    <button class="button-final" type="submit">Opret</button>\n</form>\n'); })();
+} 
+return buf.join('');
+})
+},{}],23:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Batch</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Batchnavn</span>\n        <input name="name" value="', escape((11,  name )), '" type="text">\n    </label>\n\n    <div>\n        Spiritustype\n        <select name="" id="">\n            <option value="">Test1</option>\n            <option value="">Test2</option>\n        </select>\n    </div>\n\n    <button class="button-final" type="submit">Gem</button>\n</form>\n'); })();
+} 
+return buf.join('');
+})
+},{}],24:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Produktion</h2>\n        <h1>Batches</h1>\n    </div>\n    <div class="buttons">\n        <a href="/batch/create" role="button">Opret</a>\n    </div>\n</div>\n\n<div id="content-body">\n    <table>\n        <tr>\n            <th class="span">Navn</th>\n            <th class="shrink">Tilstand</th>\n            <th class="shrink">Oprettelsesdato</th>\n        </tr>\n\n        ');19; items.forEach((item) => { ; buf.push('\n        <tr>\n            <td><a href="/batch/', escape((21,  item.id )), '">', escape((21,  item.name )), '</a></td>\n            <td>Mæskning</td>\n            <td>', escape((23,  item.created_at )), '</td>\n        </tr>\n        ');25; }) ; buf.push('\n    </table>\n</div>'); })();
+} 
+return buf.join('');
+})
+},{}],25:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Batch: ', escape((3,  state.current.name )), '</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n\n    <div class="buttons button-group">\n        <a href="/batch/', escape((8,  id )), '/edit" role="button">Redigér</a>\n        <button id="delete">Fjern</button>\n    </div>\n</div>\n\n<div id="step"></div>'); })();
+} 
+return buf.join('');
+})
+},{}],26:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('Blending\n'); })();
+} 
+return buf.join('');
+})
+},{}],27:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<div class="headings">\n    <h2>Tapning</h2>\n</div>\n\n<form>\n    <label>\n        <span>Tapningsdato</span>\n        <input type="date">\n    </label>\n    <label>\n        <span>Flaskevolumen(cL)</span>\n        <input type="number" step="0.01">\n    </label>\n    <label>\n        <span>Antal flasker</span>\n        <input type="number" step="0.01">\n    </label>\n    <div class="output">\n        <span>Resterende volumen</span>\n        <div>123123</div>\n    </div>\n    <label>\n        <span>Kommentarer</span>\n        <textarea rows="5"></textarea>\n    </label>\n    <button id="save-bottling">Gem tapning</button>\n</form>\n'); })();
+} 
+return buf.join('');
+})
+},{}],28:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<div class="headings">\n    <h2>Dilution</h2>\n</div>\n<form>\n    <label>\n        <span>Fortyndingsdato</span>\n        <input type="date">\n    </label>\n    <label>\n        <span>Kommentarer</span>\n        <textarea rows="5"></textarea>\n    </label>\n    <h3>Inden fortynding</h3>\n    <label>\n        <span>Totalvægt(kg)</span>\n        <input type="number" step="0.01">\n    </label>\n    <label>\n        <span>Alkohol(%)</span>\n        <input type="number" step="0.01">\n    </label>\n    <label>\n        <span>Tabelværdi for alkohol</span>\n        <input type="number" step="0.01">\n    </label>\n    <label>\n        <span>Ønsket alkohol(%)</span>\n        <input type="number" step="0.01">\n    </label>\n    <label>\n        <span>Tabelværdi for ønsket alkohol</span>\n        <input type="number" step="0.01">\n    </label>\n    <h3>Efter fortyndingen</h3>\n    <div class="output">\n        <span>100% ren alkohol(kg)</span>\n        <div>12312321</div>\n    </div>\n    <div class="output">\n        <span>Tilsætning af vand</span>\n        <div>321321123</div>\n    </div>\n    <div class="output">\n        <span>Tilsætning af vand(kg)</span>\n        <div>123123123321</div>\n    </div>\n    <button id="save-dilution">Gem fortynding</button>\n</form>\n'); })();
+} 
+return buf.join('');
+})
+},{}],29:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<div class="headings">\n    <h2>Destillation</h2>\n</div>\n\n<form>\n    <label>\n        <span>Destillationsdato</span>\n        <input type="date">\n    </label>\n    <label>\n        <span>Vægt(kg)</span>\n        <input type="number" step="0.01">\n    </label>\n    <label>\n        <span>Alkohol(%)</span>\n        <input type="number" step="0.01">\n    </label>\n    <label>\n        <span>Kommentarer</span>\n        <textarea rows="5"></textarea>\n    </label>\n    <button id="save-distillation">Gem destillation</button>\n</form>\n'); })();
+} 
+return buf.join('');
+})
+},{}],30:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<div class="headings">\n    <h2>Filtrering</h2>\n</div>\n\n<form>\n    <label>\n        <span>Filtreringsdato</span>\n        <input type="date">\n    </label>\n    <label>\n        <span>Vægt(kg)</span>\n        <input type="number" step="0.01">\n    </label>\n    <label>\n        <span>Alkohol(%)</span>\n        <input type="number" step="0.01">\n    </label>\n    <label>\n        <span>Densitet tabelværdi</span>\n        <input type="number" step="0.01">\n    </label>\n    <label>\n        <span>Volumen(L)</span>\n        <input type="number" step="0.01">\n    </label>\n    <label>\n        <span>Kommentarer</span>\n        <textarea rows="5"></textarea>\n    </label>\n    <button id="save-filtration">Gem filtrering</button>\n</form>\n\n'); })();
+} 
+return buf.join('');
+})
+},{}],31:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<form>\n    <label>\n        <span>Kvalitet</span>\n        <input name="quality" type="text">\n    </label>\n\n    <label>\n        <span>Sukker (<sup>o</sup>Bx)</span>\n        <input name="sugar" type="text">\n    </label>\n\n    <label>\n        <span>Gær (g)</span>\n        <input name="ferment" type="text">\n    </label>\n\n    <label>\n        <span>Mængde (l)</span>\n        <input name="amount" type="text">\n    </label>\n\n    <label>\n        <span>Kommentarer</span>\n        <textarea name="comment" rows="5"></textarea>\n    </label>\n\n    <button>Gem</button>\n</form>\n'); })();
+} 
+return buf.join('');
+})
+},{}],32:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<form>\n    <div class="headings">\n        <h2>Lagring</h2>\n    </div>\n    <label>Begyndelsesdato</label>\n    <input type="date">\n    <label>\n        <span>Kommentarer</span>\n        <textarea rows="5"></textarea>\n    </label>\n    <button id="begin-storage">Begynd lagring</button>\n</form>\n'); })();
+} 
+return buf.join('');
+})
+},{}],33:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<span>Produktionsprocess</span>\n<table></table>\n<button type="button">Tilføj</button>'); })();
+} 
+return buf.join('');
+})
+},{}],34:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<td class="span">\n    <select name="process[]">\n        ');3; states.forEach((state) => { ; buf.push('\n            ');4; if (step && state.id == step.id) { ; buf.push('\n            <option value="', escape((5,  state.id )), '" selected>', escape((5,  state.name )), '</option>\n            ');6; } else { ; buf.push('\n            <option value="', escape((7,  state.id )), '">', escape((7,  state.name )), '</option>\n            ');8; } ; buf.push('\n        ');9; }) ; buf.push('\n    </select>\n</td>\n\n<td class="shrink">\n    <button type="button" class="icon-cross"></button>\n</td>'); })();
+} 
+return buf.join('');
+})
+},{}],35:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<div id="navigation">\n    <h1>Nordisk Brænderi</h1>\n    <ul>\n        <li class="category">Produktion</li>\n        <li><a href="/batch">Oversigt</a></li>\n        <li><a href="/batch/create">Opret</a></li>\n\n        <li class="category">Opgørelser</li>\n        <li><a href="#">Årsopgørelse</a></li>\n        <li><a href="#">Kvartalsopgørelse</a></li>\n        <li><a href="#">Månedsopgørelse</a></li>\n\n        <li class="category">Administration</li>\n        <li><a href="/user">Brugere</a></li>\n        <li><a href="/spirit">Spiritus</a></li>\n\n        <li class="logoff"><a href="#">Log af</a></li>\n    </ul>\n</div>\n<div id="content"></div>'); })();
+} 
+return buf.join('');
+})
+},{}],36:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Spiritus</h2>\n        <h1>Opret spiritus</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Spiritusnavn</span>\n        <input name="name" type="text">\n    </label>\n\n    <label>\n        <span>Alkoholprocent</span>\n        <input name="abv" step="0.01">\n    </label>\n\n    <label>\n        <span>Opskrift</span>\n        <textarea name="recipe" rows="5"></textarea>\n    </label>\n\n    <div id="process">\n\n    </div>\n\n    <button class="green" type="submit">Opret</button>\n</form>\n'); })();
+} 
+return buf.join('');
+})
+},{}],37:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Spiritus</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Spiritusnavn</span>\n        <input name="name" value="', escape((11,  name )), '" type="text">\n    </label>\n\n    <label>\n        <span>Alkoholprocent</span>\n        <input name="abv" value="', escape((16,  abv )), '" type="number" step="0.01">\n    </label>\n\n    <label>\n        <span>Opskrift</span>\n        <textarea name="recipe" rows="5">', escape((21,  recipe )), '</textarea>\n    </label>\n\n    <div id="process">\n\n    </div>\n\n    <button class="green" type="submit">Gem</button>\n</form>\n'); })();
+} 
+return buf.join('');
+})
+},{}],38:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Administration</h2>\n        <h1>Spiritus</h1>\n    </div>\n\n    <div class="buttons">\n        <a href="/spirit/create" role="button">Opret</a>\n    </div>\n</div>\n\n<div id="content-body">\n    <table>\n        <tr>\n            <th>Navn</th>\n        </tr>\n\n        ');18; items.forEach((item) => { ; buf.push('\n            <tr>\n                <td>\n                    <a href="/spirit/', escape((21,  item.id )), '">', escape((21,  item.name )), '</a>\n                </td>\n            </tr>\n        ');24; }) ; buf.push('\n    </table>\n</div>\n'); })();
+} 
+return buf.join('');
+})
+},{}],39:[function(require,module,exports){
+(function (process){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('\n<div id="content-header">\n    <div class="headings">\n        <h2>Spiritus</h2>\n        <h1>', escape((5,  name )), '</h1>\n    </div>\n\n    <div class="buttons button-group">\n        <a href="/spirit/', escape((9,  id )), '/edit" role="button">Redigér</a>\n        <button>Fjern</button>\n    </div>\n</div>\n\n<div class="output">\n    <span>Spiritustype</span>\n    <div>', escape((16,  name )), '</div>\n</div>\n\n<div class="output">\n    <span>Alkoholprocent</span>\n    <div>', escape((21,  abv )), '</div>\n</div>\n\n<div class="output">\n    <span>Opskrift</span>\n    <div>', escape((26,  recipe ? recipe : 'N/A' )), '</div>\n</div>\n\n<div class="output">\n    <span>Produktionsprocess</span>\n    <ol>\n        ');32; process.forEach((step) => { ; buf.push('\n           <li>', escape((33,  step.name )), '</li>\n        ');34; }) ; buf.push('\n    </ol>\n</div>\n\n'); })();
+} 
+return buf.join('');
+})
+}).call(this,require('_process'))
+},{"_process":8}],40:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Bruger</h2>\n        <h1>Opret bruger</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Brugernavn</span>\n        <input name="name" type="text">\n    </label>\n\n    <label>\n        <span>Adgangskode</span>\n        <input name="password" step="0.01">\n    </label>\n\n    <label>\n        <span>Bekræft adgangskode</span>\n        <input name="confirm-password">\n    </label>\n\n    <button class="green" type="submit">Opret</button>\n</form>'); })();
+} 
+return buf.join('');
+})
+},{}],41:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Bruger</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Brugernavn</span>\n        <input name="name" value="', escape((11,  name )), '" type="text">\n    </label>\n\n    <label>\n        <span>Adgangskode</span>\n        <input name="password" type="password">\n    </label>\n\n    <label>\n        <span>Bekræft adgangskode</span>\n        <input name="confirm-password" type="password">\n    </label>\n\n    <button class="green" type="submit">Gem</button>\n</form>\n'); })();
+} 
+return buf.join('');
+})
+},{}],42:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Administration</h2>\n        <h1>Bruger</h1>\n    </div>\n\n    <div class="buttons">\n        <a href="/user/create" role="button">Opret</a>\n    </div>\n</div>\n\n<div id="content-body">\n    <table>\n        <tr>\n            <th>Navn</th>\n        </tr>\n\n        ');18; items.forEach((item) => { ; buf.push('\n        <tr>\n            <td>\n                <a href="/user/', escape((21,  item.id )), '">', escape((21,  item.name )), '</a>\n            </td>\n        </tr>\n        ');24; }) ; buf.push('\n    </table>\n</div>'); })();
+} 
+return buf.join('');
+})
+},{}],43:[function(require,module,exports){
+module.exports = (function anonymous(locals, filters, escape, rethrow
+/**/) {
+escape = escape || function (html){
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;');
+};
+var buf = [];
+with (locals || {}) { (function(){ 
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Bruger</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n\n    <div class="buttons button-group">\n        <a href="/user/', escape((8,  id )), '/edit" role="button">Redigér</a>\n        <button>Fjern</button>\n    </div>\n</div>\n\n<div class="output">\n    <span>Brugernavn</span>\n    <div>', escape((15,  name )), '</div>\n</div>\n'); })();
+} 
+return buf.join('');
+})
+},{}],44:[function(require,module,exports){
+'use strict';
+
+var $ = require('jquery');
+var Backbone = require('backbone');
+var Marionette = require('backbone.marionette');
+var moment = require('moment');
+require('form-serializer');
+
+var Batch = require('./../../models/batch');
+var template = require('./../../templates/batch/create.ejs');
+
+module.exports = Marionette.View.extend({
+    id: 'batch-create',
+
+    template: template,
+
+    events: {
+        'submit form': 'create'
+    },
+
+    templateContext: function templateContext() {
+        return {
+            moment: moment,
+            spirits: this.getOption('spirits').toJSON()
+        };
+    },
+
+    create: function create(e) {
+        e.preventDefault();
+
+        var batch = new Batch($(e.target).serializeObject());
+
+        batch.save(null, {
+            success: function success() {
+                Backbone.history.navigate('batch/' + batch.get('id'), true);
+            },
+            error: function error() {
+                console.log("error", arguments);
+            }
+        });
+    }
+});
+
+},{"./../../models/batch":15,"./../../templates/batch/create.ejs":22,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6,"moment":7}],45:[function(require,module,exports){
+'use strict';
+
+var $ = require('jquery');
+var Backbone = require('backbone');
+var Marionette = require('backbone.marionette');
+require('form-serializer');
+
+var template = require('./../../templates/batch/edit.ejs');
+
+module.exports = Marionette.View.extend({
+    id: 'batch-edit',
+
+    template: template,
+
+    events: {
+        'submit form': 'edit'
+    },
+
+    edit: function edit(e) {
+        var that = this;
+
+        e.preventDefault();
+
+        this.model.set($(e.target).serializeObject());
+
+        this.model.save(null, {
+            success: function success() {
+                Backbone.history.navigate('batch/' + that.model.get('id'), true);
+            },
+            error: function error() {
+                console.log("error", arguments);
+            }
+        });
+    }
+});
+
+},{"./../../templates/batch/edit.ejs":23,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],46:[function(require,module,exports){
+'use strict';
+
+var Marionette = require('backbone.marionette');
+var template = require('./../../templates/batch/index.ejs');
+
+module.exports = Marionette.View.extend({
+    id: 'batch-index',
+
+    template: template
+});
+
+},{"./../../templates/batch/index.ejs":24,"backbone.marionette":2}],47:[function(require,module,exports){
+'use strict';
+
+var Backbone = require('backbone');
+var Marionette = require('backbone.marionette');
+var template = require('./../../templates/batch/show.ejs');
+var MashingView = require('./steps/mashing');
+var BlendingView = require('./steps/blending');
+var BottlingView = require('./steps/bottling');
+var DilutionView = require('./steps/dilution');
+var DistillationView = require('./steps/distillation');
+var FiltrationView = require('./steps/filtration');
+var StorageView = require('./steps/storage');
+
+module.exports = Marionette.View.extend({
+    id: 'batch-show',
+
+    template: template,
+
+    events: {
+        'click #delete': 'delete',
+        'click #next-step': 'nextStep'
+    },
+
+    regions: {
+        step: '#step'
+    },
+
+    templateContext: function templateContext() {
+        return {
+            state: this.model.state()
+        };
+    },
+
+    onRender: function onRender() {
+        switch (this.model.state().current.id) {
+            case 1:
+                this.showChildView('step', new MashingView({ model: this.model }));
+                break;
+            case 2:
+                this.showChildView('step', new DistillationView({ model: this.model }));
+                break;
+            case 3:
+                this.showChildView('step', new DilutionView({ model: this.model }));
+                break;
+            case 4:
+                this.showChildView('step', new StorageView({ model: this.model }));
+                break;
+            case 5:
+                this.showChildView('step', new FiltrationView({ model: this.model }));
+                break;
+            case 6:
+                this.showChildView('step', new BottlingView({ model: this.model }));
+                break;
+            case 7:
+                this.showChildView('step', new BlendingView({ model: this.model }));
+                break;
+        }
+    },
+
+    delete: function _delete() {
+        this.model.destroy().done(function () {
+            Backbone.history.navigate('/batch', true);
+        }).fail(function () {
+            console.log(error);
+        });
+    },
+
+    nextStep: function nextStep() {
+        var _this = this;
+
+        var step = this.model.get('step');
+        if (step < this.model.get('spirit').process.length - 1) {
+            this.model.set('step', step + 1);
+        }
+
+        this.model.save({}).done(function () {
+            _this.render();
+        }).fail(function (error) {
+            console.log(error);
+        });
+    }
+});
+
+},{"./../../templates/batch/show.ejs":25,"./steps/blending":48,"./steps/bottling":49,"./steps/dilution":50,"./steps/distillation":51,"./steps/filtration":52,"./steps/mashing":53,"./steps/storage":54,"backbone":4,"backbone.marionette":2}],48:[function(require,module,exports){
+'use strict';
+
+var Backbone = require('backbone');
+var Marionette = require('backbone.marionette');
+var template = require('./../../../templates/batch/steps/blending.ejs');
+
+module.exports = Marionette.View.extend({
+    template: template
+});
+
+},{"./../../../templates/batch/steps/blending.ejs":26,"backbone":4,"backbone.marionette":2}],49:[function(require,module,exports){
+'use strict';
+
+var Backbone = require('backbone');
+var Marionette = require('backbone.marionette');
+var template = require('./../../../templates/batch/steps/bottling.ejs');
+
+module.exports = Marionette.View.extend({
+    template: template
+});
+
+},{"./../../../templates/batch/steps/bottling.ejs":27,"backbone":4,"backbone.marionette":2}],50:[function(require,module,exports){
+'use strict';
+
+var Backbone = require('backbone');
+var Marionette = require('backbone.marionette');
+var template = require('./../../../templates/batch/steps/dilution.ejs');
+
+module.exports = Marionette.View.extend({
+    template: template
+});
+
+},{"./../../../templates/batch/steps/dilution.ejs":28,"backbone":4,"backbone.marionette":2}],51:[function(require,module,exports){
+'use strict';
+
+var Backbone = require('backbone');
+var Marionette = require('backbone.marionette');
+var template = require('./../../../templates/batch/steps/distillation.ejs');
+
+module.exports = Marionette.View.extend({
+    template: template
+});
+
+},{"./../../../templates/batch/steps/distillation.ejs":29,"backbone":4,"backbone.marionette":2}],52:[function(require,module,exports){
+'use strict';
+
+var Backbone = require('backbone');
+var Marionette = require('backbone.marionette');
+var template = require('./../../../templates/batch/steps/filtration.ejs');
+
+module.exports = Marionette.View.extend({
+    template: template
+});
+
+},{"./../../../templates/batch/steps/filtration.ejs":30,"backbone":4,"backbone.marionette":2}],53:[function(require,module,exports){
+'use strict';
+
+var $ = require('jquery');
+var _ = require('underscore');
+var Backbone = require('backbone');
+var Marionette = require('backbone.marionette');
+var template = require('./../../../templates/batch/steps/mashing.ejs');
+require('form-serializer');
+
+module.exports = Marionette.View.extend({
+    template: template,
+
+    events: {
+        'submit form': 'save'
+    },
+
+    save: function save(e) {
+        var _this = this,
+            _arguments = arguments;
+
+        e.preventDefault();
+
+        this.model.set($(e.target).serializeObject());
+
+        this.model.save(null, {
+            success: function success() {
+                Backbone.history.navigate('batch/' + _this.model.get('id'), true);
+            },
+            error: function error() {
+                console.log("error", _arguments);
+            }
+        });
+    }
+});
+
+},{"./../../../templates/batch/steps/mashing.ejs":31,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6,"underscore":9}],54:[function(require,module,exports){
+'use strict';
+
+var Backbone = require('backbone');
+var Marionette = require('backbone.marionette');
+var template = require('./../../../templates/batch/steps/storage.ejs');
+
+module.exports = Marionette.View.extend({
+    template: template
+});
+
+},{"./../../../templates/batch/steps/storage.ejs":32,"backbone":4,"backbone.marionette":2}],55:[function(require,module,exports){
+'use strict';
+
+// optional collection med process
+// required collection med states
+var $ = require('jquery');
+var Backbone = require('backbone');
+var Marionette = require('backbone.marionette');
+
+var StepView = require('./step');
+var template = require('./../../templates/process/base.ejs');
+
+module.exports = Marionette.View.extend({
+    id: 'process',
+
+    template: template,
+
+    ui: {
+        table: 'table'
+    },
+
+    events: {
+        'click button': 'add'
+    },
+
+    onRender: function onRender() {
+        var _this = this;
+
+        var process = this.getOption('process');
+
+        if (process) {
+            process.forEach(function (step) {
+                _this.ui.table.append(new StepView({
+                    step: step,
+                    states: _this.getOption('states')
+                }).render().el);
+            });
+        } else {
+            this.add();
+        }
+    },
+
+    add: function add() {
+        this.ui.table.append(new StepView({
+            states: this.getOption('states')
+        }).render().el);
+    }
+});
+
+},{"./../../templates/process/base.ejs":33,"./step":56,"backbone":4,"backbone.marionette":2,"jquery":6}],56:[function(require,module,exports){
+'use strict';
+
+var $ = require('jquery');
+var Backbone = require('backbone');
+var Marionette = require('backbone.marionette');
+
+var template = require('./../../templates/process/step.ejs');
+
+module.exports = Marionette.View.extend({
+    tagName: 'tr',
+
+    template: template,
+
+    events: {
+        'click button': 'delete'
+    },
+
+    templateContext: function templateContext() {
+        return {
+            step: this.getOption('step') ? this.getOption('step') : null,
+            states: this.getOption('states').toJSON()
+        };
+    },
+
+    delete: function _delete() {
+        // var model = this.getOption('step');
+        // model.trigger('destroy', model, model.collection);
+        this.remove();
+    }
+});
+
+},{"./../../templates/process/step.ejs":34,"backbone":4,"backbone.marionette":2,"jquery":6}],57:[function(require,module,exports){
+'use strict';
+
+var Marionette = require('backbone.marionette');
+var template = require('./../templates/root.ejs');
+
+module.exports = Marionette.View.extend({
+    id: 'root',
+
+    template: template,
+
+    regions: {
+        content: '#content'
+    }
+});
+
+},{"./../templates/root.ejs":35,"backbone.marionette":2}],58:[function(require,module,exports){
+'use strict';
+
+var $ = require('jquery');
+var Backbone = require('backbone');
+var Marionette = require('backbone.marionette');
+require('form-serializer');
+
+var Spirit = require('./../../models/spirit');
+var ProcessView = require('./../process/base');
+var template = require('./../../templates/spirit/create.ejs');
+
+module.exports = Marionette.View.extend({
+    id: 'spirit-create',
+
+    template: template,
+
+    regions: {
+        process: {
+            el: '#process',
+            replaceElement: true
+        }
+    },
+
+    events: {
+        'submit form': 'create'
+    },
+
+    onRender: function onRender() {
+        this.showChildView('process', new ProcessView({
+            states: this.getOption('states')
+        }));
+    },
+
+    create: function create(e) {
+        e.preventDefault();
+
+        var spirit = new Spirit($(e.target).serializeObject());
+
+        spirit.save(null, {
+            success: function success() {
+                Backbone.history.navigate('spirit/' + spirit.get('id'), true);
+            },
+            error: function error(_error) {
+                console.log(_error);
+            }
+        });
+    }
+});
+
+},{"./../../models/spirit":16,"./../../templates/spirit/create.ejs":36,"./../process/base":55,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],59:[function(require,module,exports){
+'use strict';
+
+var $ = require('jquery');
+var Backbone = require('backbone');
+var Marionette = require('backbone.marionette');
+require('form-serializer');
+
+var ProcessView = require('./../process/base');
+var template = require('./../../templates/spirit/edit.ejs');
+
+module.exports = Marionette.View.extend({
+    id: 'spirit-edit',
+
+    template: template,
+
+    events: {
+        'submit form': 'edit'
+    },
+
+    regions: {
+        process: {
+            el: '#process',
+            replaceElement: true
+        }
+    },
+
+    onRender: function onRender() {
+        console.log(this.model);
+        this.showChildView('process', new ProcessView({
+            states: this.getOption('states'),
+            process: this.model.get('process')
+        }));
+    },
+
+    edit: function edit(e) {
+        var that = this;
+
+        e.preventDefault();
+
+        this.model.set($(e.target).serializeObject());
+
+        this.model.save(null, {
+            success: function success() {
+                Backbone.history.navigate('spirit/' + that.model.get('id'), true);
+            },
+            error: function error() {
+                console.log("error", arguments);
+            }
+        });
+    }
+});
+
+},{"./../../templates/spirit/edit.ejs":37,"./../process/base":55,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],60:[function(require,module,exports){
+'use strict';
+
+var Marionette = require('backbone.marionette');
+var template = require('./../../templates/spirit/index.ejs');
+
+module.exports = Marionette.View.extend({
+    id: 'spirit-index',
+
+    template: template
+});
+
+},{"./../../templates/spirit/index.ejs":38,"backbone.marionette":2}],61:[function(require,module,exports){
+'use strict';
+
+var Backbone = require('backbone');
+var Marionette = require('backbone.marionette');
+var template = require('./../../templates/spirit/show.ejs');
+
+module.exports = Marionette.View.extend({
+    id: 'spirit-show',
+
+    template: template,
+
+    events: {
+        'click button': 'delete'
+    },
+
+    delete: function _delete() {
+        this.model.destroy({
+            success: function success() {
+                Backbone.history.navigate('/spirit', true);
+            },
+            error: function error() {
+                console.log("error");
+            }
+        });
+    }
+});
+
+},{"./../../templates/spirit/show.ejs":39,"backbone":4,"backbone.marionette":2}],62:[function(require,module,exports){
+'use strict';
+
+var $ = require('jquery');
+var Backbone = require('backbone');
+var Marionette = require('backbone.marionette');
+require('form-serializer');
+
+var User = require('./../../models/user');
+var template = require('./../../templates/user/create.ejs');
+
+module.exports = Marionette.View.extend({
+    id: 'user-create',
+
+    template: template,
+
+    events: {
+        'submit form': 'create'
+    },
+
+    create: function create(e) {
+        e.preventDefault();
+
+        var user = new User($(e.target).serializeObject());
+
+        user.save(null, {
+            success: function success() {
+                Backbone.history.navigate('user/' + user.get('id'), true);
+            },
+            error: function error() {
+                console.log("error", arguments);
+            }
+        });
+    }
+});
+
+},{"./../../models/user":18,"./../../templates/user/create.ejs":40,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],63:[function(require,module,exports){
+'use strict';
+
+var $ = require('jquery');
+var Backbone = require('backbone');
+var Marionette = require('backbone.marionette');
+require('form-serializer');
+
+var template = require('./../../templates/user/edit.ejs');
+
+module.exports = Marionette.View.extend({
+    id: 'user-edit',
+
+    template: template,
+
+    events: {
+        'submit form': 'edit'
+    },
+
+    edit: function edit(e) {
+        var that = this;
+
+        e.preventDefault();
+
+        this.model.set($(e.target).serializeObject());
+
+        this.model.save(null, {
+            success: function success() {
+                Backbone.history.navigate('user/' + that.model.get('id'), true);
+            },
+            error: function error() {
+                console.log("error", arguments);
+            }
+        });
+    }
+});
+
+},{"./../../templates/user/edit.ejs":41,"backbone":4,"backbone.marionette":2,"form-serializer":5,"jquery":6}],64:[function(require,module,exports){
+'use strict';
+
+var Marionette = require('backbone.marionette');
+var template = require('./../../templates/user/index.ejs');
+
+module.exports = Marionette.View.extend({
+    id: 'user-index',
+
+    template: template
+});
+
+},{"./../../templates/user/index.ejs":42,"backbone.marionette":2}],65:[function(require,module,exports){
+'use strict';
+
+var Backbone = require('backbone');
+var Marionette = require('backbone.marionette');
+var template = require('./../../templates/user/show.ejs');
+
+module.exports = Marionette.View.extend({
+    id: 'user-show',
+
+    template: template,
+
+    events: {
+        'click button': 'delete'
+    },
+
+    delete: function _delete() {
+        this.model.destroy().done(function () {
+            Backbone.history.navigate('/user', true);
+        }).fail(function (error) {
+            console.log(error);
+        });
+    }
+});
+
+},{"./../../templates/user/show.ejs":43,"backbone":4,"backbone.marionette":2}]},{},[14]);
 
 //# sourceMappingURL=main.js.map

@@ -12,10 +12,12 @@
 */
 
 Route::group(['prefix' => 'api'], function () {
+    Route::resource('/batch/mashing', 'MashingController');
     Route::resource('/user', 'UserController');
     Route::resource('/batch', 'BatchController');
     Route::resource('/spirit', 'SpiritController');
     Route::resource('/state', 'StateController');
+
 });
 
 Route::any('/{route?}', function () {

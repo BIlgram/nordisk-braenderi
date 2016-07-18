@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Batch;
+use App\Models\Mashing;
 use App\Models\Spirit;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -32,7 +33,7 @@ class BatchController extends Controller
 
     public function show($id)
     {
-        return Batch::with('spirit')->find($id);
+        return Batch::with(['spirit'])->find($id);
     }
 
     public function edit(Batch $batch)
@@ -47,6 +48,7 @@ class BatchController extends Controller
         $batch->name = $request->name;
         $batch->spirit_id = $request->spirit_id;
         $batch->step = $request->step;
+
         $batch->save();
 
         return $batch;

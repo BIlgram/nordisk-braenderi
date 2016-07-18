@@ -6,11 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Batch extends Model
 {
-    public function spirit()
-    {
-        return $this->belongsTo('App\Models\Spirit')->withTrashed();
-    }
-    
     public static function rules($id = null, $merge = [])
     {
         return array_merge([
@@ -18,5 +13,10 @@ class Batch extends Model
             'spirit_id' => 'required|integer',
             'created_at' => 'required|date'
         ], $merge);
+    }
+
+    public function spirit()
+    {
+        return $this->belongsTo('App\Models\Spirit');
     }
 }

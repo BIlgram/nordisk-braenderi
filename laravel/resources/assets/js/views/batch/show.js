@@ -12,10 +12,7 @@ var StorageView = require('views/batch/steps/storage');
 module.exports = Marionette.View.extend({
     id: 'batch-show',
 
-    template: function(data) {
-        console.log(data);
-        return template(data)
-    },
+    template: template,
 
     events: {
         'click #delete': 'delete',
