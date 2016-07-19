@@ -15,15 +15,15 @@ module.exports = Marionette.View.extend({
     save: function (e) {
         e.preventDefault();
 
-        //this.model.set($(e.target).serializeObject());
+        this.model.set($(e.target).serializeObject());
 
-        // this.model.save(null, {
-        //     success: () => {
-        //         Backbone.history.navigate('batch/' + this.model.get('id'), true);
-        //     },
-        //     error: () => {
-        //         console.log("error", arguments);
-        //     }
-        // });
+        this.model.save(null, {
+            success: () => {
+                Backbone.history.navigate('batch/' + this.model.get('id'), true);
+            },
+            error: () => {
+                console.log("error", arguments);
+            }
+        });
     }
 });

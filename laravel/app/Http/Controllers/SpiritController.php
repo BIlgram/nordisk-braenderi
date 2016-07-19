@@ -12,7 +12,7 @@ class SpiritController extends Controller
 {
     public function index()
     {
-        return Spirit::all();
+        return Spirit::with('states')->get();
     }
 
     public function store(Request $request)
@@ -24,7 +24,8 @@ class SpiritController extends Controller
         $spirit->name = $request->name;
         $spirit->abv = $request->abv;
         $spirit->recipe = $request->recipe;
-        $spirit->process = $request->process;
+
+        $spirit->states()->attach($request->process);
 
         $spirit->save();
 
@@ -43,7 +44,9 @@ class SpiritController extends Controller
         $spirit->name = $request->name;
         $spirit->abv = $request->abv;
         $spirit->recipe = $request->recipe;
-        $spirit->process = $request->process;
+
+        $spirit->states()->attach($request->process);
+
         $spirit->save();
 
         return $spirit;

@@ -21747,21 +21747,23 @@ module.exports = Backbone.Model.extend({
 
     state: function state() {
         var step = this.get('step');
-        var process = this.get('spirit').process;
+        var process = this.get('process');
 
-        var states = {
-            current: process[step]
-        };
+        // var states = {
+        //     current: process[step]
+        // };
+        //
+        // if (step < process.length) {
+        //     states.next = process[step + 1]
+        // }
+        //
+        // if(step > 0) {
+        //     states.prev = process[step - 1]
+        // }
 
-        if (step < process.length) {
-            states.next = process[step + 1];
-        }
+        //return states
 
-        if (step > 0) {
-            states.prev = process[step - 1];
-        }
-
-        return states;
+        return process[step];
     }
 });
 
@@ -22033,7 +22035,7 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Batch</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Batchnavn</span>\n        <input name="name" value="', escape((11,  name )), '" type="text">\n    </label>\n\n    <div>\n        Spiritustype\n        <select name="" id="">\n            <option value="">Test1</option>\n            <option value="">Test2</option>\n        </select>\n    </div>\n\n    <button class="button-final" type="submit">Gem</button>\n</form>\n'); })();
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Batch</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n</div>\n\n<form>\n    <label>\n        <span>Batchnavn</span>\n        <input name="name" value="', escape((11,  name )), '" type="text">\n    </label>\n\n    <div>\n        Spiritustype\n        <select>\n            <option value="">Test1</option>\n            <option value="">Test2</option>\n        </select>\n    </div>\n\n    <button class="button-final" type="submit">Gem</button>\n</form>\n'); })();
 } 
 return buf.join('');
 })
@@ -22067,7 +22069,7 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Batch: ', escape((3,  state.current.name )), '</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n\n    <div class="buttons button-group">\n        <a href="/batch/', escape((8,  id )), '/edit" role="button">Redigér</a>\n        <button id="delete">Fjern</button>\n    </div>\n</div>\n\n<div id="step"></div>'); })();
+ buf.push('<div id="content-header">\n    <div class="headings">\n        <h2>Batch: ', escape((3,  state.name )), '</h2>\n        <h1>', escape((4,  name )), '</h1>\n    </div>\n\n    <div class="buttons button-group">\n        <a href="/batch/', escape((8,  id )), '/edit" role="button">Redigér</a>\n        <button id="delete">Fjern</button>\n    </div>\n</div>\n\n<div id="step"></div>'); })();
 } 
 return buf.join('');
 })
@@ -22101,7 +22103,7 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<div class="headings">\n    <h2>Tapning</h2>\n</div>\n\n<form>\n    <label>\n        <span>Tapningsdato</span>\n        <input type="date">\n    </label>\n    <label>\n        <span>Flaskevolumen(cL)</span>\n        <input type="number" step="0.01">\n    </label>\n    <label>\n        <span>Antal flasker</span>\n        <input type="number" step="0.01">\n    </label>\n    <div class="output">\n        <span>Resterende volumen</span>\n        <div>123123</div>\n    </div>\n    <label>\n        <span>Kommentarer</span>\n        <textarea rows="5"></textarea>\n    </label>\n    <button id="save-bottling">Gem tapning</button>\n</form>\n'); })();
+ buf.push('<div class="headings">\n    <h2>Tapning</h2>\n</div>\n\n<form>\n    <label>\n        <span>Tapningsdato</span>\n        <input type="date">\n    </label>\n    <label>\n        <span>Flaskevolumen(cL)</span>\n        <input name="bottling_volume" type="number" step="0.01">\n    </label>\n    <label>\n        <span>Antal flasker</span>\n        <input name="bottling_number" type="number" step="0.01">\n    </label>\n    <div class="output">\n        <span>Resterende volumen</span>\n        <div name="bottling_remaining">123123</div>\n    </div>\n    <label>\n        <span>Kommentarer</span>\n        <textarea name="bottling_comment" rows="5"></textarea>\n    </label>\n    <button id="save-bottling">Gem tapning</button>\n</form>\n'); })();
 } 
 return buf.join('');
 })
@@ -22118,7 +22120,7 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<div class="headings">\n    <h2>Dilution</h2>\n</div>\n<form>\n    <label>\n        <span>Fortyndingsdato</span>\n        <input type="date">\n    </label>\n    <label>\n        <span>Kommentarer</span>\n        <textarea rows="5"></textarea>\n    </label>\n    <h3>Inden fortynding</h3>\n    <label>\n        <span>Totalvægt(kg)</span>\n        <input type="number" step="0.01">\n    </label>\n    <label>\n        <span>Alkohol(%)</span>\n        <input type="number" step="0.01">\n    </label>\n    <label>\n        <span>Tabelværdi for alkohol</span>\n        <input type="number" step="0.01">\n    </label>\n    <label>\n        <span>Ønsket alkohol(%)</span>\n        <input type="number" step="0.01">\n    </label>\n    <label>\n        <span>Tabelværdi for ønsket alkohol</span>\n        <input type="number" step="0.01">\n    </label>\n    <h3>Efter fortyndingen</h3>\n    <div class="output">\n        <span>100% ren alkohol(kg)</span>\n        <div>12312321</div>\n    </div>\n    <div class="output">\n        <span>Tilsætning af vand</span>\n        <div>321321123</div>\n    </div>\n    <div class="output">\n        <span>Tilsætning af vand(kg)</span>\n        <div>123123123321</div>\n    </div>\n    <button id="save-dilution">Gem fortynding</button>\n</form>\n'); })();
+ buf.push('<div class="headings">\n    <h2>Dilution</h2>\n</div>\n<form>\n    <label>\n        <span>Fortyndingsdato</span>\n        <input name="dilution_date" type="date">\n    </label>\n    <label>\n        <span>Kommentarer</span>\n        <textarea name="dilution_comment" rows="5"></textarea>\n    </label>\n    <h3>Inden fortynding</h3>\n    <label>\n        <span>Totalvægt(kg)</span>\n        <input name="dilution_startweight" type="number" step="0.01">\n    </label>\n    <label>\n        <span>Alkohol(%)</span>\n        <input name="dilution_startabv" type="number" step="0.01">\n    </label>\n    <label>\n        <span>Tabelværdi for alkohol</span>\n        <input name="dilution_tableabv" type="number" step="0.01">\n    </label>\n    <label>\n        <span>Ønsket alkohol(%)</span>\n        <input name="dilution_desiredabv" type="number" step="0.01">\n    </label>\n    <label>\n        <span>Tabelværdi for ønsket alkohol</span>\n        <input name="dilution_tabledesabv" type="number" step="0.01">\n    </label>\n    <h3>Efter fortyndingen</h3>\n    <div class="output">\n        <span>100% ren alkohol(kg)</span>\n        <div name="dilution_pureabv">12312321</div>\n    </div>\n    <div class="output">\n        <span>Tilsætning af vand</span>\n        <div name="dilution_afterweight">321321123</div>\n    </div>\n    <div class="output">\n        <span>Tilsætning af vand(kg)</span>\n        <div name="dilution_addwater">123123123321</div>\n    </div>\n    <button id="save-dilution">Gem fortynding</button>\n</form>\n'); })();
 } 
 return buf.join('');
 })
@@ -22135,7 +22137,7 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<div class="headings">\n    <h2>Destillation</h2>\n</div>\n\n<form>\n    <label>\n        <span>Destillationsdato</span>\n        <input type="date">\n    </label>\n    <label>\n        <span>Vægt(kg)</span>\n        <input type="number" step="0.01">\n    </label>\n    <label>\n        <span>Alkohol(%)</span>\n        <input type="number" step="0.01">\n    </label>\n    <label>\n        <span>Kommentarer</span>\n        <textarea rows="5"></textarea>\n    </label>\n    <button id="save-distillation">Gem destillation</button>\n</form>\n'); })();
+ buf.push('<div class="headings">\n    <h2>Destillation</h2>\n</div>\n\n<form>\n    <label>\n        <span>Destillationsdato</span>\n        <input name="distillation_date" type="date">\n    </label>\n    <label>\n        <span>Vægt(kg)</span>\n        <input name="distillation_weight" type="number" step="0.01">\n    </label>\n    <label>\n        <span>Alkohol(%)</span>\n        <input name="distillation_abv" type="number" step="0.01">\n    </label>\n    <label>\n        <span>Kommentarer</span>\n        <textarea name="distillation_comment" rows="5"></textarea>\n    </label>\n    <button id="save-distillation">Gem destillation</button>\n</form>\n'); })();
 } 
 return buf.join('');
 })
@@ -22152,7 +22154,7 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<div class="headings">\n    <h2>Filtrering</h2>\n</div>\n\n<form>\n    <label>\n        <span>Filtreringsdato</span>\n        <input type="date">\n    </label>\n    <label>\n        <span>Vægt(kg)</span>\n        <input type="number" step="0.01">\n    </label>\n    <label>\n        <span>Alkohol(%)</span>\n        <input type="number" step="0.01">\n    </label>\n    <label>\n        <span>Densitet tabelværdi</span>\n        <input type="number" step="0.01">\n    </label>\n    <label>\n        <span>Volumen(L)</span>\n        <input type="number" step="0.01">\n    </label>\n    <label>\n        <span>Kommentarer</span>\n        <textarea rows="5"></textarea>\n    </label>\n    <button id="save-filtration">Gem filtrering</button>\n</form>\n\n'); })();
+ buf.push('<div class="headings">\n    <h2>Filtrering</h2>\n</div>\n\n<form>\n    <label>\n        <span>Filtreringsdato</span>\n        <input type="date">\n    </label>\n    <label>\n        <span>Vægt(kg)</span>\n        <input name="filtration_afterweight" type="number" step="0.01">\n    </label>\n    <label>\n        <span>Alkohol(%)</span>\n        <input name="filtration_abv" type="number" step="0.01">\n    </label>\n    <label>\n        <span>Densitet tabelværdi</span>\n        <input name="filtration_tabledensity" type="number" step="0.01">\n    </label>\n    <label>\n        <span>Volumen(L)</span>\n        <input name="filtration_volume" type="number" step="0.01">\n    </label>\n    <label>\n        <span>Kommentarer</span>\n        <textarea name="filtration_comment" rows="5"></textarea>\n    </label>\n    <button id="save-filtration">Gem filtrering</button>\n</form>\n\n'); })();
 } 
 return buf.join('');
 })
@@ -22169,7 +22171,7 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<form>\n    <label>\n        <span>Kvalitet</span>\n        <input name="quality" type="text">\n    </label>\n\n    <label>\n        <span>Sukker (<sup>o</sup>Bx)</span>\n        <input name="sugar" type="text">\n    </label>\n\n    <label>\n        <span>Gær (g)</span>\n        <input name="ferment" type="text">\n    </label>\n\n    <label>\n        <span>Mængde (l)</span>\n        <input name="amount" type="text">\n    </label>\n\n    <label>\n        <span>Kommentarer</span>\n        <textarea name="comment" rows="5"></textarea>\n    </label>\n\n    <button>Gem</button>\n</form>\n'); })();
+ buf.push('<form>\n    <label>\n        <span>Kvalitet</span>\n        <input name="mashing_quality" value="');4; mashing ; buf.push('" type="text">\n    </label>\n\n    <label>\n        <span>Sukker (<sup>o</sup>Bx)</span>\n        <input name="mashing_sugar" type="text">\n    </label>\n\n    <label>\n        <span>Gær (g)</span>\n        <input name="mashing_ferment" type="text">\n    </label>\n\n    <label>\n        <span>Mængde (l)</span>\n        <input name="mashing_amount" type="text">\n    </label>\n\n    <label>\n        <span>Kommentarer</span>\n        <textarea name="mashing_comment" rows="5"></textarea>\n    </label>\n\n    <button>Gem</button>\n</form>\n'); })();
 } 
 return buf.join('');
 })
@@ -22186,7 +22188,7 @@ escape = escape || function (html){
 };
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<form>\n    <div class="headings">\n        <h2>Lagring</h2>\n    </div>\n    <label>Begyndelsesdato</label>\n    <input type="date">\n    <label>\n        <span>Kommentarer</span>\n        <textarea rows="5"></textarea>\n    </label>\n    <button id="begin-storage">Begynd lagring</button>\n</form>\n'); })();
+ buf.push('<form>\n    <div class="headings">\n        <h2>Lagring</h2>\n    </div>\n    <label>Begyndelsesdato</label>\n    <input type="date">\n    <label>\n        <span>Kommentarer</span>\n        <textarea name="storage_comment" rows="5"></textarea>\n    </label>\n    <button id="begin-storage">Begynd lagring</button>\n</form>\n'); })();
 } 
 return buf.join('');
 })
@@ -22492,8 +22494,7 @@ module.exports = Marionette.View.extend({
     template: template,
 
     events: {
-        'click #delete': 'delete',
-        'click #next-step': 'nextStep'
+        'click #delete': 'delete'
     },
 
     regions: {
@@ -22507,7 +22508,7 @@ module.exports = Marionette.View.extend({
     },
 
     onRender: function onRender() {
-        switch (this.model.state().current.id) {
+        switch (this.model.state().id) {
             case 1:
                 this.showChildView('step', new MashingView({ model: this.model }));
                 break;

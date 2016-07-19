@@ -9,10 +9,6 @@ class Spirit extends Model
 {
     use SoftDeletes;
 
-    protected $casts = [
-        'process' => 'array',
-    ];
-
     protected $dates = ['deleted_at'];
 
     public static function rules($id = null, $merge = [])
@@ -23,13 +19,8 @@ class Spirit extends Model
         ], $merge);
     }
 
-    public function getProcessAttribute($value) {
-        $result = [];
-
-        foreach(json_decode($value) as $item) {
-            $result[] = State::find($item);
-        }
-
-        return $result;
+    public function states()
+    {
+        return $this->belongsToMany('App\Models\State');
     }
 }

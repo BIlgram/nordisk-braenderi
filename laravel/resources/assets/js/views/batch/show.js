@@ -15,8 +15,7 @@ module.exports = Marionette.View.extend({
     template: template,
 
     events: {
-        'click #delete': 'delete',
-        'click #next-step': 'nextStep'
+        'click #delete': 'delete'
     },
 
     regions: {
@@ -30,7 +29,7 @@ module.exports = Marionette.View.extend({
     },
 
     onRender: function () {
-        switch (this.model.state().current.id) {
+        switch (this.model.state().id) {
             case 1:
                 this.showChildView('step', new MashingView({model: this.model}));
                 break;
