@@ -1,0 +1,136 @@
+form {
+  display: flex;
+  flex-flow: column nowrap;
+
+  .input {
+    margin-bottom: 30px;
+
+    .input-label {
+      display: block;
+      padding-bottom: 6px;
+      font-weight: 500;
+    }
+
+    .input-field {
+      display: block;
+      width: 100%;
+      padding: 0 12px;
+      margin: 0;
+      border: 1px solid palette(gray, light);
+      background-color: palette(white);
+      border-radius: 4px;
+      outline: none;
+      transition: border-color 100ms;
+    }
+
+    input.input-field, select.input-field {
+      height: 36px;
+      line-height: 36px;
+
+      &:focus {
+        border-color: palette(blue);
+      }
+    }
+
+    textarea.input-field {
+      padding: 6px 12px;
+      width: 100% !important;
+
+      &:focus {
+        border-color: palette(blue);
+      }
+    }
+
+    .input-addons {
+      display: flex;
+
+      .input-addon {
+        flex: 0 0 auto;
+        padding: 0 12px;
+        border: 1px solid palette(gray, light);
+        background-color: palette(white);
+        line-height: 34px;
+        border-radius: 4px;
+      }
+
+      .input-field {
+        flex: 1 1 auto;
+
+        &:not(:first-child) {
+          border-top-left-radius: 0;
+          border-bottom-left-radius: 0;
+        }
+
+        &:not(:last-child) {
+          border-top-right-radius: 0;
+          border-bottom-right-radius: 0;
+        }
+      }
+
+      .input-addon-left {
+        border-right-width: 0;
+        border-radius: 4px 0 0 4px;
+      }
+
+      .input-addon-right {
+        border-left-width: 0;
+        border-radius: 0 4px 4px 0;
+      }
+    }
+  }
+
+  .input-errors {
+    //border: 1px solid palette(red);
+    background-color: palette(red);
+    color: white;
+    border-radius: 4px;
+    margin-bottom: 30px;
+
+    ul {
+      margin: 16px 0;
+      padding: 0 32px;
+      li {
+        font-size: 0.857em
+      }
+    }
+  }
+
+  .input-process {
+    @extend .input;
+
+    table {
+      margin-bottom: 16px;
+
+      tr {
+        td {
+          padding: 4px 0;
+          border: 0;
+
+          button {
+            border: 0;
+            background-color: transparent;
+            color: palette(gray, light);
+
+            &:hover {
+              color: palette(gray);
+            }
+          }
+        }
+
+        &:first-of-type {
+          td {
+            padding-top: 0;
+          }
+        }
+      }
+    }
+
+    button {
+      width: 100%;
+    }
+  }
+
+  button[type=submit] {
+    @extend .green;
+  }
+}

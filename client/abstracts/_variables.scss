@@ -1,0 +1,26 @@
+$palette: (
+    white: (
+        base: rgb(255, 255, 255)
+    ),
+    gray: (
+        lighter: rgb(240, 240, 240),
+        light: rgb(215, 215, 215),
+        base: rgb(175, 175, 175),
+        dark: rgb(85, 85, 85)
+    ),
+    blue: (
+        light: rgb(230, 245, 250),
+        base: rgb(30, 170, 220),
+        dark: rgb(20, 115, 155)
+    ),
+    green: (
+        base: rgb(30, 200, 140),
+        dark: rgb(30, 180, 120)
+    ),
+    red: (
+        base: rgb(230, 70, 90)
+    ),
+    yellow: (
+        base: rgb(230, 215, 55)
+    )
+)

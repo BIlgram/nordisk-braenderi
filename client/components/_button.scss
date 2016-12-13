@@ -1,0 +1,51 @@
+button, [role=button] {
+  height: 36px;
+  padding: 0 12px;
+  display: inline-block;
+  line-height: 34px;
+  background-color: transparent;
+  outline: none;
+  border: 1px solid palette(blue);
+  border-radius: 4px;
+  text-align: center;
+  color: palette(blue);
+
+  &:hover {
+    background-color: palette(blue);
+    color: palette(white);
+    cursor: pointer;
+  }
+
+  &.green {
+    border: 0;
+    background-color: palette(green);
+    color: palette(white);
+    line-height: 36px;
+
+    &:hover {
+      background-color: palette(green, dark);
+    }
+  }
+}
+
+.button-group {
+  display: inline-block;
+  vertical-align: bottom;
+  overflow: hidden;
+
+  button, [role=button] {
+    float: left;
+    display: block;
+    border-radius: 0;
+    margin-left: -1px;
+
+    &:first-child {
+      border-radius: 4px 0 0 4px;
+      margin-left: 0;
+    }
+
+    &:last-child {
+      border-radius: 0 4px 4px 0;
+    }
+  }
+}

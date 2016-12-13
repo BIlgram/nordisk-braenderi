@@ -1,0 +1,42 @@
+.flashes {
+  height: 96px;
+  overflow: hidden;
+  display: flex;
+
+  flex-direction: column-reverse;
+  box-sizing: content-box;
+  padding: 16px;
+  //padding: 0 16px;
+  //margin: 16px 0;
+}
+
+.flash {
+  flex: 0 0 40px;
+  border: 1px solid palette(blue);
+  border-radius: 4px;
+  line-height: 38px;
+  padding: 0 16px;
+  margin-top: 8px;
+  opacity: 0;
+  transition: opacity 500ms;
+
+  &.flash-enter, &.flash-appear {
+    opacity: 1;
+  }
+
+  &.success {
+    border-color: palette(green);
+    color: palette(green);
+  }
+
+  &.error {
+    border-color: palette(red);
+    color: palette(red);
+  }
+
+  &.warning {
+    border-color: palette(yellow);
+    color: palette(yellow);
+  }
+}
+

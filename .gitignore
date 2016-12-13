@@ -1,4 +1,2 @@
-/.vagrant
-puphpet/config-custom.yaml
-/.idea
-/html
+node_modules/
+.idea/

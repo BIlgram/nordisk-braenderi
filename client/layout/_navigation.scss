@@ -1,0 +1,47 @@
+nav {
+  flex: 0 0 260px;
+  padding: 16px 0 ;
+  margin-right: 16px;
+  //border: 1px solid palette(gray);
+
+  h1 {
+    font-size: 1.714rem;
+    line-height: 1.714rem;
+    font-weight: 300;
+    padding: 0 16px;
+    margin: 0 0 16px 0;
+  }
+
+  ul {
+    margin: 0;
+    padding: 0;
+
+    li {
+      list-style: none;
+
+      span {
+        height: 36px;
+        display: block;
+        padding: 0 16px;
+        margin-top: 16px;
+        line-height: 36px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: .857rem;
+        color: palette(gray)
+      }
+
+      a {
+        height: 36px;
+        display: block;
+        padding: 0 16px;
+        line-height: 36px;
+
+        &:hover {
+          background-color: palette(blue, lighter);
+          border-radius: 4px;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,23 @@
+html {
+  font-size: 14px;
+}
+
+body {
+  font: 1rem/1.618 'Roboto', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+  color: palette(gray, dark);
+  font-weight: 400;
+}
+
+a {
+  text-decoration: none;
+  color: palette(blue);
+
+  &:hover {
+    color: palette(blue, dark);
+  }
+}
+
+input, select, textarea, option {
+  font-family: Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 300;
+}
