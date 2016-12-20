@@ -66,7 +66,7 @@ class SpiritsShowPage extends Component {
                 this.setState({errors: error})
             } else {
                 this.setState({errors: error});
-                browserHistory.push({
+                this.props.router.push({
                     pathname: '/spirits/' + id,
                     state: {
                         flash: {

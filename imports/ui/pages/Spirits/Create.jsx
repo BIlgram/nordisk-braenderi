@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import {browserHistory} from "react-router";
 import steps from '/imports/helpers/steps.js';
 import {create} from "/imports/api/spirits/methods.js";
 import Input from '/imports/ui/components/Input.jsx';
@@ -47,11 +46,11 @@ class SpiritsCreatePage extends Component {
             if (error) {
                 this.setState({errors: error})
             } else {
-                browserHistory.push({
+                this.props.router.push({
                     pathname: '/spirits/' + result,
                     state: {
                         flash: {
-                            message: 'lol?',
+                            message: 'Spiritustypen blev oprettet!',
                             type: 'success'
                         }
                     }
