@@ -1,10 +1,12 @@
 import React from 'react';
-import {Route} from 'react-router-dom';
+import {Switch, Route, Redirect} from 'react-router-dom';
 import injectSheet from 'react-jss';
 
 import Navigation from './Navigation';
-import BatchesOverviewPage from '/imports/ui/pages/Batches/Overview';
-import BatchesCreatePage from '/imports/ui/pages/Batches/Create';
+import BatchesPage from '/imports/ui/pages/Batches';
+import SpiritsPage from '/imports/ui/pages/Spirits';
+import UsersPage from '/imports/ui/pages/Users';
+import StatementsPage from '/imports/ui/pages/Statements';
 
 const styles = {
   app: {
@@ -14,7 +16,6 @@ const styles = {
   },
   content: {
     flex: '1 1 auto',
-    boxSizing: 'content-box',
     padding: 16,
   },
 };
@@ -28,8 +29,13 @@ class AppLayout extends React.Component {
         <div className={classes.app}>
           <Navigation/>
           <div className={classes.content}>
-            <Route exact path="/batches" component={BatchesOverviewPage}/>
-            <Route exact path="/batches/create" component={BatchesCreatePage}/>
+            <Switch>
+              <Route path="/batches" component={BatchesPage}/>
+              <Route path="/spirits" component={SpiritsPage}/>
+              <Route path="/users" component={UsersPage}/>
+              <Route path="/statements" component={StatementsPage}/>
+              <Redirect from="/" to="/batches"/>
+            </Switch>
           </div>
         </div>
     );

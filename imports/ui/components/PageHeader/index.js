@@ -2,11 +2,14 @@ import React from 'react';
 import injectSheet from 'react-jss';
 import palette from '/imports/palette';
 
+import ButtonGroup from '/imports/ui/components/ButtonGroup';
+
 const styles = {
   header: {
     display: 'flex',
     paddingBottom: 16,
-    borderBottom: [1, 'solid', palette.shade.light.rgb().string()],
+    marginBottom: 16,
+    borderBottom: [1, 'solid', palette.black.fade(.875).string()],
   },
   headings: {
     flexGrow: 1,
@@ -24,9 +27,10 @@ const styles = {
     lineHeight: '1em',
     textTransform: 'uppercase',
     letterSpacing: 1,
-    color: palette.shade.gray.rgb().string(),
+    color: palette.shade.gray.string(),
   },
   buttons: {
+    alignItems: 'flex-end',
     flexShrink: 1,
   },
 };
@@ -38,9 +42,9 @@ const PageHeader = injectSheet(styles)(({classes, title, subtitle, children}) =>
           <h3 className={classes.subtitle}>{subtitle}</h3>
           <h2 className={classes.title}>{title}</h2>
         </div>
-        <div className={classes.buttons}>
+        <ButtonGroup className={classes.buttons}>
           {children}
-        </div>
+        </ButtonGroup>
       </div>
   );
 });
