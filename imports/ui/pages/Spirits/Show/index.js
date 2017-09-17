@@ -11,23 +11,8 @@ import Button from '/imports/ui/components/Button';
 import ProductionProcess from '/imports/ui/components/ProductionProcess';
 import {update} from '/imports/api/spirits/methods';
 import {Spirits} from '/imports/api/spirits/spirits.js';
+import Page from '/imports/ui/components/Page';
 
-const styles = {
-  page: {
-    opacity: 0,
-    animation: 'fadein 1s forwards',
-  },
-  '@keyframes fadein': {
-    '0%': {
-      opacity: 0,
-    },
-    '100%': {
-      opacity: 100,
-    },
-  },
-};
-
-@injectSheet(styles)
 class SpiritsShowPage extends React.Component {
   constructor(props) {
     super(props);
@@ -80,7 +65,7 @@ class SpiritsShowPage extends React.Component {
     if (this.props.loading) return <Loading/>;
 
     return (
-        <div className={this.props.classes.page}>
+        <Page>
           <PageHeader title="Opret" subtitle="Spirits"/>
 
           <form onSubmit={this.handleSubmit}>
@@ -93,7 +78,7 @@ class SpiritsShowPage extends React.Component {
             <ProductionProcess value={this.state.process} onChange={this.handleProcessChange}/>
             <Button submit color="green">Gem</Button>
           </form>
-        </div>
+        </Page>
     );
   }
 }
