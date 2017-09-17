@@ -1,4 +1,5 @@
 import {Meteor} from 'meteor/meteor';
+import {createContainer} from 'meteor/react-meteor-data';
 import React from 'react';
 import productionSteps from '/imports/productionSteps';
 import PageHeader from '/imports/ui/components/PageHeader';
@@ -6,17 +7,20 @@ import Input from '/imports/ui/components/Input';
 import InputGroup from '/imports/ui/components/InputGroup';
 import Button from '/imports/ui/components/Button';
 import ProductionProcess from '/imports/ui/components/ProductionProcess';
-import {create} from '/imports/api/spirits/methods';
+import {update} from '/imports/api/spirits/methods';
+import {Spirits} from '/imports/api/spirits/spirits.js';
 
-class SpiritsCreatePage extends React.Component {
+class SpiritsShowPage extends React.Component {
   constructor(props) {
     super(props);
 
+    const {spirit} = this.props;
+
     this.state = {
-      name: '',
-      abv: 0,
-      recipe: '',
-      process: [productionSteps[0]],
+      name: spirit ? spirit.name : '',
+      abv: spirit ? spirit.abv : 0,
+      recipe: spirit ? spirit.recipe : '',
+      process: spirit ? spirit.process : [productionSteps[0]],
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -24,6 +28,15 @@ class SpiritsCreatePage extends React.Component {
     this.handleABVChange = this.handleInputChange.bind(this, 'abv');
     this.handleRecipeChange = this.handleInputChange.bind(this, 'recipe');
     this.handleProcessChange = this.handleProcessChange.bind(this);
+  }
+
+  componentWillReceiveProps({spirit}) {
+    this.setState({
+      name: spirit.name,
+      abv: spirit.abv,
+      recipe: spirit.recipe,
+      process: spirit.process,
+    });
   }
 
   handleInputChange(key, event) {
@@ -37,9 +50,9 @@ class SpiritsCreatePage extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
     const {name, abv, recipe, process} = this.state;
-    create.call({name, abv: parseFloat(abv), recipe, process}, (err, id) => {
-      if (!err) this.props.history.push(`/spirits/${id}`);
-    });
+    // create.call({name, abv: parseFloat(abv), recipe, process}, (err, res) => {
+    //   console.log(err, res);
+    // });
   }
 
   render() {
@@ -57,11 +70,18 @@ class SpiritsCreatePage extends React.Component {
 
             <Input label="Opskrift" value={recipe} onChange={this.handleRecipeChange}/>
             <ProductionProcess value={this.state.process} onChange={this.handleProcessChange}/>
-            <Button submit color="green">Opret</Button>
+            <Button submit color="green">Gem</Button>
           </form>
         </div>
     );
   }
 }
 
-export default SpiritsCreatePage;
+export default createContainer(({match}) => {
+  const handle = Meteor.subscribe('spirit', match.params.id);
+
+  return {
+    loading: !handle.ready(),
+    spirit: Spirits.find(match.params.id).fetch()[0],
+  };
+}, SpiritsShowPage);

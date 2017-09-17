@@ -6,7 +6,7 @@ import palette from '/imports/palette';
 
 const styles = {
   input: {
-    marginBottom: 16,
+    paddingBottom: 16,
     overflow: 'hidden',
     flexBasis: props => `${(100 / 12) * props.span}%`,
     textOverflow: 'ellipsis',
@@ -14,7 +14,8 @@ const styles = {
   label: {
     height: 16,
     display: 'inline-block',
-    lineHeight: '1em'
+    fontWeight: 500,
+    lineHeight: '1em',
   },
   field: {
     width: '100%',
@@ -30,17 +31,27 @@ const styles = {
   },
 };
 
-const Input = injectSheet(styles)(({classes, label, type, className, ...props}) => {
-  delete props['sheet'];
-  const id = uniqid();
+@injectSheet(styles)
+class Input extends React.Component {
+  constructor(props) {
+    super(props);
+    this.id = uniqid();
+  }
 
-  return (
-      <div className={classNames(classes.input, className)}>
-        <label htmlFor={id} className={classes.label}>{label}</label>
-        <input id={id} className={classes.field} type={type}/>
-      </div>
-  );
-});
+  render() {
+    const {classes, label, className, ...props} = this.props;
+
+    delete props['sheet'];
+    delete props['span'];
+
+    return (
+        <div className={classNames(classes.input, className)}>
+          <label htmlFor={this.id} className={classes.label}>{label}</label>
+          <input id={this.id} className={classes.field} {...props}/>
+        </div>
+    );
+  }
+}
 
 Input.defaultProps = {
   type: 'text',

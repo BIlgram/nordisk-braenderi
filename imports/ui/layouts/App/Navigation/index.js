@@ -60,8 +60,8 @@ const Navigation = injectSheet(styles)(({classes}) => {
           <li>
             <span>Administration</span>
             <ul>
-              <Link exact to="/users">Brugere</Link>
               <Link exact to="/spirits">Spiritustyper</Link>
+              <Link exact to="/users">Brugere</Link>
             </ul>
           </li>
         </ul>

@@ -6,6 +6,7 @@ const styles = {
   inputGroup: {
     display: 'flex',
     flexFlow: 'row wrap',
+    paddingBottom: 16,
   },
   input: {
     padding: [0, 8],

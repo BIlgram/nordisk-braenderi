@@ -28,7 +28,7 @@ const Icon = injectSheet(styles)(({classes, className, icon}) => {
 Icon.defaultProps = {
   width: 16,
   height: 16,
-  fill: palette.blue.string(),
+  fill: palette.black.string(),
 };
 
 export default Icon;

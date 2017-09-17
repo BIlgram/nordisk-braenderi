@@ -22,18 +22,23 @@ class BatchesCreatePage extends React.Component {
           <PageHeader title="Opret" subtitle="Batches"/>
 
           <form onSubmit={this.handleSubmit}>
-            <InputGroup ratio="6:6">
-              <Input label="Fornavn"/>
-              <Input label="Efternavn"/>
-            </InputGroup>
+            <Input label="Spiritustype"/>
+            <Input label="Oprettelsesdato"/>
+            <Input label="Navn"/>
 
-            <InputGroup ratio="4:1:7">
-              <Input label="By"/>
-              <Input label="Postnummer"/>
-              <Input label="Region"/>
-            </InputGroup>
 
-            <Button form color="green">Opret</Button>
+            {/*<InputGroup ratio="6:6">*/}
+              {/*<Input label="Fornavn"/>*/}
+              {/*<Input label="Efternavn"/>*/}
+            {/*</InputGroup>*/}
+
+            {/*<InputGroup ratio="4:1:7">*/}
+              {/*<Input label="By"/>*/}
+              {/*<Input label="Postnummer"/>*/}
+              {/*<Input label="Region"/>*/}
+            {/*</InputGroup>*/}
+
+            <Button submit color="green">Opret</Button>
           </form>
         </div>
     );
