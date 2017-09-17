@@ -1,8 +1,10 @@
 import {Meteor} from 'meteor/meteor';
 import {createContainer} from 'meteor/react-meteor-data';
 import React from 'react';
+import injectSheet from 'react-jss';
 import productionSteps from '/imports/productionSteps';
 import PageHeader from '/imports/ui/components/PageHeader';
+import Loading from '/imports/ui/components/Loading';
 import Input from '/imports/ui/components/Input';
 import InputGroup from '/imports/ui/components/InputGroup';
 import Button from '/imports/ui/components/Button';
@@ -10,6 +12,22 @@ import ProductionProcess from '/imports/ui/components/ProductionProcess';
 import {update} from '/imports/api/spirits/methods';
 import {Spirits} from '/imports/api/spirits/spirits.js';
 
+const styles = {
+  page: {
+    opacity: 0,
+    animation: 'fadein 1s forwards',
+  },
+  '@keyframes fadein': {
+    '0%': {
+      opacity: 0,
+    },
+    '100%': {
+      opacity: 100,
+    },
+  },
+};
+
+@injectSheet(styles)
 class SpiritsShowPage extends React.Component {
   constructor(props) {
     super(props);
@@ -49,6 +67,7 @@ class SpiritsShowPage extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
+
     const {name, abv, recipe, process} = this.state;
     // create.call({name, abv: parseFloat(abv), recipe, process}, (err, res) => {
     //   console.log(err, res);
@@ -58,8 +77,10 @@ class SpiritsShowPage extends React.Component {
   render() {
     const {name, abv, recipe} = this.state;
 
+    if (this.props.loading) return <Loading/>;
+
     return (
-        <div>
+        <div className={this.props.classes.page}>
           <PageHeader title="Opret" subtitle="Spirits"/>
 
           <form onSubmit={this.handleSubmit}>
